@@ -93,6 +93,7 @@ mod error;
 mod node_table;
 mod stats;
 mod ip_utils;
+mod connection_filter;
 
 #[cfg(test)]
 mod tests;
@@ -102,6 +103,7 @@ pub use service::NetworkService;
 pub use error::NetworkError;
 pub use stats::NetworkStats;
 pub use session::SessionInfo;
+pub use connection_filter::{ConnectionFilter, ConnectionDirection};
 
 use io::TimerToken;
 pub use node_table::{is_valid_node_url, NodeId};

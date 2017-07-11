@@ -81,6 +81,9 @@ pub struct Params {
 	/// See `CommonParams` docs.
 	#[serde(rename="eip214Transition")]
 	pub eip214_transition: Option<Uint>,
+	/// Node permission contract address.
+	#[serde(rename="nodePermissionContract")]
+	pub node_permission_contract: Option<Address>,
 }
 
 #[cfg(test)]

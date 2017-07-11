@@ -20,7 +20,7 @@ use std::io;
 use util::Bytes;
 use network::{NetworkProtocolHandler, NetworkService, NetworkContext, PeerId, ProtocolId,
 	NetworkConfiguration as BasicNetworkConfiguration, NonReservedPeerMode, NetworkError,
-	AllowIP as NetworkAllowIP};
+	AllowIP as NetworkAllowIP, ConnectionFilter};
 use util::{U256, H256, H512};
 use io::{TimerToken};
 use ethcore::ethstore::ethkey::Secret;
@@ -194,7 +194,7 @@ pub struct EthSync {
 
 impl EthSync {
 	/// Creates and register protocol with the network service
-	pub fn new(params: Params) -> Result<Arc<EthSync>, NetworkError> {
+	pub fn new(params: Params, connection_filter: Option<Arc<ConnectionFilter>>) -> Result<Arc<EthSync>, NetworkError> {
 		const MAX_LIGHTSERV_LOAD: f64 = 0.5;
 
 		let pruning_info = params.chain.pruning_info();
@@ -230,7 +230,7 @@ impl EthSync {
 		};
 
 		let chain_sync = ChainSync::new(params.config, &*params.chain);
-		let service = NetworkService::new(params.network_config.clone().into_basic()?)?;
+		let service = NetworkService::new(params.network_config.clone().into_basic()?, connection_filter)?;
 
 		let sync = Arc::new(EthSync {
 			network: service,
@@ -719,7 +719,7 @@ impl LightSync {
 			(sync_handler, Arc::new(light_proto))
 		};
 
-		let service = NetworkService::new(params.network_config)?;
+		let service = NetworkService::new(params.network_config, None)?;
 
 		Ok(LightSync {
 			proto: light_proto,

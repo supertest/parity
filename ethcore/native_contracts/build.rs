@@ -27,6 +27,7 @@ const SERVICE_TRANSACTION_ABI: &'static str = include_str!("res/service_transact
 const SECRETSTORE_ACL_STORAGE_ABI: &'static str = include_str!("res/secretstore_acl_storage.json");
 const VALIDATOR_SET_ABI: &'static str = include_str!("res/validator_set.json");
 const VALIDATOR_REPORT_ABI: &'static str = include_str!("res/validator_report.json");
+const PEER_SET_ABI: &'static str = include_str!("res/peer_set.json");
 
 const TEST_VALIDATOR_SET_ABI: &'static str = r#"[{"constant":true,"inputs":[],"name":"transitionNonce","outputs":[{"name":"n","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newValidators","type":"address[]"}],"name":"setValidators","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getValidators","outputs":[{"name":"vals","type":"address[]"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_parent_hash","type":"bytes32"},{"indexed":true,"name":"_nonce","type":"uint256"},{"indexed":false,"name":"_new_set","type":"address[]"}],"name":"ValidatorsChanged","type":"event"}]"#;
 
@@ -51,6 +52,7 @@ fn main() {
 	build_file("SecretStoreAclStorage", SECRETSTORE_ACL_STORAGE_ABI, "secretstore_acl_storage.rs");
 	build_file("ValidatorSet", VALIDATOR_SET_ABI, "validator_set.rs");
 	build_file("ValidatorReport", VALIDATOR_REPORT_ABI, "validator_report.rs");
+	build_file("PeerSet", PEER_SET_ABI, "peer_set.rs");
 
 	build_test_contracts();
 }

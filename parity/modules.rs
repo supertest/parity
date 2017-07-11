@@ -19,7 +19,7 @@ use std::path::Path;
 
 use ethcore::client::BlockChainClient;
 use hypervisor::Hypervisor;
-use ethsync::{SyncConfig, NetworkConfiguration, NetworkError, Params};
+use ethsync::{SyncConfig, NetworkConfiguration, NetworkError, Params, ConnectionFilter};
 use ethcore::snapshot::SnapshotService;
 use light::Provider;
 
@@ -181,6 +181,7 @@ pub fn sync(
 	snapshot_service: Arc<SnapshotService>,
 	provider: Arc<Provider>,
 	_log_settings: &LogConfig,
+	connection_filter: Option<Arc<ConnectionFilter>>,
 ) -> Result<SyncModules, NetworkError> {
 	let eth_sync = EthSync::new(Params {
 		config: sync_cfg,
@@ -188,7 +189,8 @@ pub fn sync(
 		provider: provider,
 		snapshot_service: snapshot_service,
 		network_config: net_cfg,
-	})?;
+	},
+	connection_filter)?;
 
 	Ok((eth_sync.clone() as Arc<SyncProvider>, eth_sync.clone() as Arc<ManageNetwork>, eth_sync.clone() as Arc<ChainNotify>))
 }

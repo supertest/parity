@@ -62,6 +62,7 @@ extern crate parity_rpc;
 extern crate parity_updater as updater;
 extern crate path;
 extern crate rpc_cli;
+extern crate node_filter;
 
 #[macro_use]
 extern crate log as rlog;

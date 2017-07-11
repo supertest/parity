@@ -76,6 +76,8 @@ pub struct CommonParams {
 	pub eip211_transition: BlockNumber,
 	/// Number of first block where EIP-214 rules begin.
 	pub eip214_transition: BlockNumber,
+	/// Node permission managing contract address.
+	pub node_permission_contract: Option<Address>,
 }
 
 impl From<ethjson::spec::Params> for CommonParams {
@@ -100,6 +102,7 @@ impl From<ethjson::spec::Params> for CommonParams {
 			eip210_contract_gas: p.eip210_contract_gas.map_or(1000000.into(), Into::into),
 			eip211_transition: p.eip211_transition.map_or(BlockNumber::max_value(), Into::into),
 			eip214_transition: p.eip214_transition.map_or(BlockNumber::max_value(), Into::into),
+			node_permission_contract: p.node_permission_contract.map(Into::into),
 		}
 	}
 }

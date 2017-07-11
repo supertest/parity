@@ -37,6 +37,7 @@ use informant::Informant;
 use updater::{UpdatePolicy, Updater};
 use parity_reactor::EventLoop;
 use hash_fetch::fetch::{Fetch, Client as FetchClient};
+use node_filter::NodeFilter;
 
 use params::{
 	SpecType, Pruning, AccountsConfig, GasPricerConfig, MinerExtras, Switch,
@@ -514,6 +515,7 @@ pub fn execute(cmd: RunCmd, can_restart: bool, logger: Arc<RotatingLogger>) -> R
 		miner.clone(),
 	).map_err(|e| format!("Client service error: {:?}", e))?;
 
+	let connection_filter_address = spec.params().node_permission_contract;
 	// drop the spec to free up genesis state.
 	drop(spec);
 
@@ -522,6 +524,7 @@ pub fn execute(cmd: RunCmd, can_restart: bool, logger: Arc<RotatingLogger>) -> R
 
 	// take handle to client
 	let client = service.client();
+	let connection_filter = connection_filter_address.map(|a| Arc::new(NodeFilter::new(Arc::downgrade(&client), a)));
 	let snapshot_service = service.snapshot_service();
 
 	// initialize the local node information store.
@@ -580,9 +583,13 @@ pub fn execute(cmd: RunCmd, can_restart: bool, logger: Arc<RotatingLogger>) -> R
 		snapshot_service.clone(),
 		client.clone(),
 		&cmd.logger_config,
+		connection_filter.clone().map(|f| f as Arc<::ethsync::ConnectionFilter + 'static>),
 	).map_err(|e| format!("Sync error: {}", e))?;
 
 	service.add_notify(chain_notify.clone());
+	if let Some(filter) = connection_filter {
+		service.add_notify(filter);
+	}
 
 	// start network
 	if network_enabled {

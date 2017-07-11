@@ -29,6 +29,7 @@ mod service_transaction;
 mod secretstore_acl_storage;
 mod validator_set;
 mod validator_report;
+mod peer_set;
 
 pub mod test_contracts;
 
@@ -38,3 +39,4 @@ pub use self::service_transaction::ServiceTransactionChecker;
 pub use self::secretstore_acl_storage::SecretStoreAclStorage;
 pub use self::validator_set::ValidatorSet;
 pub use self::validator_report::ValidatorReport;
+pub use self::peer_set::PeerSet;

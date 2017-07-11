@@ -39,6 +39,7 @@ ethcore-ipc-hypervisor = { path = "ipc/hypervisor" }
 ethcore-light = { path = "ethcore/light" }
 ethcore-logger = { path = "logger" }
 ethcore-stratum = { path = "stratum" }
+node-filter = { path = "ethcore/node_filter" }
 ethkey = { path = "ethkey" }
 rlp = { path = "util/rlp" }
 rpc-cli = { path = "rpc_cli" }
