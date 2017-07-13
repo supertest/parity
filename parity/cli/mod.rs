@@ -659,7 +659,7 @@ mod tests {
 	#[test]
 	fn should_parse_full_config() {
 		// given
-		let config = toml::from_str(include_str!("./config.full.toml")).unwrap();
+		let config = toml::from_str(include_str!("./tests/config.full.toml")).unwrap();
 
 		// when
 		let args = Args::parse_with_config(&["parity", "--chain", "xyz"], config).unwrap();
@@ -908,9 +908,9 @@ mod tests {
 
 	#[test]
 	fn should_parse_config_and_return_errors() {
-		let config1 = Args::parse_config(include_str!("./config.invalid1.toml"));
-		let config2 = Args::parse_config(include_str!("./config.invalid2.toml"));
-		let config3 = Args::parse_config(include_str!("./config.invalid3.toml"));
+		let config1 = Args::parse_config(include_str!("./tests/config.invalid1.toml"));
+		let config2 = Args::parse_config(include_str!("./tests/config.invalid2.toml"));
+		let config3 = Args::parse_config(include_str!("./tests/config.invalid3.toml"));
 
 		match (config1, config2, config3) {
 			(Err(ArgsError::Decode(_)), Err(ArgsError::Decode(_)), Err(ArgsError::Decode(_))) => {},
@@ -922,7 +922,7 @@ mod tests {
 
 	#[test]
 	fn should_deserialize_toml_file() {
-		let config: Config = toml::from_str(include_str!("./config.toml")).unwrap();
+		let config: Config = toml::from_str(include_str!("./tests/config.toml")).unwrap();
 
 		assert_eq!(config, Config {
 			parity: Some(Operating {
