@@ -251,7 +251,7 @@ macro_rules! usage {
 						.author("X X (get from macro)")
 						.about("XXX (get from macro)")
 						$(
-							.subcommand(SubCommand::with_name(&stringify!($subcommand).chars().skip(4).collect()))
+							.subcommand(SubCommand::with_name(&(stringify!($subcommand)[4..])))
 						)*
 						.args(&[
 							$(
@@ -265,7 +265,7 @@ macro_rules! usage {
 					raw_args.$field_u = matches.value_of(stringify!($field_u)).map(|x| String::from(x));
 				)*
 				$(
-					raw_args.$subcommand = matches.is_present(&stringify!($subcommand).chars().skip(4).collect());
+					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
 				)*
 
 				Ok(raw_args)
