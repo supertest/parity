@@ -260,7 +260,7 @@ macro_rules! usage {
 						])
 						.get_matches(); // @TODO or... error?
 
-				let raw_args : RawArgs = Default::default();
+				let mut raw_args : RawArgs = Default::default();
 				$(
 					raw_args.$field_u = matches.value_of(stringify!($field_u)).map(|x| String::from(x));
 				)*
