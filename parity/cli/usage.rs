@@ -119,7 +119,7 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub cmd_$subcommand: $typ_subcommand,
+				pub $subcommand: bool, /* @TODO hardcoded / remove :bool from the call */
 			)*
 
 			$(
@@ -143,7 +143,7 @@ macro_rules! usage {
 					)*
 
 					$(
-						cmd_$subcommand: Default::default(),
+						$subcommand: Default::default(),
 					)*
 
 					$(
@@ -165,7 +165,7 @@ macro_rules! usage {
 				$field_s: Option<$typ_s>,
 			)*
 			$(
-				cmd_$subcommand: Option<$typ_subcommand>,
+				$subcommand: bool,
 			)*
 			$(
 				$field_u: Option<$typ_u>,
@@ -235,7 +235,7 @@ macro_rules! usage {
 					args.$field_s = self.$field_s.or_else(|| $from_config_s(&config)).unwrap_or(None);
 				)*
 				$(
-					args.cmd_$subcommand = self.cmd_$subcommand;
+					args.$subcommand = self.$subcommand;
 				)*
 				$(
 					args.$field_u = self.$field_u.or_else(|| $from_config_u(&config)).unwrap_or_else(|| $default_u.into());
@@ -246,29 +246,29 @@ macro_rules! usage {
 
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, DocoptError> {
 
-				/*let matches = App::new("Parity (get from macro)")
+				let matches = App::new("Parity (get from macro)")
 						.version("0.1 (get from macro)")
 						.author("X X (get from macro)")
 						.about("XXX (get from macro)")
 						$(
-							.subcommand(SubCommand::with_name("$subcommand"))
+							.subcommand(SubCommand::with_name(&stringify!($subcommand).chars().skip(4).collect()))
 						)*
 						.args(&[
 							$(
 								Arg::from_usage($usage_u),
 							)*
 						])
-						.matches(); */
+						.get_matches(); // @TODO or... error?
 
-				let raw_args = Default::Default();
-			/*	$(
-					raw_args.$field_u = matches.value_of("$field_u");
+				let raw_args : RawArgs = Default::default();
+				$(
+					raw_args.$field_u = matches.value_of(stringify!($field_u)).map(|x| String::from(x));
 				)*
 				$(
-					raw_args.cmd_$subcommand = matches.value_of("$subcommand");
-				)* */
+					raw_args.$subcommand = matches.is_present(&stringify!($subcommand).chars().skip(4).collect());
+				)*
 
-				raw_args
+				Ok(raw_args)
 
 				// Docopt::new(Self::usage()).and_then(|d| d.argv(command).deserialize())
 
