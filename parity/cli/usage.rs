@@ -48,12 +48,23 @@ macro_rules! usage {
 				$field_s:ident : $typ_s:ty, display $default_s:expr, or $from_config_s:expr,
 			)*
 		}
+		{
+			$(
+				$subcommand:ident : $typ_subcommand:ty,
+			)*
+		}
+		{
+			$(
+				$field_u:ident : $typ_u:ty = $default_u:expr, or $from_config_u:expr, $usage_u:expr,
+			)*
+		}
 	) => {
 		use toml;
 		use std::{fs, io, process};
 		use std::io::{Read, Write};
 		use util::version;
 		use docopt::{Docopt, Error as DocoptError};
+		use clap::{Arg, App, SubCommand};
 		use helpers::replace_home;
 
 		#[derive(Debug)]
@@ -106,6 +117,14 @@ macro_rules! usage {
 			$(
 				pub $field_s: $typ_s,
 			)*
+
+			$(
+				pub cmd_$subcommand: $typ_subcommand,
+			)*
+
+			$(
+				pub $field_u: $typ_u,
+			)*
 		}
 
 		impl Default for Args {
@@ -122,6 +141,14 @@ macro_rules! usage {
 					$(
 						$field_s: Default::default(),
 					)*
+
+					$(
+						cmd_$subcommand: Default::default(),
+					)*
+
+					$(
+						$field_u: Default::default(),
+					)*
 				}
 			}
 		}
@@ -136,6 +163,12 @@ macro_rules! usage {
 			)*
 			$(
 				$field_s: Option<$typ_s>,
+			)*
+			$(
+				cmd_$subcommand: Option<$typ_subcommand>,
+			)*
+			$(
+				$field_u: Option<$typ_u>,
 			)*
 		}
 
@@ -201,27 +234,62 @@ macro_rules! usage {
 				$(
 					args.$field_s = self.$field_s.or_else(|| $from_config_s(&config)).unwrap_or(None);
 				)*
+				$(
+					args.cmd_$subcommand = self.cmd_$subcommand;
+				)*
+				$(
+					args.$field_u = self.$field_u.or_else(|| $from_config_u(&config)).unwrap_or_else(|| $default_u.into());
+				)*
+
 				args
 			}
 
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, DocoptError> {
-				Docopt::new(Self::usage()).and_then(|d| d.argv(command).deserialize())
+
+				/*let matches = App::new("Parity (get from macro)")
+						.version("0.1 (get from macro)")
+						.author("X X (get from macro)")
+						.about("XXX (get from macro)")
+						$(
+							.subcommand(SubCommand::with_name("$subcommand"))
+						)*
+						.args(&[
+							$(
+								Arg::from_usage($usage_u),
+							)*
+						])
+						.matches(); */
+
+				let raw_args = Default::Default();
+			/*	$(
+					raw_args.$field_u = matches.value_of("$field_u");
+				)*
+				$(
+					raw_args.cmd_$subcommand = matches.value_of("$subcommand");
+				)* */
+
+				raw_args
+
+				// Docopt::new(Self::usage()).and_then(|d| d.argv(command).deserialize())
+
+
+				
 			}
 
-			fn usage() -> String {
-				format!(
-					include_str!("./usage.txt"),
-					$(
-						$field={ let v: $typ = $default.into(); v },
-						// Uncomment this to debug
-						// "named argument never used" error
-						// $field = $default,
-					)*
-					$(
-						$field_s = $default_s,
-					)*
-				)
-			}
+			// fn usage() -> String {
+			// 	format!(
+			// 		include_str!("./usage.txt"),
+			// 		$(
+			// 			$field={ let v: $typ = $default.into(); v },
+			// 			// Uncomment this to debug
+			// 			// "named argument never used" error
+			// 			// $field = $default,
+			// 		)*
+			// 		$(
+			// 			$field_s = $default_s,
+			// 		)*
+			// 	)
+			// }
 		}
 	};
 }

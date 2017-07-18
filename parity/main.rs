@@ -26,6 +26,7 @@ extern crate ansi_term;
 extern crate app_dirs;
 extern crate ctrlc;
 extern crate docopt;
+extern crate clap;
 extern crate env_logger;
 extern crate fdlimit;
 extern crate futures;

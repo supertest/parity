@@ -20,29 +20,6 @@ use dir;
 
 usage! {
 	{
-		// Commands
-		cmd_daemon: bool,
-		cmd_wallet: bool,
-		cmd_account: bool,
-		cmd_new: bool,
-		cmd_list: bool,
-		cmd_export: bool,
-		cmd_blocks: bool,
-		cmd_state: bool,
-		cmd_import: bool,
-		cmd_signer: bool,
-		cmd_new_token: bool,
-		cmd_sign: bool,
-		cmd_reject: bool,
-		cmd_snapshot: bool,
-		cmd_restore: bool,
-		cmd_ui: bool,
-		cmd_dapp: bool,
-		cmd_tools: bool,
-		cmd_hash: bool,
-		cmd_kill: bool,
-		cmd_db: bool,
-
 		// Arguments
 		arg_pid_file: String,
 		arg_file: Option<String>,
@@ -82,8 +59,6 @@ usage! {
 		flag_no_config: bool,
 	}
 	{
-		// -- Operating Options
-		flag_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
 		flag_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
 		flag_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
 		flag_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
@@ -385,6 +360,42 @@ usage! {
 		flag_base_path: Option<String>, display dir::default_data_path(), or |c: &Config| otry!(c.parity).base_path.clone().map(Some),
 		flag_db_path: Option<String>, display dir::CHAINS_PATH, or |c: &Config| otry!(c.parity).db_path.clone().map(Some),
 		flag_warp: Option<bool>, display true, or |c: &Config| Some(otry!(c.network).warp.clone()),
+	}
+	{
+		// Commands with usage
+		daemon: bool,
+		wallet: bool,
+		account: bool,
+		new: bool,
+		list: bool,
+		export: bool,
+		blocks: bool,
+		state: bool,
+		import: bool,
+		signer: bool,
+		new_token: bool,
+		sign: bool,
+		reject: bool,
+		snapshot: bool,
+		restore: bool,
+		ui: bool,
+		dapp: bool,
+		tools: bool,
+		hash: bool,
+		kill: bool,
+		db: bool,
+	}
+	{
+		// Arguments with usage
+		// -- Operating Options
+		flag_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
+		"--mode MODE\
+			Set the operating mode. MODE can be one of:\
+				last - Uses the last-used mode, active if none.\
+				active - Parity continuously syncs the chain.\
+				passive - Parity syncs initially, then sleeps and wakes regularly to resync.\
+				dark - Parity syncs only when the RPC is active.\
+				offline - Parity doesn't sync. (default: {}).",
 	}
 }
 
