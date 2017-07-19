@@ -69,7 +69,6 @@ macro_rules! usage {
 		use std::io::{Read, Write};
 		use util::version;
 		use docopt::{Docopt, Error as DocoptError};
-		#[macro_use]
 		use clap::{Arg, App, SubCommand};
 		use helpers::replace_home;
 
@@ -285,7 +284,7 @@ macro_rules! usage {
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
-					raw_args.$field_u = value_t!(matches.value_of(stringify!($field_u)), $typ_u);
+					raw_args.$field_u = value_t!(matches, stringify!($field_u), $typ_u).ok();
 				)*
 				$(
 					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
