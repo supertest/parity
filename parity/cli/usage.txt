@@ -22,59 +22,19 @@ Usage:
   parity db kill [options]
 
 Operating Options:
-  --mode MODE                      Set the operating mode. MODE can be one of:
-                                   last - Uses the last-used mode, active if none.
-                                   active - Parity continuously syncs the chain.
-                                   passive - Parity syncs initially, then sleeps and
-                                   wakes regularly to resync.
-                                   dark - Parity syncs only when the RPC is active.
-                                   offline - Parity doesn't sync. (default: {flag_mode}).
-  --mode-timeout SECS              Specify the number of seconds before inactivity
-                                   timeout occurs when mode is dark or passive
-                                   (default: {flag_mode_timeout}).
-  --mode-alarm SECS                Specify the number of seconds before auto sleep
-                                   reawake timeout occurs when mode is passive
-                                   (default: {flag_mode_alarm}).
-  --auto-update SET                Set a releases set to automatically update and
-                                   install.
-                                   all - All updates in the our release track.
-                                   critical - Only consensus/security updates.
-                                   none - No updates will be auto-installed.
-                                   (default: {flag_auto_update}).
-  --release-track TRACK            Set which release track we should use for updates.
-                                   stable - Stable releases.
-                                   beta - Beta releases.
-                                   nightly - Nightly releases (unstable).
-                                   testing - Testing releases (do not use).
-                                   current - Whatever track this executable was
-                                   released on (default: {flag_release_track}).
-  --public-node                    Start Parity as a public web server. Account storage
-                                   and transaction signing will be delegated to the UI.
-                                   (default: {flag_public_node}).
-  --no-download                    Normally new releases will be downloaded ready for
-                                   updating. This disables it. Not recommended.
-                                   (default: {flag_no_download}).
-  --no-consensus                   Force the binary to run even if there are known
-                                   issues regarding consensus. Not recommended.
-                                   (default: {flag_no_consensus}).
-  --force-direct                   Run the originally installed version of Parity,
-                                   ignoring any updates that have since been installed.
-  --chain CHAIN                    Specify the blockchain type. CHAIN may be either a
-                                   JSON chain specification file or olympic, frontier,
-                                   homestead, mainnet, morden, ropsten, classic, expanse,
-                                   testnet, kovan or dev (default: {flag_chain}).
-  -d --base-path PATH              Specify the base data storage path.
-                                   (default: {flag_base_path}).
-  --db-path PATH                   Specify the database directory path
-                                   (default: {flag_db_path}).
-  --keys-path PATH                 Specify the path for JSON key files to be found
-                                   (default: {flag_keys_path}).
-  --identity NAME                  Specify your node's name. (default: {flag_identity})
-  --light                          Experimental: run in light client mode. Light clients
-                                   synchronize a bare minimum of data and fetch necessary
-                                   data on-demand from the network. Much lower in storage,
-                                   potentially higher in bandwidth. Has no effect with
-                                   subcommands (default: {flag_light}).
+  
+
+  
+
+  "--force-direct [[PARSED BEFORE CLAP]]
+    'Run the originally installed version of Parity, ignoring any updates that have since been installed.'"
+
+  "-d --base-path PATH
+    'Specify the base data storage path.'"
+
+  "--db-path PATH
+    'Specify the database directory path'"
+
 
 Convenience Options:
   -c --config CONFIG               Specify a filename containing a configuration file.
@@ -333,9 +293,6 @@ Sealing/Mining Options:
                                    execution time limit. Also number of offending actions
                                    have to reach the threshold within that time.
                                    (default: {flag_tx_queue_ban_time} seconds)
-  --no-persistent-txqueue          Don't save pending local transactions to disk to be
-                                   restored whenever the node restarts.
-                                   (default: {flag_no_persistent_txqueue}).
   --remove-solved                  Move solved blocks from the work package queue
                                    instead of cloning them. This gives a slightly
                                    faster import speed, but means that extra solutions

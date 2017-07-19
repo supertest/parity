@@ -244,7 +244,7 @@ macro_rules! usage {
 				args
 			}
 
-			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, DocoptError> {
+			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, DocoptError> { // TODO not DocoptError
 
 				let matches = App::new("Parity (get from macro)")
 						.version("0.1 (get from macro)")
@@ -268,12 +268,7 @@ macro_rules! usage {
 					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
 				)*
 
-				Ok(raw_args)
-
-				// Docopt::new(Self::usage()).and_then(|d| d.argv(command).deserialize())
-
-
-				
+				Ok(raw_args)				
 			}
 
 			// fn usage() -> String {
