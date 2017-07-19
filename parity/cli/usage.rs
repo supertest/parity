@@ -58,12 +58,18 @@ macro_rules! usage {
 				$field_u:ident : $typ_u:ty = $default_u:expr, or $from_config_u:expr, $usage_u:expr,
 			)*
 		}
+		{
+			$(
+				$field_flag_u:ident : $typ_flag_u:ty = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
+			)*
+		}
 	) => {
 		use toml;
 		use std::{fs, io, process};
 		use std::io::{Read, Write};
 		use util::version;
 		use docopt::{Docopt, Error as DocoptError};
+		#[macro_use]
 		use clap::{Arg, App, SubCommand};
 		use helpers::replace_home;
 
@@ -125,6 +131,10 @@ macro_rules! usage {
 			$(
 				pub $field_u: $typ_u,
 			)*
+
+			$(
+				pub $field_flag_u: $typ_flag_u,
+			)*
 		}
 
 		impl Default for Args {
@@ -149,6 +159,10 @@ macro_rules! usage {
 					$(
 						$field_u: Default::default(),
 					)*
+
+					$(
+						$field_flag_u: Default::default(),
+					)*
 				}
 			}
 		}
@@ -165,10 +179,13 @@ macro_rules! usage {
 				$field_s: Option<$typ_s>,
 			)*
 			$(
-				$subcommand: bool,
+				$subcommand: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
 			)*
 			$(
 				$field_u: Option<$typ_u>,
+			)*
+			$(
+				$field_flag_u: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
 			)*
 		}
 
@@ -240,6 +257,12 @@ macro_rules! usage {
 				$(
 					args.$field_u = self.$field_u.or_else(|| $from_config_u(&config)).unwrap_or_else(|| $default_u.into());
 				)*
+				$(
+					// args.$field_flag_u = self.$field_flag_u.or_else(|| $from_config_flag_u(&config)).unwrap_or_else(|| $default_flag_u.into());
+
+					// Presence of CLI switch || config || default
+					args.$field_flag_u = self.$field_flag_u || $from_config_flag_u(&config).unwrap_or_else(|| $default_flag_u.into());
+				)*
 
 				args
 			}
@@ -262,10 +285,13 @@ macro_rules! usage {
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
-					raw_args.$field_u = matches.value_of(stringify!($field_u)).map(|x| String::from(x));
+					raw_args.$field_u = value_t!(matches.value_of(stringify!($field_u)), $typ_u);
 				)*
 				$(
 					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
+				)*
+				$(
+					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
 				)*
 
 				Ok(raw_args)				

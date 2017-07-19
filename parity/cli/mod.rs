@@ -342,12 +342,14 @@ usage! {
 		flag_dapps_apis_all: Option<bool> = None, or |_| None,
 	}
 	{
-		// Values with optional default value.
+		// Values with optional default value. (@TODO prune? merge with the other block?)
 		flag_base_path: Option<String>, display dir::default_data_path(), or |c: &Config| otry!(c.parity).base_path.clone().map(Some),
 		flag_db_path: Option<String>, display dir::CHAINS_PATH, or |c: &Config| otry!(c.parity).db_path.clone().map(Some),
 		flag_warp: Option<bool>, display true, or |c: &Config| Some(otry!(c.network).warp.clone()),
 	}
 	{
+		// CLI subcommands
+		// Identifiersmust start with cmd_
 		cmd_daemon: bool,
 		cmd_wallet: bool,
 		cmd_account: bool,
@@ -371,7 +373,8 @@ usage! {
 		cmd_db: bool,
 	}
 	{
-		// Arguments with usage
+		// Arguments that can be set from CLI flags
+		// For each argument, provide default value, config value and CLI usage
 
 		// -- Operating Options
 		flag_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
@@ -389,7 +392,7 @@ usage! {
 
 		flag_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
 		"--mode-alarm SECS
-			'Specify the number of seconds before auto sleep reawake timeout occurs when mode is passive'"
+			'Specify the number of seconds before auto sleep reawake timeout occurs when mode is passive'",
 
 		flag_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
 		"--auto-update SET
@@ -407,18 +410,6 @@ usage! {
 				testing - Testing releases (do not use).
 				current - Whatever track this executable was released on'",
 
-		flag_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
-		"--public-node
-			'Start Parity as a public web server. Account storage and transaction signing will be delegated to the UI.'"
-		
-		flag_no_download: bool = false, or |c: &Config| otry!(c.parity).no_download.clone(),
-		"--no-download
-			'Normally new releases will be downloaded ready for updating. This disables it. Not recommended.'",
-
-		flag_no_consensus: bool = false, or |c: &Config| otry!(c.parity).no_consensus.clone(),
-		"--no-consensus
-    		'Force the binary to run even if there are known issues regarding consensus. Not recommended.'",
-
 		flag_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
 		"--chain CHAIN
     		'Specify the blockchain type. CHAIN may be either a JSON chain specification file or olympic, frontier, homestead, mainnet, morden, ropsten, classic, expanse, testnet, kovan or dev.'",
@@ -430,6 +421,23 @@ usage! {
 		flag_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
 		"--identity NAME
     		'Specify your node's name.'",
+	}
+	{
+		// Flags (i.e. switches) that can be set from the CLI
+		// For each flag, provide default value, config value and CLI usage
+		// Identifiers must start with flag_
+
+		flag_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
+		"--public-node
+			'Start Parity as a public web server. Account storage and transaction signing will be delegated to the UI.'",
+		
+		flag_no_download: bool = false, or |c: &Config| otry!(c.parity).no_download.clone(),
+		"--no-download
+			'Normally new releases will be downloaded ready for updating. This disables it. Not recommended.'",
+
+		flag_no_consensus: bool = false, or |c: &Config| otry!(c.parity).no_consensus.clone(),
+		"--no-consensus
+    		'Force the binary to run even if there are known issues regarding consensus. Not recommended.'",
 
 		flag_light: bool = false, or |c: &Config| otry!(c.parity).light,
 		"--light
