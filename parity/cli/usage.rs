@@ -69,12 +69,12 @@ macro_rules! usage {
 		use std::io::{Read, Write};
 		use util::version;
 		use docopt::{Docopt, Error as DocoptError};
-		use clap::{Arg, App, SubCommand};
+		use clap::{Arg, App, SubCommand, Error as ClapError};
 		use helpers::replace_home;
 
 		#[derive(Debug)]
 		pub enum ArgsError {
-			Docopt(DocoptError),
+			Clap(ClapError),
 			Decode(toml::de::Error),
 			Config(String, io::Error),
 		}
@@ -82,7 +82,7 @@ macro_rules! usage {
 		impl ArgsError {
 			pub fn exit(self) -> ! {
 				match self {
-					ArgsError::Docopt(e) => e.exit(),
+					ArgsError::Clap(e) => e.exit(),
 					ArgsError::Decode(e) => {
 						println_stderr!("You might have supplied invalid parameters in config file.");
 						println_stderr!("{}", e);
@@ -97,9 +97,9 @@ macro_rules! usage {
 			}
 		}
 
-		impl From<DocoptError> for ArgsError {
-			fn from(e: DocoptError) -> Self {
-				ArgsError::Docopt(e)
+		impl From<ClapError> for ArgsError {
+			fn from(e: ClapError) -> Self {
+				ArgsError::Clap(e)
 			}
 		}
 
@@ -226,7 +226,7 @@ macro_rules! usage {
 
 			#[cfg(test)]
 			fn parse_with_config<S: AsRef<str>>(command: &[S], config: Config) -> Result<Self, ArgsError> {
-				RawArgs::parse(command).map(|raw| raw.into_args(config)).map_err(ArgsError::Docopt)
+				RawArgs::parse(command).map(|raw| raw.into_args(config)).map_err(ArgsError::Docopt) // @TODO
 			}
 
 			fn parse_config(config: &str) -> Result<Config, ArgsError> {
@@ -266,7 +266,7 @@ macro_rules! usage {
 				args
 			}
 
-			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, DocoptError> { // TODO not DocoptError
+			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				let matches = App::new("Parity (get from macro)")
 						.version("0.1 (get from macro)")
@@ -280,7 +280,7 @@ macro_rules! usage {
 								Arg::from_usage($usage_u),
 							)*
 						])
-						.get_matches(); // @TODO or... error?
+						.get_matches_safe()?;
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
