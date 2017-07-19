@@ -226,7 +226,7 @@ macro_rules! usage {
 
 			#[cfg(test)]
 			fn parse_with_config<S: AsRef<str>>(command: &[S], config: Config) -> Result<Self, ArgsError> {
-				RawArgs::parse(command).map(|raw| raw.into_args(config)).map_err(ArgsError::Docopt) // @TODO
+				RawArgs::parse(command).map(|raw| raw.into_args(config)).map_err(ArgsError::Clap)
 			}
 
 			fn parse_config(config: &str) -> Result<Config, ArgsError> {
@@ -268,14 +268,13 @@ macro_rules! usage {
 
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
-				let matches = App::new("Parity (get from macro)")
+				let matches = App::new("Parity")
 				    	.setting(AppSettings::VersionlessSubcommands)
 						.arg(Arg::with_name("version")
-							.short("V") // congruent with docopt previous version? TODO
+							.short("v")
 							.long("version")
 							.help(&Args::print_version()))
-						.author("X X (get from macro)")
-						.about("XXX (get from macro)")
+						.about(include_str!("./about.txt"))
 						$(
 							.subcommand(SubCommand::with_name(&(stringify!($subcommand)[4..])))
 						)*
