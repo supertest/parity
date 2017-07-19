@@ -69,7 +69,7 @@ macro_rules! usage {
 		use std::io::{Read, Write};
 		use util::version;
 		use docopt::{Docopt, Error as DocoptError};
-		use clap::{Arg, App, SubCommand, Error as ClapError};
+		use clap::{Arg, App, SubCommand, AppSettings, Error as ClapError};
 		use helpers::replace_home;
 
 		#[derive(Debug)]
@@ -269,7 +269,11 @@ macro_rules! usage {
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				let matches = App::new("Parity (get from macro)")
-						.version("0.1 (get from macro)")
+				    	.setting(AppSettings::VersionlessSubcommands)
+						.arg(Arg::with_name("version")
+							.short("V") // congruent with docopt previous version? TODO
+							.long("version")
+							.help(&Args::print_version()))
 						.author("X X (get from macro)")
 						.about("XXX (get from macro)")
 						$(
@@ -295,21 +299,6 @@ macro_rules! usage {
 
 				Ok(raw_args)				
 			}
-
-			// fn usage() -> String {
-			// 	format!(
-			// 		include_str!("./usage.txt"),
-			// 		$(
-			// 			$field={ let v: $typ = $default.into(); v },
-			// 			// Uncomment this to debug
-			// 			// "named argument never used" error
-			// 			// $field = $default,
-			// 		)*
-			// 		$(
-			// 			$field_s = $default_s,
-			// 		)*
-			// 	)
-			// }
 		}
 	};
 }
