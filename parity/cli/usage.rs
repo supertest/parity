@@ -293,7 +293,7 @@ macro_rules! usage {
 					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
 				)*
 				$(
-					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
+					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[4..]));
 				)*
 
 				Ok(raw_args)				
