@@ -348,11 +348,13 @@ usage! {
 
 		cmd_daemon: bool
 		{
+			ARG
 			arg_pid_file: String, |&arg: Arg| arg.index(2).required(true),
 		}
 
 		cmd_wallet: bool
 		{
+			SSC
 			cmd_import: bool
 			{
 				arg_path: String, |&arg: Arg| arg.required(true).index(3),
@@ -362,25 +364,30 @@ usage! {
 
 		cmd_account: bool
 		{
+			SSC
 			cmd_new: bool
 			{}
 
+			SSC
 			cmd_list: bool
 			{}
 
+			SSC
 			cmd_import: bool
 			{
 				arg_path: Vec<String>, |&arg: Arg| arg.required(true).index(3).multiple(true),
 			}
 		}
 
-		cmd_export: bool, // evtl: |&sc: SubCommand| sc.about("blablabla")
+		cmd_export: bool // evtl: |&sc: SubCommand| sc.about("blablabla")
 		{
+			SSC
 			cmd_blocks: bool
 			{
 				arg_file: String, |&arg: Arg| arg.about("blablabla").index(3),
 			}
 
+			SSC
 			cmd_state: bool
 			{
 				arg_file: String, |&arg: Arg| arg.about("blablabla").index(3),
@@ -389,23 +396,28 @@ usage! {
 		
 		cmd_import: bool // todo already subsubcommand named import
 		{
+			ARG
 			arg_file: String, |&arg: Arg| arg.index(2),
 		}
 
 		cmd_signer: bool
 		{
+			SSC
 			cmd_new_token: bool
 			{}
 
+			SSC
 			cmd_list: bool
 			{}
 
+			SSC
 			cmd_sign: bool
 			{
 				arg_id: Option<usize>, |&arg: Arg| arg.index(3),
 				arg_password: String, |&arg: Arg| arg.value_name("FILE"),
 			} // option ou string?
 
+			SSC
 			cmd_reject: bool
 			{
 				arg_id: Option<usize>, |&arg: Arg| arg.index(3),
@@ -414,33 +426,40 @@ usage! {
 
 		cmd_snapshot: bool
 		{
+			ARG
 			arg_file: Option<String>, |&arg: Arg| arg.required(true).index(2),
 		}
 
 		cmd_restore: bool
 		{
+			ARG
 			arg_file: Option<String>, |&arg: Arg| arg.index(2),
 		}
 
 		cmd_ui: bool
-		{}
+		{
+		}
 		
 		cmd_dapp: bool
 		{
+			ARG
 			arg_path: Vec<String>, |&arg: Arg| arg.index(2).required(true),
 		}
 
 		cmd_tools: bool
 		{
+			SSC
 			cmd_hash: bool
 			{
 				arg_file: Option<String>, |&arg: Arg| arg.required(true).index(3),
 			}
 		}
 		
-		cmd_db: bool,
+		cmd_db: bool
 		{
+			SSC
 			cmd_kill: Vec<String>
+			{}
 		}
 	}
 	{
@@ -448,7 +467,7 @@ usage! {
 		// For each argument, provide default value, config value and CLI usage
 
 		// -- Operating Options
-		arg_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
+		flag_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
 		"--mode MODE\
 			'Set the operating mode. MODE can be one of:\
 				last - Uses the last-used mode, active if none.\
@@ -457,22 +476,22 @@ usage! {
 				dark - Parity syncs only when the RPC is active.\
 				offline - Parity doesn't sync.'",
 
-		arg_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
+		flag_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
 		"--mode-timeout SECS
 			'Specify the number of seconds before inactivity timeout occurs when mode is dark or passive'",
 
-		arg_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
+		flag_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
 		"--mode-alarm SECS
 			'Specify the number of seconds before auto sleep reawake timeout occurs when mode is passive'",
 
-		arg_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
+		flag_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
 		"--auto-update SET
 			'Set a releases set to automatically update and install.
 				all - All updates in the our release track.
 				critical - Only consensus/security updates.
 				none - No updates will be auto-installed.'",
 
-		arg_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
+		flag_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
 		"--release-track TRACK
 			'Set which release track we should use for updates.
 				stable - Stable releases.
@@ -481,41 +500,41 @@ usage! {
 				testing - Testing releases (do not use).
 				current - Whatever track this executable was released on'",
 
-		arg_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
+		flag_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
 		"--chain CHAIN
     		'Specify the blockchain type. CHAIN may be either a JSON chain specification file or olympic, frontier, homestead, mainnet, morden, ropsten, classic, expanse, testnet, kovan or dev.'",
 
-		arg_keys_path: String = "$BASE/keys", or |c: &Config| otry!(c.parity).keys_path.clone(),
+		flag_keys_path: String = "$BASE/keys", or |c: &Config| otry!(c.parity).keys_path.clone(),
 		"--keys-path PATH
 			'Specify the path for JSON key files to be found'",
 
-		arg_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
+		flag_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
 		"--identity NAME
     		'Specify your node's name.'",
 	}
 	{
 		// Flags (i.e. switches) that can be set from the CLI
 		// For each flag, provide default value, config value and CLI usage
-		// Identifiers must start with arg_
+		// Identifiers must start with flag_
 
-		arg_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
+		flag_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
 		"--public-node
 			'Start Parity as a public web server. Account storage and transaction signing will be delegated to the UI.'",
 		
-		arg_no_download: bool = false, or |c: &Config| otry!(c.parity).no_download.clone(),
+		flag_no_download: bool = false, or |c: &Config| otry!(c.parity).no_download.clone(),
 		"--no-download
 			'Normally new releases will be downloaded ready for updating. This disables it. Not recommended.'",
 
-		arg_no_consensus: bool = false, or |c: &Config| otry!(c.parity).no_consensus.clone(),
+		flag_no_consensus: bool = false, or |c: &Config| otry!(c.parity).no_consensus.clone(),
 		"--no-consensus
     		'Force the binary to run even if there are known issues regarding consensus. Not recommended.'",
 
-		arg_light: bool = false, or |c: &Config| otry!(c.parity).light,
+		flag_light: bool = false, or |c: &Config| otry!(c.parity).light,
 		"--light
     		'Experimental: run in light client mode. Light clients synchronize a bare minimum of data and fetch necessary data on-demand from the network. Much lower in storage, potentially higher in bandwidth. Has no effect with subcommands.'",
 
 		// -- Sealing/Mining Options
-		arg_no_persistent_txqueue: bool = false,
+		flag_no_persistent_txqueue: bool = false,
 			or |c: &Config| otry!(c.parity).no_persistent_txqueue,
 		"--no-persistent-txqueue
 			'Don't save pending local transactions to disk to be restored whenever the node restarts.'",

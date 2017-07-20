@@ -50,7 +50,23 @@ macro_rules! usage {
 		}
 		{
 			$(
-				$subcommand:ident : $typ_subcommand:ty,
+				$subcommand:ident : $typ_subcommand:ty
+				{
+					$(
+						SSC
+						$subsubcommand:ident : $typ_subsubcommand:ty
+						{
+							$(
+								$subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $subsubcommand_clap_callback:expr,
+							)*
+						}
+					)*
+
+					$(
+						ARG
+						$subcommand_arg:ident : $typ_subcommand_arg:ty, $subcommand_arg_clap_callback:expr,
+					)*
+				}
 			)*
 		}
 		{
@@ -293,7 +309,7 @@ macro_rules! usage {
 					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
 				)*
 				$(
-					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[4..]));
+					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
 				)*
 
 				Ok(raw_args)				
