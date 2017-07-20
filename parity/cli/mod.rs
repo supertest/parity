@@ -349,7 +349,7 @@ usage! {
 		cmd_daemon: bool
 		{
 			ARG
-			arg_pid_file: String, |&arg: Arg| arg.index(2).required(true),
+			arg_pid_file: String, |arg: Arg| arg.index(2).required(true),
 		}
 
 		cmd_wallet: bool
@@ -357,8 +357,8 @@ usage! {
 			SSC
 			cmd_import: bool
 			{
-				arg_path: String, |&arg: Arg| arg.required(true).index(3),
-				arg_password: String, |&arg: Arg| arg.required(true).value_name("FILE"),
+				arg_path: String, |arg: Arg| arg.required(true).index(3),
+				arg_password: String, |arg: Arg| arg.required(true).value_name("FILE"),
 			}
 		}
 
@@ -375,29 +375,29 @@ usage! {
 			SSC
 			cmd_import: bool
 			{
-				arg_path: Vec<String>, |&arg: Arg| arg.required(true).index(3).multiple(true),
+				arg_path: Vec<String>, |arg: Arg| arg.required(true).index(3).multiple(true),
 			}
 		}
 
-		cmd_export: bool // evtl: |&sc: SubCommand| sc.about("blablabla")
+		cmd_export: bool // evtl: |&sc: SubCommand| sc.help("blablabla")
 		{
 			SSC
 			cmd_blocks: bool
 			{
-				arg_file: String, |&arg: Arg| arg.about("blablabla").index(3),
+				arg_file: String, |arg: Arg| arg.index(3),
 			}
 
 			SSC
 			cmd_state: bool
 			{
-				arg_file: String, |&arg: Arg| arg.about("blablabla").index(3),
+				arg_file: String, |arg: Arg| arg.index(3),
 			}
 		}
 		
 		cmd_import: bool // todo already subsubcommand named import
 		{
 			ARG
-			arg_file: String, |&arg: Arg| arg.index(2),
+			arg_file: String, |arg: Arg| arg.index(2),
 		}
 
 		cmd_signer: bool
@@ -413,27 +413,27 @@ usage! {
 			SSC
 			cmd_sign: bool
 			{
-				arg_id: Option<usize>, |&arg: Arg| arg.index(3),
-				arg_password: String, |&arg: Arg| arg.value_name("FILE"),
+				arg_id: Option<usize>, |arg: Arg| arg.index(3),
+				arg_password: String, |arg: Arg| arg.value_name("FILE"),
 			} // option ou string?
 
 			SSC
 			cmd_reject: bool
 			{
-				arg_id: Option<usize>, |&arg: Arg| arg.index(3),
+				arg_id: Option<usize>, |arg: Arg| arg.index(3),
 			}
 		}
 
 		cmd_snapshot: bool
 		{
 			ARG
-			arg_file: Option<String>, |&arg: Arg| arg.required(true).index(2),
+			arg_file: Option<String>, |arg: Arg| arg.required(true).index(2),
 		}
 
 		cmd_restore: bool
 		{
 			ARG
-			arg_file: Option<String>, |&arg: Arg| arg.index(2),
+			arg_file: Option<String>, |arg: Arg| arg.index(2),
 		}
 
 		cmd_ui: bool
@@ -443,7 +443,7 @@ usage! {
 		cmd_dapp: bool
 		{
 			ARG
-			arg_path: Vec<String>, |&arg: Arg| arg.index(2).required(true),
+			arg_path: Vec<String>, |arg: Arg| arg.index(2).required(true),
 		}
 
 		cmd_tools: bool
@@ -451,7 +451,7 @@ usage! {
 			SSC
 			cmd_hash: bool
 			{
-				arg_file: Option<String>, |&arg: Arg| arg.required(true).index(3),
+				arg_file: Option<String>, |arg: Arg| arg.required(true).index(3),
 			}
 		}
 		

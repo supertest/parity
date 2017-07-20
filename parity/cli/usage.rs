@@ -57,7 +57,7 @@ macro_rules! usage {
 						$subsubcommand:ident : $typ_subsubcommand:ty
 						{
 							$(
-								$subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $subsubcommand_clap_callback:expr,
+								$subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $subsubcommand_arg_clap_callback:expr,
 							)*
 						}
 					)*
@@ -141,6 +141,16 @@ macro_rules! usage {
 
 			$(
 				pub $subcommand: bool, /* @TODO hardcoded / remove :bool from the call */
+
+				$(
+					$(
+						pub $subsubcommand_arg: $typ_subsubcommand_arg,
+					)*
+				)*
+
+				$(
+					pub $subcommand_arg: $typ_subcommand_arg,
+				)*
 			)*
 
 			$(
@@ -292,7 +302,21 @@ macro_rules! usage {
 							.help(&Args::print_version()))
 						.about(include_str!("./usage_header.txt"))
 						$(
-							.subcommand(SubCommand::with_name(&(stringify!($subcommand)[4..])))
+							.subcommand(
+								SubCommand::with_name(&(stringify!($subcommand)[4..]))
+								$(
+									.subcommand(
+										SubCommand::with_name(&(stringify!($subsubcommand)[4..]))
+										$(
+											.arg($subsubcommand_arg_clap_callback(Arg::with_name(&(stringify!($subsubcommand_arg)[4..]))))
+										)*
+									)
+								)*
+								$(
+									.arg($subcommand_arg_clap_callback(Arg::with_name(&(stringify!($subcommand_arg)[4..]))))
+								)*
+							)
+							// todo foreach subsubcommand etc
 						)*
 						.args(&[
 							$(
@@ -307,6 +331,10 @@ macro_rules! usage {
 				)*
 				$(
 					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
+					// for each subsubcommand, hydrate subsubcommand TODO
+						// for each subsubcommand_arg, hydrate
+
+					// for each subcommand_arg, hydrate
 				)*
 				$(
 					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
