@@ -3,22 +3,22 @@ Parity. Ethereum Client.
   Copyright 2015, 2016, 2017 Parity Technologies (UK) Ltd
 
 Usage:
-  parity [options]
-  parity ui [options]
-  parity dapp <path> [options]
-  parity daemon <pid-file> [options]
-  parity account (new | list ) [options]
-  parity account import <path>... [options]
-  parity wallet import <path> --password FILE [options]
-  parity import [ <file> ] [options]
-  parity export (blocks | state) [ <file> ] [options]
-  parity signer new-token [options]
-  parity signer list [options]
-  parity signer sign [ <id> ] [ --password FILE ] [options]
-  parity signer reject <id> [options]
-  parity snapshot <file> [options]
-  parity restore [ <file> ] [options]
-  parity tools hash <file>
+  parity [options] OK
+  parity ui [options] OK
+  parity dapp <path> [options] OK
+  parity daemon <pid-file> [options] OK
+  parity account (new | list ) [options] OK
+  parity account import <path>... [options] OK
+  parity wallet import <path> --password FILE [options] OK
+  parity import [ <file> ] [options] OK
+  parity export (blocks | state) [ <file> ] [options] OK
+  parity signer new-token [options] OK
+  parity signer list [options] OK
+  parity signer sign [ <id> ] [ --password FILE ] [options] OK
+  parity signer reject <id> [options] OK
+  parity snapshot <file> [options] OK
+  parity restore [ <file> ] [options] OK
+  parity tools hash <file> OK
   parity db kill [options]
 
 parity daemon <pid-file> [options]

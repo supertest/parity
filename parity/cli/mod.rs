@@ -20,11 +20,6 @@ use dir;
 
 usage! {
 	{
-		// Arguments
-		arg_pid_file: String,
-		arg_file: Option<String>,
-		arg_path: Vec<String>,
-		arg_id: Option<usize>,
 
 		// Flags
 		// -- Legacy Options
@@ -349,28 +344,88 @@ usage! {
 	}
 	{
 		// CLI subcommands
-		// Identifiersmust start with cmd_
-		cmd_daemon: bool,
-		cmd_wallet: bool,
-		cmd_account: bool,
-		cmd_new: bool,
-		cmd_list: bool,
-		cmd_export: bool,
-		cmd_blocks: bool,
-		cmd_state: bool,
-		cmd_import: bool,
-		cmd_signer: bool,
-		cmd_new_token: bool,
-		cmd_sign: bool,
-		cmd_reject: bool,
-		cmd_snapshot: bool,
-		cmd_restore: bool,
-		cmd_ui: bool,
-		cmd_dapp: bool,
-		cmd_tools: bool,
-		cmd_hash: bool,
-		cmd_kill: bool,
-		cmd_db: bool,
+		// Identifiers must start with cmd_
+
+		cmd_daemon: bool, SubCommand::with_name("daemon").arg(Arg::with_name("pid-file").index(2).required(true))
+		{}
+		{
+			arg_pid_file: String,
+		}
+
+		cmd_wallet: bool, SubCommand::with_name("wallet").subcommand(SubCommand::with_name("import").arg(Arg::with_name("path").required(true).index(3)).arg(Arg::with_name("password"),required(true).value_name("FILE")))
+		{
+			cmd_import: bool,
+		}
+		{
+			arg_password: String,
+		}
+
+		cmd_account: bool, SubCommand::with_name("account").subcommand(SubCommand::with_name("new")).subcommand(SubCommand::with_name("list").subcommand(SubCommand::with_name("import").arg(Arg::with_name("path").required(true).index(3).multiple(true))))
+		{
+			// les autres subcommands...
+			arg_path: Vec<String>,
+		}
+
+		cmd_export: bool, SubCommand::with_name("export").subcommand(SubCommand::with_name("blocks").arg(Arg::with_name("file").index(3))).subcommand(SubCommand::with_name("state").arg(Arg::with_name("file").index(3)))
+		{
+			cmd_blocks: bool,
+			cmd_state: bool,
+		}
+		{
+			arg_file: String,
+		}
+		
+		cmd_import: bool, SubCommand::with_name("import").arg(Arg::with_name("file").index(2)) // todo already subsubcommand named import
+		{}
+		{
+			arg_file: String,
+		}
+
+		cmd_signer: bool, SubCommand::with_name("signer").subcommand(SubCommand::with_name("new-token")).subcommand(SubCommand::with_name("list")).subcommand(SubCommand::with_name("sign").arg(Arg::with_name("id").index(3)).arg(Arg::with_name("password").value_name("FILE")).subcommand(SubCommand::with_name("reject").arg(Arg::with_name("id").index(3)))
+		{
+			cmd_new_token: bool,
+			cmd_list: bool,
+		}
+		{
+			arg_file: Option<String>,
+			arg_id: Option<usize>,
+		}
+
+		cmd_snapshot: bool, SubCommand::with_name("snapshot").arg(Arg::with_name("file").required(true).index(2))
+		{}
+		{
+			arg_file: Option<String>,
+		}
+
+		cmd_restore: bool, SubCommand::with_name("restore").arg(Arg::with_name("file").index(2))
+		{}
+		{
+			arg_file: Option<String>,
+		}
+
+		cmd_ui: bool, SubCommand::with_name("ui"),
+		{}
+		{}
+		
+		cmd_dapp: bool, SubCommand::with_name("dapp").arg(Arg::with_name("path").index(2).required(true))
+		{}
+		{
+			arg_path: Vec<String>,
+		}
+
+		cmd_tools: bool, SubCommand::with_name("tools").subcommand(SubCommand::with_name("hash").arg(Arg::with_name("file").required(true).index(3)))
+		{
+			cmd_hash: bool,
+		}
+		{
+			arg_file: Option<String>,
+		}
+		
+		cmd_db: bool, SubCommand::with_name("account").subcommand(SubCommand::with_name("new")).subcommand(SubCommand::with_name("list").subcommand(SubCommand::with_name("import").arg(Arg::with_name("path").required(true).index(3).multiple(true))))
+		{
+			cmd_kill: Vec<String>,
+		}
+		{}
 	}
 	{
 		// Arguments that can be set from CLI flags

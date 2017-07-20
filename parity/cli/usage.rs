@@ -82,7 +82,7 @@ macro_rules! usage {
 		impl ArgsError {
 			pub fn exit(self) -> ! {
 				match self {
-					ArgsError::Clap(e) => e.exit(),
+					ArgsError::Clap(e) => e.exit(), // TODO PRINT ?
 					ArgsError::Decode(e) => {
 						println_stderr!("You might have supplied invalid parameters in config file.");
 						println_stderr!("{}", e);
@@ -274,7 +274,7 @@ macro_rules! usage {
 							.short("v")
 							.long("version")
 							.help(&Args::print_version()))
-						.about(include_str!("./about.txt"))
+						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(SubCommand::with_name(&(stringify!($subcommand)[4..])))
 						)*
