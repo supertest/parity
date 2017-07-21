@@ -357,7 +357,7 @@ usage! {
 			SSC
 			cmd_import: bool
 			{
-				arg_path: String, |arg: Arg| arg.required(true).index(3),
+				arg_path: Vec<String>, |arg: Arg| arg.required(true).index(3), // setting it to Vec<String> so that it's the same everywhere
 				arg_password: String, |arg: Arg| arg.required(true).value_name("FILE"),
 			}
 		}
