@@ -381,13 +381,13 @@ usage! {
 
 			CMD state: bool
 			{
-				ARG file: String, |arg: Arg| arg.index(3),
+				^ARG file, |arg: Arg| arg.index(3),
 			}
 		}
 		
 		CMD import: bool // todo already subsubcommand named import
 		{
-			ARG file: String, |arg: Arg| arg.index(2),
+			^ARG file, |arg: Arg| arg.index(2),
 		}
 
 		CMD signer: bool
@@ -399,37 +399,37 @@ usage! {
 			CMD sign: bool
 			{
 				ARG id: usize, |arg: Arg| arg.index(3),
-				ARG password: String, |arg: Arg| arg.value_name("FILE"),
+				^ARG password, |arg: Arg| arg.value_name("FILE"),
 			}
 
 			CMD reject: bool
 			{
-				ARG id: usize, |arg: Arg| arg.index(3),
+				^ARG id, |arg: Arg| arg.index(3),
 			}
 		}
 
 		CMD snapshot: bool
 		{
-			ARG file: String, |arg: Arg| arg.required(true).index(2),
+			^ARG file, |arg: Arg| arg.required(true).index(2),
 		}
 
 		CMD restore: bool
 		{
-			ARG file: String, |arg: Arg| arg.index(2),
+			^ARG file, |arg: Arg| arg.index(2),
 		}
 
 		CMD ui: bool {}
 		
 		CMD dapp: bool
 		{
-			ARG path: Vec<String>, |arg: Arg| arg.index(2).required(true),
+			^ARG path, |arg: Arg| arg.index(2).required(true),
 		}
 
 		CMD tools: bool
 		{
 			CMD hash: bool
 			{
-				ARG file: String, |arg: Arg| arg.required(true).index(3),
+				^ARG file, |arg: Arg| arg.required(true).index(3),
 			}
 		}
 		

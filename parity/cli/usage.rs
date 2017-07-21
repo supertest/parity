@@ -186,6 +186,16 @@ macro_rules! usage {
 
 					$(
 						$subcommand: Default::default(),
+						$(
+							$subsubcommand: Default::default(),
+							$(
+								$subsubcommand_arg: Default::default(),
+							)*
+						)*
+
+						$(
+							$subcommand_arg: Default::default(),
+						)*
 					)*
 
 					$(
