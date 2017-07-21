@@ -50,21 +50,28 @@ macro_rules! usage {
 		}
 		{
 			$(
-				$subcommand:ident : $typ_subcommand:ty
+				CMD $subcommand:ident : $typ_subcommand:ty
 				{
 					$(
-						SSC
-						$subsubcommand:ident : $typ_subsubcommand:ty
+						CMD $subsubcommand:ident : $typ_subsubcommand:ty
 						{
 							$(
-								$subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $subsubcommand_arg_clap_callback:expr,
+								ARG $subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $clap_subsubcommand_arg:expr,
+							)*
+							$(
+								// arguments already declared
+								^ARG $subsubcommand_arg_e:ident, $clap_subsubcommand_arg_e:expr,
 							)*
 						}
 					)*
 
 					$(
-						ARG
-						$subcommand_arg:ident : $typ_subcommand_arg:ty, $subcommand_arg_clap_callback:expr,
+						ARG $subcommand_arg:ident : $typ_subcommand_arg:ty, $clap_subcommand_arg:expr,
+					)*
+
+					$(
+						// arguments already declared
+						^ARG $subcommand_arg_e:ident, $clap_subcommand_arg_e:expr,
 					)*
 				}
 			)*
@@ -308,12 +315,12 @@ macro_rules! usage {
 									.subcommand(
 										SubCommand::with_name(&(stringify!($subsubcommand)[4..]))
 										$(
-											.arg($subsubcommand_arg_clap_callback(Arg::with_name(&(stringify!($subsubcommand_arg)[4..]))))
+											.arg($cb_subsubcommand_arg_clap_cb(Arg::with_name(&(stringify!($subsubcomma4..]))))
 										)*
 									)
 								)*
 								$(
-									.arg($subcommand_arg_clap_callback(Arg::with_name(&(stringify!($subcommand_arg)[4..]))))
+									.arg($subcommand_arg_clap_cb(Arg::with_name(&(stringify!($subcommand_arg)[4..]))))
 								)*
 							)
 							// todo foreach subsubcommand etc

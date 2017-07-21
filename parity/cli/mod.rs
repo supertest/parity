@@ -346,120 +346,96 @@ usage! {
 		// CLI subcommands
 		// Identifiers must start with cmd_
 
-		cmd_daemon: bool
+		CMD daemon: bool
 		{
-			ARG
-			arg_pid_file: String, |arg: Arg| arg.index(2).required(true),
+			ARG pid_file: String, |arg: Arg| arg.index(2).required(true),
 		}
 
-		cmd_wallet: bool
+		CMD wallet: bool
 		{
-			SSC
-			cmd_import: bool
+			CMD import: bool
 			{
-				arg_path: Vec<String>, |arg: Arg| arg.required(true).index(3), // setting it to Vec<String> so that it's the same everywhere
-				arg_password: String, |arg: Arg| arg.required(true).value_name("FILE"),
+				ARG path: Vec<String>, |arg: Arg| arg.required(true).index(3), // setting it to Vec<String> so that it's the same everywhere
+				ARG password: String, |arg: Arg| arg.required(true).value_name("FILE"),
 			}
 		}
 
-		cmd_account: bool
+		CMD account: bool
 		{
-			SSC
-			cmd_new: bool
-			{}
+			CMD new: bool {}
 
-			SSC
-			cmd_list: bool
-			{}
+			CMD list: bool {}
 
-			SSC
-			cmd_import: bool
+			CMD import: bool
 			{
-				arg_path: Vec<String>, |arg: Arg| arg.required(true).index(3).multiple(true),
+				^ARG path, |arg: Arg| arg.required(true).index(3).multiple(true),
 			}
 		}
 
-		cmd_export: bool // evtl: |&sc: SubCommand| sc.help("blablabla")
+		CMD export: bool // evtl: |&sc: SubCommand| sc.help("blablabla")
 		{
-			SSC
-			cmd_blocks: bool
+			CMD blocks: bool
 			{
-				arg_file: String, |arg: Arg| arg.index(3),
+				ARG file: String, |arg: Arg| arg.index(3),
 			}
 
-			SSC
-			cmd_state: bool
+			CMD state: bool
 			{
-				arg_file: String, |arg: Arg| arg.index(3),
+				ARG file: String, |arg: Arg| arg.index(3),
 			}
 		}
 		
-		cmd_import: bool // todo already subsubcommand named import
+		CMD import: bool // todo already subsubcommand named import
 		{
-			ARG
-			arg_file: String, |arg: Arg| arg.index(2),
+			ARG file: String, |arg: Arg| arg.index(2),
 		}
 
-		cmd_signer: bool
+		CMD signer: bool
 		{
-			SSC
-			cmd_new_token: bool
-			{}
+			CMD new_token: bool {}
 
-			SSC
-			cmd_list: bool
-			{}
+			CMD list: bool {}
 
-			SSC
-			cmd_sign: bool
+			CMD sign: bool
 			{
-				arg_id: Option<usize>, |arg: Arg| arg.index(3),
-				arg_password: String, |arg: Arg| arg.value_name("FILE"),
-			} // option ou string?
+				ARG id: usize, |arg: Arg| arg.index(3),
+				ARG password: String, |arg: Arg| arg.value_name("FILE"),
+			}
 
-			SSC
-			cmd_reject: bool
+			CMD reject: bool
 			{
-				arg_id: Option<usize>, |arg: Arg| arg.index(3),
+				ARG id: usize, |arg: Arg| arg.index(3),
 			}
 		}
 
-		cmd_snapshot: bool
+		CMD snapshot: bool
 		{
-			ARG
-			arg_file: Option<String>, |arg: Arg| arg.required(true).index(2),
+			ARG file: String, |arg: Arg| arg.required(true).index(2),
 		}
 
-		cmd_restore: bool
+		CMD restore: bool
 		{
-			ARG
-			arg_file: Option<String>, |arg: Arg| arg.index(2),
+			ARG file: String, |arg: Arg| arg.index(2),
 		}
 
-		cmd_ui: bool
-		{
-		}
+		CMD ui: bool {}
 		
-		cmd_dapp: bool
+		CMD dapp: bool
 		{
-			ARG
-			arg_path: Vec<String>, |arg: Arg| arg.index(2).required(true),
+			ARG path: Vec<String>, |arg: Arg| arg.index(2).required(true),
 		}
 
-		cmd_tools: bool
+		CMD tools: bool
 		{
-			SSC
-			cmd_hash: bool
+			CMD hash: bool
 			{
-				arg_file: Option<String>, |arg: Arg| arg.required(true).index(3),
+				ARG file: String, |arg: Arg| arg.required(true).index(3),
 			}
 		}
 		
-		cmd_db: bool
+		CMD db: bool
 		{
-			SSC
-			cmd_kill: Vec<String>
-			{}
+			CMD kill: Vec<String> {}
 		}
 	}
 	{
