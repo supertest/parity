@@ -315,15 +315,20 @@ macro_rules! usage {
 									.subcommand(
 										SubCommand::with_name(&(stringify!($subsubcommand)[4..]))
 										$(
-											.arg($cb_subsubcommand_arg_clap_cb(Arg::with_name(&(stringify!($subsubcomma4..]))))
+											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!($subsubcommand_arg)[4..]))))
+										)*
+										$(
+											.arg($clap_subsubcommand_arg_e(Arg::with_name(&(stringify!($subsubcommand_arg_e)[4..]))))
 										)*
 									)
 								)*
 								$(
-									.arg($subcommand_arg_clap_cb(Arg::with_name(&(stringify!($subcommand_arg)[4..]))))
+									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[4..]))))
+								)*
+								$(
+									.arg($clap_subcommand_arg_e(Arg::with_name(&(stringify!($subcommand_arg_e)[4..]))))
 								)*
 							)
-							// todo foreach subsubcommand etc
 						)*
 						.args(&[
 							$(
@@ -342,6 +347,8 @@ macro_rules! usage {
 						// for each subsubcommand_arg, hydrate
 
 					// for each subcommand_arg, hydrate
+
+					// pareil pour _e
 				)*
 				$(
 					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
