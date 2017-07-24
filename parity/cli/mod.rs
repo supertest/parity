@@ -344,7 +344,8 @@ usage! {
 	}
 	{
 		// CLI subcommands
-		// Identifiers must start with cmd_ ; arguments with arg_
+		// Subcommands/sub-subcommands must start with cmd_
+		// Arguments must start with arg_
 
 		CMD cmd_daemon: bool
 		{
@@ -368,7 +369,7 @@ usage! {
 
 			CMD cmd_import: bool
 			{
-				^ARG arg_path, |arg: Arg| arg.required(true).index(3).multiple(true),
+				^ARG arg_path: Vec<String>, |arg: Arg| arg.required(true).index(3).multiple(true),
 			}
 		}
 
@@ -381,13 +382,13 @@ usage! {
 
 			CMD cmd_state: bool
 			{
-				^ARG arg_file, |arg: Arg| arg.index(3),
+				^ARG arg_file: String, |arg: Arg| arg.index(3),
 			}
 		}
 		
 		CMD cmd_import: bool // todo already subsubcommand named import
 		{
-			^ARG arg_file, |arg: Arg| arg.index(2),
+			^ARG arg_file: String, |arg: Arg| arg.index(2),
 		}
 
 		CMD cmd_signer: bool
@@ -399,37 +400,37 @@ usage! {
 			CMD cmd_sign: bool
 			{
 				ARG arg_id: usize, |arg: Arg| arg.index(3),
-				^ARG arg_password, |arg: Arg| arg.value_name("FILE"),
+				^ARG arg_password: String, |arg: Arg| arg.value_name("FILE"),
 			}
 
 			CMD cmd_reject: bool
 			{
-				^ARG arg_id, |arg: Arg| arg.index(3),
+				^ARG arg_id: usize, |arg: Arg| arg.index(3),
 			}
 		}
 
 		CMD cmd_snapshot: bool
 		{
-			^ARG arg_file, |arg: Arg| arg.required(true).index(2),
+			^ARG arg_file: String, |arg: Arg| arg.required(true).index(2),
 		}
 
 		CMD cmd_restore: bool
 		{
-			^ARG arg_file, |arg: Arg| arg.index(2),
+			^ARG arg_file: String, |arg: Arg| arg.index(2),
 		}
 
 		CMD cmd_ui: bool {}
 		
 		CMD cmd_dapp: bool
 		{
-			^ARG arg_path, |arg: Arg| arg.index(2).required(true),
+			^ARG arg_path: Vec<String>, |arg: Arg| arg.index(2).required(true),
 		}
 
 		CMD cmd_tools: bool
 		{
 			CMD cmd_hash: bool
 			{
-				^ARG arg_file, |arg: Arg| arg.required(true).index(3),
+				^ARG arg_file: String, |arg: Arg| arg.required(true).index(3),
 			}
 		}
 		
@@ -439,7 +440,7 @@ usage! {
 		}
 	}
 	{
-		// Options that can be set from CLI flags
+		// Options (arguments) that can be set from the CLI
 		// For each argument, provide default value, config value and CLI usage
 
 		// -- Operating Options

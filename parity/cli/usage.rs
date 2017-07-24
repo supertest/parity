@@ -59,8 +59,8 @@ macro_rules! usage {
 								ARG $subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $clap_subsubcommand_arg:expr,
 							)*
 							$(
-								// arguments already declared
-								^ARG $subsubcommand_arg_e:ident, $clap_subsubcommand_arg_e:expr,
+								// Arguments that have are already been declared
+								^ARG $subsubcommand_arg_e:ident : $typ_subsubcommand_arg_e:ty, $clap_subsubcommand_arg_e:expr,
 							)*
 						}
 					)*
@@ -70,8 +70,8 @@ macro_rules! usage {
 					)*
 
 					$(
-						// arguments already declared
-						^ARG $subcommand_arg_e:ident, $clap_subcommand_arg_e:expr,
+						// Arguments that have already been declared
+						^ARG $subcommand_arg_e:ident : $typ_subcommand_arg_e:ty, $clap_subcommand_arg_e:expr,
 					)*
 				}
 			)*
@@ -365,6 +365,9 @@ macro_rules! usage {
 						.args(&[
 							$(
 								Arg::from_usage($usage_u),
+							)*
+							$(
+								Arg::from_usage($usage_flag_u),
 							)*
 						])
 						.get_matches_safe()?;
