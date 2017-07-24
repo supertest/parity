@@ -150,6 +150,7 @@ macro_rules! usage {
 				pub $subcommand: bool, /* @TODO hardcoded / remove :bool from the call */
 
 				$(
+					pub $subsubcommand: bool,
 					$(
 						pub $subsubcommand_arg: $typ_subsubcommand_arg,
 					)*
@@ -222,6 +223,17 @@ macro_rules! usage {
 			)*
 			$(
 				$subcommand: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+				
+				$(
+					$subsubcommand: bool,
+					$(
+						$subsubcommand_arg: $typ_subsubcommand_arg,
+					)*
+				)*
+
+				$(
+					$subcommand_arg: $typ_subcommand_arg,
+				)*
 			)*
 			$(
 				$field_u: Option<$typ_u>,
@@ -295,6 +307,16 @@ macro_rules! usage {
 				)*
 				$(
 					args.$subcommand = self.$subcommand;
+
+					$(
+						$(
+							args.$subsubcommand_arg = self.$subsubcommand_arg;
+						)*
+					)*
+
+					$(
+						args.$subcommand_arg = self.$subcommand_arg;
+					)*
 				)*
 				$(
 					args.$field_u = self.$field_u.or_else(|| $from_config_u(&config)).unwrap_or_else(|| $default_u.into());
@@ -349,16 +371,42 @@ macro_rules! usage {
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
-					raw_args.$field_u = value_t!(matches, stringify!($field_u), $typ_u).ok();
+					raw_args.$field_u = value_t!(matches, stringify!($field_u)[4..], $typ_u).ok();
 				)*
 				$(
-					raw_args.$subcommand = matches.is_present(&(stringify!($subcommand)[4..]));
-					// for each subsubcommand, hydrate subsubcommand TODO
-						// for each subsubcommand_arg, hydrate
+					// Subcommand
+					if let Some(submatches) = matches.subcommand_matches(&(stringify!($subcommand)[4..])) {
+						raw_args.$subcommand = true;
 
-					// for each subcommand_arg, hydrate
+						$(
+							// Sub-subcommand
+							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subsubcommand)[4..])) {
+								raw_args.$subsubcommand = true;
 
-					// pareil pour _e
+								// Sub-subcommand arguments
+								$(
+									raw_args.$subsubcommand_arg = value_t!(subsubmatches, stringify!($subsubcommand_arg)[4..], $typ_subsubcommand_arg).ok();
+								)*
+								$(
+									raw_args.$subsubcommand_arg_e = value_t!(subsubmatches, stringify!($subsubcommand_arg_e)[4..], $typ_subsubcommand_arg_e).ok();
+								)*
+							}
+							else {
+								raw_args.$subsubcommand = false;
+							}
+						)*
+
+						// Subcommand arguments
+						$(
+							raw_args.$subcommand_arg = value_t!(submatches, stringify!($subcommand_arg)[4..], $typ_subcommand_arg).ok();
+						)*
+						$(
+							raw_args.$subcommand_arg_e = value_t!(submatches, stringify!($subcommand_arg_e)[4..], $typ_subcommand_arg_e).ok();
+						)*
+					}
+					else {
+						raw_args.$subcommand = false;
+					}
 				)*
 				$(
 					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
