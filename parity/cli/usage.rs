@@ -143,12 +143,12 @@ macro_rules! usage {
 				$(
 					pub $subsubcommand: bool,
 					$(
-						pub $subsubcommand_arg: $typ_subsubcommand_arg,
+						pub $subsubcommand_arg: Option<$typ_subsubcommand_arg>,
 					)*
 				)*
 
 				$(
-					pub $subcommand_arg: $typ_subcommand_arg,
+					pub $subcommand_arg: Option<$typ_subcommand_arg>,
 				)*
 			)*
 
@@ -218,12 +218,12 @@ macro_rules! usage {
 				$(
 					$subsubcommand: bool,
 					$(
-						$subsubcommand_arg: $typ_subsubcommand_arg,
+						$subsubcommand_arg: Option<$typ_subsubcommand_arg>,
 					)*
 				)*
 
 				$(
-					$subcommand_arg: $typ_subcommand_arg,
+					$subcommand_arg: Option<$typ_subcommand_arg>,
 				)*
 			)*
 			$(
