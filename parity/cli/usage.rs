@@ -368,7 +368,7 @@ macro_rules! usage {
 					// Subcommand
 					if let Some(submatches) = matches.subcommand_matches(&(stringify!($subcommand)[4..])) {
 						raw_args.$subcommand = true;
-/*
+
 						$(
 							// Sub-subcommand
 							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..])) {
@@ -383,7 +383,7 @@ macro_rules! usage {
 								raw_args.$subsubcommand = false;
 							}
 						)*
-*/
+
 						// Subcommand arguments
 						$(
 							raw_args.$subcommand_arg = value_t!(submatches, &stringify!($subcommand_arg)[stringify!($subcommand).len()+1..], $typ_subcommand_arg).ok();
