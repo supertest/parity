@@ -334,18 +334,18 @@ macro_rules! usage {
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&(stringify!(String::from($subcommand))[4..])) // @TODO remove () after &
+								SubCommand::with_name(&(stringify!($subcommand)[4..])) // @TODO remove () after &
 								$(
 									.subcommand(
-										SubCommand::with_name(&(stringify!(String::from($subsubcommand))[stringify!(String::from($subcommand)).len()+1..]))
+										SubCommand::with_name(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..]))
 										$(
-											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!(String::from($subsubcommand_arg))[stringify!(String::from($subsubcommand)).len()+1..]))))
+											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..]))))
 										)*
 									)
 								)*
 								$(
 									// todo @mut ? needs to move
-									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!(String::from($subcommand_arg))[stringify!(String::from($subcommand)).len()+1..]))))
+									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[stringify!($subcommand).len()+1..]))))
 								)*
 							)
 						)*
@@ -361,40 +361,43 @@ macro_rules! usage {
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
-					raw_args.$field_u = value_t!(matches, stringify!(String::from($field_u))[4..], $typ_u).ok();
+					raw_args.$field_u = value_t!(matches, &stringify!($field_u)[4..], $typ_u).ok();
 				)*
+				
 				$(
 					// Subcommand
-					if let Some(submatches) = matches.subcommand_matches(&(stringify!(String::from($subcommand))[4..])) {
+					if let Some(submatches) = matches.subcommand_matches(&(stringify!($subcommand)[4..])) {
 						raw_args.$subcommand = true;
-
+/*
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!(String::from($subsubcommand))[stringify!(String::from($subcommand)).len()+1..])) {
+							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..])) {
 								raw_args.$subsubcommand = true;
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subsubcommand_arg = value_t!(subsubmatches, stringify!(String::from($subsubcommand_arg))[stringify!(String::from($subsubcommand)).len()+1..], $typ_subsubcommand_arg).ok();
+									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
 								)*
 							}
 							else {
 								raw_args.$subsubcommand = false;
 							}
 						)*
-
+*/
 						// Subcommand arguments
 						$(
-							raw_args.$subcommand_arg = value_t!(submatches, stringify!(String::from($subcommand_arg))[stringify!(String::from($subcommand)).len()+1..], $typ_subcommand_arg).ok();
+							raw_args.$subcommand_arg = value_t!(submatches, &stringify!($subcommand_arg)[stringify!($subcommand).len()+1..], $typ_subcommand_arg).ok();
 						)*
 					}
 					else {
 						raw_args.$subcommand = false;
 					}
 				)*
+				
 				$(
-					raw_args.$field_flag_u = matches.is_present(&(stringify!(String::from($field_flag_u))[5..]));
+					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
 				)*
+				
 
 				Ok(raw_args)				
 			}
