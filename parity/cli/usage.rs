@@ -300,6 +300,7 @@ macro_rules! usage {
 					args.$subcommand = self.$subcommand;
 
 					$(
+						args.$subsubcommand = self.$subsubcommand;
 						$(
 							args.$subsubcommand_arg = self.$subsubcommand_arg;
 						)*
