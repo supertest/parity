@@ -58,20 +58,11 @@ macro_rules! usage {
 							$(
 								ARG $subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $clap_subsubcommand_arg:expr,
 							)*
-							$(
-								// Arguments that have are already been declared
-								^ARG $subsubcommand_arg_e:ident : $typ_subsubcommand_arg_e:ty, $clap_subsubcommand_arg_e:expr,
-							)*
 						}
 					)*
 
 					$(
 						ARG $subcommand_arg:ident : $typ_subcommand_arg:ty, $clap_subcommand_arg:expr,
-					)*
-
-					$(
-						// Arguments that have already been declared
-						^ARG $subcommand_arg_e:ident : $typ_subcommand_arg_e:ty, $clap_subcommand_arg_e:expr,
 					)*
 				}
 			)*
@@ -342,23 +333,17 @@ macro_rules! usage {
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&(stringify!($subcommand)[4..]))
+								SubCommand::with_name(&(stringify!($subcommand)[4..])) // @TODO remove () after &
 								$(
 									.subcommand(
-										SubCommand::with_name(&(stringify!($subsubcommand)[4..]))
+										SubCommand::with_name(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..]))
 										$(
-											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!($subsubcommand_arg)[4..]))))
-										)*
-										$(
-											.arg($clap_subsubcommand_arg_e(Arg::with_name(&(stringify!($subsubcommand_arg_e)[4..]))))
+											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..]))))
 										)*
 									)
 								)*
 								$(
-									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[4..]))))
-								)*
-								$(
-									.arg($clap_subcommand_arg_e(Arg::with_name(&(stringify!($subcommand_arg_e)[4..]))))
+									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[stringify!($subcommand).len()+1..]))))
 								)*
 							)
 						)*
@@ -383,15 +368,12 @@ macro_rules! usage {
 
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subsubcommand)[4..])) {
+							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..])) {
 								raw_args.$subsubcommand = true;
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subsubcommand_arg = value_t!(subsubmatches, stringify!($subsubcommand_arg)[4..], $typ_subsubcommand_arg).ok();
-								)*
-								$(
-									raw_args.$subsubcommand_arg_e = value_t!(subsubmatches, stringify!($subsubcommand_arg_e)[4..], $typ_subsubcommand_arg_e).ok();
+									raw_args.$subsubcommand_arg = value_t!(subsubmatches, stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
 								)*
 							}
 							else {
@@ -401,10 +383,7 @@ macro_rules! usage {
 
 						// Subcommand arguments
 						$(
-							raw_args.$subcommand_arg = value_t!(submatches, stringify!($subcommand_arg)[4..], $typ_subcommand_arg).ok();
-						)*
-						$(
-							raw_args.$subcommand_arg_e = value_t!(submatches, stringify!($subcommand_arg_e)[4..], $typ_subcommand_arg_e).ok();
+							raw_args.$subcommand_arg = value_t!(submatches, stringify!($subcommand_arg)[stringify!($subcommand).len()+1..], $typ_subcommand_arg).ok();
 						)*
 					}
 					else {
