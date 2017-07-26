@@ -83,8 +83,30 @@ macro_rules! usage {
 		use std::io::{Read, Write};
 		use util::version;
 		use docopt::{Docopt, Error as DocoptError};
-		use clap::{Arg, App, SubCommand, AppSettings, Error as ClapError};
+		use clap::{Arg, App, SubCommand, AppSettings, Values, Error as ClapError};
 		use helpers::replace_home;
+
+		trait FromClapValues { // converts Vec<String> to T or Vec<T>
+			fn from_clap_values(s: &Vec<String>) -> Self;
+		}
+
+		impl FromClapValues for String {
+			fn from_clap_values(s: &Vec<String>) -> Self {
+				s.first().unwrap().parse::<String>().unwrap() // @TODO UNWRAP + @TODO ERROR HANDLING
+			}
+		}
+
+		impl FromClapValues for usize {
+			fn from_clap_values(s: &Vec<String>) -> Self {
+				s.first().unwrap().parse::<usize>().unwrap() // @TODO UNWRAP + @TODO ERROR HANDLING
+			}
+		}
+
+		impl<T> FromClapValues for Vec<T> {
+			fn from_clap_values(s: &Vec<String>) -> Self {
+				s.iter().map(|x| x.parse::<T>()).collect()
+			}
+		}
 
 		#[derive(Debug)]
 		pub enum ArgsError {
@@ -383,8 +405,9 @@ macro_rules! usage {
 									raw_args.$subsubcommand_arg =
 										subsubmatches
 											.values_of(&stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..])
-											.ok()
-											.map(|vec: &Vec| <$typ_subsubcommand_arg>::from_clap_vec(vec));
+											.map(|val: &Values| val.collect()) // @todo use values instead of vec in the impl
+											.map(|vec: &Vec<String>| <$typ_subsubcommand_arg>::from_clap_values(vec));
+											// .map parse as type
 
 //									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
 								)*
@@ -413,21 +436,6 @@ macro_rules! usage {
 			}
 		}
 	};
-}
-
-trait FromClapVec {
-	fn from_clap_vec(s: &Vec) -> Self;
-}
-
-impl FromClapVec for String {
-	fn from_clap_vec(s: &Vec<String>) {
-		s.first()
-	}
-}
-impl FromClapVec for Vec<x> {
-	fn from_clap_vec(s: &Vec<x>) {
-		s
-	}
 }
 
 
