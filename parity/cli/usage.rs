@@ -376,7 +376,17 @@ macro_rules! usage {
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
+									// raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
+									
+									// possible de décompoesr
+									// @todo comment
+									raw_args.$subsubcommand_arg =
+										subsubmatches
+											.values_of(&stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..])
+											.ok()
+											.map(|vec: &Vec| <$typ_subsubcommand_arg>::from_clap_vec(vec));
+
+//									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
 								)*
 							}
 							else {
@@ -404,3 +414,62 @@ macro_rules! usage {
 		}
 	};
 }
+
+trait FromClapVec {
+	fn from_clap_vec(s: &Vec) -> Self;
+}
+
+impl FromClapVec for String {
+	fn from_clap_vec(s: &Vec<String>) {
+		s.first()
+	}
+}
+impl FromClapVec for Vec<x> {
+	fn from_clap_vec(s: &Vec<x>) {
+		s
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+macro_rules! ttx{
+// not executed whyy
+($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident $xo:tt) => {
+	ttx2!($raw_args $subsubmatches $xsubsubcommand_arg $xo);
+}
+}
+
+
+macro_rules! ttx2{
+// not executed whyy
+($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident Vec<String>) => {
+	$raw_args.$xsubsubcommand_arg = values_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
+};
+($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident String) => {
+	$raw_args.$xsubsubcommand_arg = value_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
+};
+}
+
+/*
+
+macro_rules! ttx{
+// not executed whyy
+($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident Vec<String>) => {
+	$raw_args.$xsubsubcommand_arg = values_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
+};
+($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident String) => {
+	$raw_args.$xsubsubcommand_arg = value_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
+};
+($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident bool) => {
+	$raw_args.$xsubsubcommand_arg = value_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], bool).ok();
+};
+}
+*/
