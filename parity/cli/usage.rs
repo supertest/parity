@@ -87,7 +87,7 @@ macro_rules! usage {
 		use clap::{Arg, App, SubCommand, AppSettings, Values, Error as ClapError};
 		use helpers::replace_home;
 
-		trait FromClapValues { // converts Vec<String> to T or Vec<T>
+		trait FromClapValues { // converts Vec<&str> to T or Vec<T>
 			fn from_clap_values(s: Vec<&str>) -> Self;
 		}
 
@@ -105,7 +105,7 @@ macro_rules! usage {
 
 		impl<T> FromClapValues for Vec<T> where T:FromStr {
 			fn from_clap_values(s: Vec<&str>) -> Self {
-				s.iter().map(|x| x.parse::<T>().ok().unwrap()).collect()
+				s.iter().map(|x| x.parse::<T>().ok().unwrap()).collect() // why do we need .ok()?
 			}
 		}
 
@@ -367,8 +367,7 @@ macro_rules! usage {
 									)
 								)*
 								$(
-									// todo @mut ? needs to move
-									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[stringify!($subcommand).len()+1..]))))
+									.arg($clap_subcommand_arg(Arg::with_name("test")))
 								)*
 							)
 						)*
@@ -406,7 +405,7 @@ macro_rules! usage {
 									raw_args.$subsubcommand_arg =
 										subsubmatches
 											.values_of(&stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..])
-											.map(|val: Values| val.collect()) // @todo use values instead of vec in the impl
+											.map(|val: Values| val.collect()) // @todo use values instead of vec in the impl @todo map ok() because collect on Iterator<Option> returns Option<Vecs> WTF. type hint ! .collect::<Vec<T>>() ne change rien...
 											.map(|vec: Vec<&str>| <$typ_subsubcommand_arg>::from_clap_values(vec));
 											// .map parse as type
 
