@@ -21,76 +21,7 @@ Usage:
   parity tools hash <file> OK
   parity db kill [options]
 
-parity daemon <pid-file> [options]
-  .subcommand(
-    SubCommand::with_name("dameon")
-      .about("")
-      .arg(
-        Arg::with_name("pid-file")
-          .required(true)
-          .index(2)))
-  .args etc
-
-subcommand de subcommands
-  .subcommand(
-    SubCommand::with_name("account")
-      .about("")
-      .subcommand(
-        SubCommand::with_name("new")
-          .required(true))
-  )
-  .subcommand(
-    SubCommand::with_name("account")
-      .about("")
-      .subcommand(
-        SubCommand::with_name("list") // ou mettre les deux côte à côte et required_unless...
-          .required(true))
-  .args etc
-
-parity wallet import <path> --password FILE [options]
-  .subcommand(
-    SubCommand::with_name("wallet")
-      .about("")
-      .subcommand(
-        SubCommand::with_name("import")
-          .required(true)
-          .arg(
-            Arg::with_name("path")
-              .required(true)
-              .index(2))
-          )
-          .arg(
-            Arg::with_name("password")
-              .required(true))
-          )
-    )
-
-du coup il faudrait une callback qui prend app et chaîne et renvoie
-|app| app.subcommand()
-c'est cool, seul problème c'est que ça nique tout au niveau des arg with name?
-comment faire la liaison avec le struct après?
-
-là ce serait 
-cmd_daemon: bool, |app| app.subcommand().arg(pid-file)
-il faut hydrate arg_pid_file
-cmd_daemon: bool, |app| app.subcommand().arg(pid-file)
-{
-  [RIEN A L'INTERIEUR, OU :]
-  arg_pid_file: bool
-}
-
-cool on peut imbriquer
-
-
-
-
-JUSTE NEXT:
-faire parity dapp path, et revoir macro pour ce bloc
-
-
-
-
-
+#TODO REMOVE
 
 Operating Options:
   

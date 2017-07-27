@@ -405,7 +405,7 @@ macro_rules! usage {
 									raw_args.$subsubcommand_arg =
 										subsubmatches
 											.values_of(&stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..])
-											.map(|val: Values| val.collect()) // @todo use values instead of vec in the impl @todo map ok() because collect on Iterator<Option> returns Option<Vecs> WTF. type hint ! .collect::<Vec<T>>() ne change rien...
+											.map(|val| Values::collect(val)) // @todo use values instead of vec in the impl @todo map ok() because collect on Iterator<Option> returns Option<Vecs> WTF. type hint ! .collect::<Vec<T>>() ne change rien...
 											.map(|vec: Vec<&str>| <$typ_subsubcommand_arg>::from_clap_values(vec));
 											// .map parse as type
 

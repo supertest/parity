@@ -350,7 +350,7 @@ usage! {
 
 		CMD cmd_daemon: bool
 		{
-			ARG arg_daemon_file: String, |mut arg| Arg::index(arg,2).required(true),
+			ARG arg_daemon_pid_file: String, |mut arg| Arg::index(arg,2).required(true),
 		}
 
 		CMD cmd_wallet: bool
@@ -358,7 +358,7 @@ usage! {
 			CMD cmd_wallet_import: bool
 			{
 				ARG arg_wallet_import_path: String, |mut arg| Arg::required(arg,true).index(3), // setting it to Vec<String> so that it's the same everywhere
-				ARG arg_wallet_import_password: String, |mut arg| Arg::required(arg,true).value_name("FILE"),
+				ARG arg_wallet_import_password: String, |mut arg| Arg::required(arg,true).value_name("FILE"), // @TODO ?? flag password ??
 			}
 		}
 

@@ -147,25 +147,25 @@ impl Configuration {
 		} else if self.args.cmd_signer {
 			let authfile = ::signer::codes_path(&ws_conf.signer_path);
 
-			if self.args.cmd_new_token {
+			if self.args.cmd_signer_new_token {
 				Cmd::SignerToken(ws_conf, ui_conf)
-			} else if self.args.cmd_sign {
+			} else if self.args.cmd_signer_sign {
 				let pwfile = self.args.flag_password.get(0).map(|pwfile| {
 					PathBuf::from(pwfile)
 				});
 				Cmd::SignerSign {
-					id: self.args.arg_id,
+					id: self.args.arg_signer_sign_id,
 					pwfile: pwfile,
 					port: ws_conf.port,
 					authfile: authfile,
 				}
-			} else if self.args.cmd_reject  {
+			} else if self.args.cmd_signer_reject  {
 				Cmd::SignerReject {
-					id: self.args.arg_id,
+					id: self.args.arg_signer_reject_id,
 					port: ws_conf.port,
 					authfile: authfile,
 				}
-			} else if self.args.cmd_list  {
+			} else if self.args.cmd_signer_list  {
 				Cmd::SignerList {
 					port: ws_conf.port,
 					authfile: authfile,
@@ -173,16 +173,16 @@ impl Configuration {
 			} else {
 				unreachable!();
 			}
-		} else if self.args.cmd_tools && self.args.cmd_hash {
-			Cmd::Hash(self.args.arg_file)
-		} else if self.args.cmd_db && self.args.cmd_kill {
+		} else if self.args.cmd_tools && self.args.cmd_tools_hash {
+			Cmd::Hash(self.args.arg_tools_hash_file)
+		} else if self.args.cmd_db && self.args.cmd_db_kill {
 			Cmd::Blockchain(BlockchainCmd::Kill(KillBlockchain {
 				spec: spec,
 				dirs: dirs,
 				pruning: pruning,
 			}))
 		} else if self.args.cmd_account {
-			let account_cmd = if self.args.cmd_new {
+			let account_cmd = if self.args.cmd_account_new {
 				let new_acc = NewAccount {
 					iterations: self.args.flag_keys_iterations,
 					path: dirs.keys,
@@ -190,15 +190,15 @@ impl Configuration {
 					password_file: self.args.flag_password.first().cloned(),
 				};
 				AccountCmd::New(new_acc)
-			} else if self.args.cmd_list {
+			} else if self.args.cmd_account_list {
 				let list_acc = ListAccounts {
 					path: dirs.keys,
 					spec: spec,
 				};
 				AccountCmd::List(list_acc)
-			} else if self.args.cmd_import {
+			} else if self.args.cmd_account_import {
 				let import_acc = ImportAccounts {
-					from: self.args.arg_path.clone(),
+					from: self.args.arg_account_import_path.clone(),
 					to: dirs.keys,
 					spec: spec,
 				};
@@ -221,7 +221,7 @@ impl Configuration {
 				iterations: self.args.flag_keys_iterations,
 				path: dirs.keys,
 				spec: spec,
-				wallet_path: self.args.arg_path.first().unwrap().clone(),
+				wallet_path: self.args.arg_wallet_import_path.first().unwrap().clone(),
 				password_file: self.args.flag_password.first().cloned(),
 			};
 			Cmd::ImportPresaleWallet(presale_cmd)
@@ -230,7 +230,7 @@ impl Configuration {
 				spec: spec,
 				cache_config: cache_config,
 				dirs: dirs,
-				file_path: self.args.arg_file.clone(),
+				file_path: self.args.arg_import_file.clone(),
 				format: format,
 				pruning: pruning,
 				pruning_history: pruning_history,
@@ -246,12 +246,12 @@ impl Configuration {
 			};
 			Cmd::Blockchain(BlockchainCmd::Import(import_cmd))
 		} else if self.args.cmd_export {
-			if self.args.cmd_blocks {
+			if self.args.cmd_export_blocks {
 				let export_cmd = ExportBlockchain {
 					spec: spec,
 					cache_config: cache_config,
 					dirs: dirs,
-					file_path: self.args.arg_file.clone(),
+					file_path: self.args.arg_export_blocks_file.clone(),
 					format: format,
 					pruning: pruning,
 					pruning_history: pruning_history,
@@ -265,12 +265,12 @@ impl Configuration {
 					check_seal: !self.args.flag_no_seal_check,
 				};
 				Cmd::Blockchain(BlockchainCmd::Export(export_cmd))
-			} else if self.args.cmd_state {
+			} else if self.args.cmd_export_state {
 				let export_cmd = ExportState {
 					spec: spec,
 					cache_config: cache_config,
 					dirs: dirs,
-					file_path: self.args.arg_file.clone(),
+					file_path: self.args.arg_export_state_file.clone(),
 					format: format,
 					pruning: pruning,
 					pruning_history: pruning_history,
@@ -300,7 +300,7 @@ impl Configuration {
 				tracing: tracing,
 				fat_db: fat_db,
 				compaction: compaction,
-				file_path: self.args.arg_file.clone(),
+				file_path: self.args.arg_snapshot_file.clone(),
 				wal: wal,
 				kind: snapshot::Kind::Take,
 				block_at: to_block_id(&self.args.flag_at)?,
@@ -317,7 +317,7 @@ impl Configuration {
 				tracing: tracing,
 				fat_db: fat_db,
 				compaction: compaction,
-				file_path: self.args.arg_file.clone(),
+				file_path: self.args.arg_restore_file.clone(),
 				wal: wal,
 				kind: snapshot::Kind::Restore,
 				block_at: to_block_id("latest")?, // unimportant.
@@ -325,7 +325,7 @@ impl Configuration {
 			Cmd::Snapshot(restore_cmd)
 		} else {
 			let daemon = if self.args.cmd_daemon {
-				Some(self.args.arg_pid_file.clone())
+				Some(self.args.arg_daemon_pid_file.clone())
 			} else {
 				None
 			};
@@ -571,7 +571,7 @@ impl Configuration {
 			ntp_server: self.args.flag_ntp_server.clone(),
 			dapps_path: PathBuf::from(self.directories().dapps),
 			extra_dapps: if self.args.cmd_dapp {
-				self.args.arg_path.iter().map(|path| PathBuf::from(path)).collect()
+				self.args.arg_dapp_path.iter().map(|path| PathBuf::from(path)).collect()
 			} else {
 				vec![]
 			},
@@ -610,7 +610,7 @@ impl Configuration {
 		if !self.args.cmd_dapp {
 			return Ok(None);
 		}
-		let path = self.args.arg_path.get(0).map(String::as_str).unwrap_or(".");
+		let path = self.args.arg_dapp_path.get(0).map(String::as_str).unwrap_or(".");
 		let path = Path::new(path).canonicalize()
 			.map_err(|e| format!("Invalid path: {}. Error: {:?}", path, e))?;
 		let name = path.file_name()
