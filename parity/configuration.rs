@@ -221,7 +221,7 @@ impl Configuration {
 				iterations: self.args.flag_keys_iterations,
 				path: dirs.keys,
 				spec: spec,
-				wallet_path: self.args.arg_wallet_import_path.first().unwrap().clone(),
+				wallet_path: self.args.arg_wallet_import_path.unwrap().clone(),
 				password_file: self.args.flag_password.first().cloned(),
 			};
 			Cmd::ImportPresaleWallet(presale_cmd)
@@ -610,7 +610,7 @@ impl Configuration {
 		if !self.args.cmd_dapp {
 			return Ok(None);
 		}
-		let path = self.args.arg_dapp_path.get(0).map(String::as_str).unwrap_or(".");
+		let path = self.args.arg_dapp_path.map(|s| &s[..]).unwrap_or(".");
 		let path = Path::new(path).canonicalize()
 			.map_err(|e| format!("Invalid path: {}. Error: {:?}", path, e))?;
 		let name = path.file_name()
