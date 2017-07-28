@@ -346,6 +346,7 @@ macro_rules! usage {
 				args
 			}
 
+			#[allow(unused_variables)] // when there are no args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				let matches = App::new("Parity")
