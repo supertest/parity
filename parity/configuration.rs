@@ -198,7 +198,8 @@ impl Configuration {
 				AccountCmd::List(list_acc)
 			} else if self.args.cmd_account_import {
 				let import_acc = ImportAccounts {
-					from: self.args.arg_account_import_path.clone(),
+					// can unwrap safely as argument is required
+					from: self.args.arg_account_import_path.unwrap().clone(),
 					to: dirs.keys,
 					spec: spec,
 				};
@@ -325,7 +326,7 @@ impl Configuration {
 			Cmd::Snapshot(restore_cmd)
 		} else {
 			let daemon = if self.args.cmd_daemon {
-				Some(self.args.arg_daemon_pid_file.clone())
+				Some(self.args.arg_daemon_pid_file.clone().unwrap()) // ?
 			} else {
 				None
 			};
@@ -610,7 +611,7 @@ impl Configuration {
 		if !self.args.cmd_dapp {
 			return Ok(None);
 		}
-		let path = self.args.arg_dapp_path.map(|s| &s[..]).unwrap_or(".");
+		let path = self.args.arg_dapp_path.as_ref().map(String::as_str).unwrap_or(".");
 		let path = Path::new(path).canonicalize()
 			.map_err(|e| format!("Invalid path: {}. Error: {:?}", path, e))?;
 		let name = path.file_name()

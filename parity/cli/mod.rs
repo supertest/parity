@@ -348,11 +348,6 @@ usage! {
 		// Arguments must start with arg_
 		// Actual name used in CLI after the last "_"
 
-		CMD cmd_daemon: bool
-		{
-			ARG arg_daemon_pid_file: String, |mut arg| Arg::index(arg,2).required(true),
-		}
-
 		CMD cmd_wallet: bool
 		{
 			CMD cmd_wallet_import: bool
@@ -372,6 +367,16 @@ usage! {
 			{
 				ARG arg_account_import_path: Vec<String>, |mut arg| Arg::required(arg,true).index(3).multiple(true),
 			}
+		}
+
+		CMD cmd_dapp: bool
+		{
+			ARG arg_dapp_path: String, |mut arg| Arg::index(arg,2).required(true),
+		}
+		
+		CMD cmd_daemon: bool
+		{
+			ARG arg_daemon_pid_file: String, |mut arg| Arg::index(arg,2).required(true),
 		}
 
 		CMD cmd_export: bool // evtl: |&sc: SubCommand| sc.help("blablabla")
@@ -421,11 +426,6 @@ usage! {
 		}
 
 		CMD cmd_ui: bool {}
-		
-		CMD cmd_dapp: bool
-		{
-			ARG arg_dapp_path: String, |mut arg| Arg::index(arg,2).required(true),
-		}
 
 		CMD cmd_tools: bool
 		{

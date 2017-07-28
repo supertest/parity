@@ -367,7 +367,7 @@ macro_rules! usage {
 									)
 								)*
 								$(
-									.arg($clap_subcommand_arg(Arg::with_name("test")))
+									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[stringify!($subcommand).len()+1..]))))
 								)*
 							)
 						)*
