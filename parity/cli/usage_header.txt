@@ -21,13 +21,9 @@ Usage:
   parity tools hash <file> OK
   parity db kill [options]
 
-#TODO REMOVE
+#todo remove:
 
 Operating Options:
-  
-
-  
-
   "--force-direct [[PARSED BEFORE CLAP]]
     'Run the originally installed version of Parity, ignoring any updates that have since been installed.'"
 

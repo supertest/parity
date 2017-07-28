@@ -50,7 +50,6 @@ usage! {
 		flag_cache: Option<u32>,
 
 		// -- Miscellaneous Options
-		flag_version: bool,
 		flag_no_config: bool,
 	}
 	{
@@ -1029,7 +1028,6 @@ mod tests {
 
 			// -- Miscellaneous Options
 			flag_ntp_server: "pool.ntp.org:123".into(),
-			flag_version: false,
 			flag_logging: Some("own_tx=trace".into()),
 			flag_log_file: Some("/var/log/parity.log".into()),
 			flag_no_color: false,

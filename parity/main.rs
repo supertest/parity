@@ -157,7 +157,6 @@ fn execute(command: Execute, can_restart: bool) -> Result<PostExecutionAction, S
 			let (restart, spec_name) = run::execute(run_cmd, can_restart, logger)?;
 			Ok(if restart { PostExecutionAction::Restart(spec_name) } else { PostExecutionAction::Quit })
 		},
-		Cmd::Version => Ok(PostExecutionAction::Print(Args::print_version())),
 		Cmd::Hash(maybe_file) => print_hash_of(maybe_file).map(|s| PostExecutionAction::Print(s)),
 		Cmd::Account(account_cmd) => account::execute(account_cmd).map(|s| PostExecutionAction::Print(s)),
 		Cmd::ImportPresaleWallet(presale_cmd) => presale::execute(presale_cmd).map(|s| PostExecutionAction::Print(s)),

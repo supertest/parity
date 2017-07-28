@@ -83,7 +83,6 @@ macro_rules! usage {
 		use std::io::{Read, Write};
 		use std::str::FromStr;
 		use util::version;
-		use docopt::{Docopt, Error as DocoptError};
 		use clap::{Arg, App, SubCommand, AppSettings, Values, Error as ClapError};
 		use helpers::replace_home;
 
