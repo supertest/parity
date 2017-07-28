@@ -50,10 +50,10 @@ macro_rules! usage {
 		}
 		{
 			$(
-				CMD $subcommand:ident : $typ_subcommand:ty
+				CMD $subcommand:ident
 				{
 					$(
-						CMD $subsubcommand:ident : $typ_subsubcommand:ty
+						CMD $subsubcommand:ident
 						{
 							$(
 								ARG $subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $clap_subsubcommand_arg:expr,
@@ -143,7 +143,7 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub $subcommand: bool, /* @TODO hardcoded / remove :bool from the call */
+				pub $subcommand: bool,
 
 				$(
 					pub $subsubcommand: bool,
@@ -230,7 +230,7 @@ macro_rules! usage {
 				$field_s: Option<$typ_s>,
 			)*
 			$(
-				$subcommand: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+				$subcommand: bool,
 				
 				$(
 					$subsubcommand: bool,

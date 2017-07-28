@@ -346,96 +346,96 @@ usage! {
 		// Arguments must start with arg_
 		// Actual name used in CLI after the last "_"
 
-		CMD cmd_wallet: bool
+		CMD cmd_wallet
 		{
-			CMD cmd_wallet_import: bool
+			CMD cmd_wallet_import
 			{
 				ARG arg_wallet_import_path: String, |arg| Arg::required(arg,true).index(3), // setting it to Vec<String> so that it's the same everywhere
 				ARG arg_wallet_import_password: String, |arg| Arg::required(arg,true).value_name("FILE"), // @TODO ?? flag password ??
 			}
 		}
 
-		CMD cmd_account: bool
+		CMD cmd_account
 		{
-			CMD cmd_account_new: bool {}
+			CMD cmd_account_new {}
 
-			CMD cmd_account_list: bool {}
+			CMD cmd_account_list {}
 
-			CMD cmd_account_import: bool
+			CMD cmd_account_import
 			{
 				ARGM arg_account_import_path: String, |arg| Arg::required(arg,true).index(3),
 			}
 		}
 
-		CMD cmd_dapp: bool
+		CMD cmd_dapp
 		{
 			ARG arg_dapp_path: String, |arg| Arg::index(arg,2).required(true),
 		}
 		
-		CMD cmd_daemon: bool
+		CMD cmd_daemon
 		{
 			ARG arg_daemon_pid_file: String, |arg| Arg::index(arg,2).required(true),
 		}
 
-		CMD cmd_export: bool // evtl: |&sc: SubCommand| sc.help("blablabla")
+		CMD cmd_export // evtl: |&sc: SubCommand| sc.help("blablabla")
 		{
-			CMD cmd_export_blocks: bool
+			CMD cmd_export_blocks
 			{
 				ARG arg_export_blocks_file: String, |arg| Arg::index(arg,3),
 			}
 
-			CMD cmd_export_state: bool
+			CMD cmd_export_state
 			{
 				ARG arg_export_state_file: String, |arg| Arg::index(arg,3),
 			}
 		}
 		
-		CMD cmd_import: bool // todo already subsubcommand named import
+		CMD cmd_import // todo already subsubcommand named import
 		{
 			ARG arg_import_file: String, |arg| Arg::index(arg,2),
 		}
 
-		CMD cmd_signer: bool
+		CMD cmd_signer
 		{
-			CMD cmd_signer_new_token: bool {}
+			CMD cmd_signer_new_token {}
 
-			CMD cmd_signer_list: bool {}
+			CMD cmd_signer_list {}
 
-			CMD cmd_signer_sign: bool
+			CMD cmd_signer_sign
 			{
 				ARG arg_signer_sign_id: usize, |arg| Arg::index(arg,3),
 				ARG arg_signer_sign_password: String, |arg| Arg::value_name(arg,"FILE"),
 			}
 
-			CMD cmd_signer_reject: bool
+			CMD cmd_signer_reject
 			{
 				ARG arg_signer_reject_id: usize, |arg| Arg::index(arg,3),
 			}
 		}
 
-		CMD cmd_snapshot: bool
+		CMD cmd_snapshot
 		{
 			ARG arg_snapshot_file: String, |arg| Arg::required(arg,true).index(2),
 		}
 
-		CMD cmd_restore: bool
+		CMD cmd_restore
 		{
 			ARG arg_restore_file: String, |arg| Arg::index(arg,2),
 		}
 
-		CMD cmd_ui: bool {}
+		CMD cmd_ui {}
 
-		CMD cmd_tools: bool
+		CMD cmd_tools
 		{
-			CMD cmd_tools_hash: bool
+			CMD cmd_tools_hash
 			{
 				ARG arg_tools_hash_file: String, |arg| Arg::required(arg,true).index(3),
 			}
 		}
 		
-		CMD cmd_db: bool
+		CMD cmd_db
 		{
-			CMD cmd_db_kill: bool {}
+			CMD cmd_db_kill {}
 		}
 	}
 	{
