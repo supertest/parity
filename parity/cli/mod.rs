@@ -20,7 +20,6 @@ use dir;
 
 usage! {
 	{
-
 		// Flags
 		// -- Legacy Options
 		flag_geth: bool,
@@ -364,7 +363,7 @@ usage! {
 
 			CMD cmd_account_import: bool
 			{
-				ARG arg_account_import_path: Vec<String>, |arg| Arg::required(arg,true).index(3).multiple(true),
+				ARGM arg_account_import_path: String, |arg| Arg::required(arg,true).index(3),
 			}
 		}
 

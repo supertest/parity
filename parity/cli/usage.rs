@@ -58,11 +58,17 @@ macro_rules! usage {
 							$(
 								ARG $subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $clap_subsubcommand_arg:expr,
 							)*
+							$(
+								ARGM $subsubcommand_argm:ident : $typ_subsubcommand_argm:ty, $clap_subsubcommand_argm:expr,
+							)*
 						}
 					)*
 
 					$(
 						ARG $subcommand_arg:ident : $typ_subcommand_arg:ty, $clap_subcommand_arg:expr,
+					)*
+					$(
+						ARGM $subcommand_argm:ident : $typ_subcommand_argm:ty, $clap_subcommand_argm:expr,
 					)*
 				}
 			)*
@@ -81,32 +87,9 @@ macro_rules! usage {
 		use toml;
 		use std::{fs, io, process};
 		use std::io::{Read, Write};
-		use std::str::FromStr;
 		use util::version;
-		use clap::{Arg, App, SubCommand, AppSettings, Values, Error as ClapError};
+		use clap::{Arg, App, SubCommand, AppSettings, Error as ClapError};
 		use helpers::replace_home;
-
-		trait FromClapValues { // converts Vec<&str> to T or Vec<T>
-			fn from_clap_values(s: Vec<&str>) -> Self;
-		}
-
-		impl FromClapValues for String {
-			fn from_clap_values(s: Vec<&str>) -> Self {
-				s.first().unwrap().parse::<String>().unwrap() // @TODO UNWRAP + @TODO ERROR HANDLING
-			}
-		}
-
-		impl FromClapValues for usize {
-			fn from_clap_values(s: Vec<&str>) -> Self {
-				s.first().unwrap().parse::<usize>().unwrap() // @TODO UNWRAP + @TODO ERROR HANDLING
-			}
-		}
-
-		impl<T> FromClapValues for Vec<T> where T:FromStr {
-			fn from_clap_values(s: Vec<&str>) -> Self {
-				s.iter().map(|x| x.parse::<T>().ok().unwrap()).collect() // why do we need .ok()?
-			}
-		}
 
 		#[derive(Debug)]
 		pub enum ArgsError {
@@ -167,10 +150,16 @@ macro_rules! usage {
 					$(
 						pub $subsubcommand_arg: Option<$typ_subsubcommand_arg>,
 					)*
+					$(
+						pub $subsubcommand_argm: Option<Vec<$typ_subsubcommand_argm>>,
+					)*
 				)*
 
 				$(
 					pub $subcommand_arg: Option<$typ_subcommand_arg>,
+				)*
+				$(
+					pub $subcommand_argm: Option<Vec<$typ_subcommand_argm>>,
 				)*
 			)*
 
@@ -205,10 +194,16 @@ macro_rules! usage {
 							$(
 								$subsubcommand_arg: Default::default(),
 							)*
+							$(
+								$subsubcommand_argm: Default::default(),
+							)*
 						)*
 
 						$(
 							$subcommand_arg: Default::default(),
+						)*
+						$(
+							$subcommand_argm: Default::default(),
 						)*
 					)*
 
@@ -242,10 +237,16 @@ macro_rules! usage {
 					$(
 						$subsubcommand_arg: Option<$typ_subsubcommand_arg>,
 					)*
+					$(
+						$subsubcommand_argm: Option<Vec<$typ_subsubcommand_argm>>,
+					)*
 				)*
 
 				$(
 					$subcommand_arg: Option<$typ_subcommand_arg>,
+				)*
+				$(
+					$subcommand_argm: Option<Vec<$typ_subcommand_argm>>,
 				)*
 			)*
 			$(
@@ -326,10 +327,16 @@ macro_rules! usage {
 						$(
 							args.$subsubcommand_arg = self.$subsubcommand_arg;
 						)*
+						$(
+							args.$subsubcommand_argm = self.$subsubcommand_argm;
+						)*
 					)*
 
 					$(
 						args.$subcommand_arg = self.$subcommand_arg;
+					)*
+					$(
+						args.$subcommand_argm = self.$subcommand_argm;
 					)*
 				)*
 				$(
@@ -364,10 +371,16 @@ macro_rules! usage {
 										$(
 											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..]))))
 										)*
+										$(
+											.arg($clap_subsubcommand_argm(Arg::with_name(&(stringify!($subsubcommand_argm)[stringify!($subsubcommand).len()+1..])).multiple(true)))
+										)*
 									)
 								)*
 								$(
 									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[stringify!($subcommand).len()+1..]))))
+								)*
+								$(
+									.arg($clap_subcommand_argm(Arg::with_name(&(stringify!($subcommand_argm)[stringify!($subcommand).len()+1..])).multiple(true)))
 								)*
 							)
 						)*
@@ -398,18 +411,11 @@ macro_rules! usage {
 
 								// Sub-subcommand arguments
 								$(
-									// raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
-									
-									// possible de décompoesr
-									// @todo comment
-									raw_args.$subsubcommand_arg =
-										subsubmatches
-											.values_of(&stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..])
-											.map(|val| Values::collect(val)) // @todo use values instead of vec in the impl @todo map ok() because collect on Iterator<Option> returns Option<Vecs> WTF. type hint ! .collect::<Vec<T>>() ne change rien...
-											.map(|vec: Vec<&str>| <$typ_subsubcommand_arg>::from_clap_values(vec));
-											// .map parse as type
-
-//									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
+									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
+								)*
+								$(
+									// might need to convert from values to vec
+									raw_args.$subsubcommand_argm = values_t!(subsubmatches, &stringify!($subsubcommand_argm)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_argm).ok();
 								)*
 							}
 							else {
@@ -420,6 +426,9 @@ macro_rules! usage {
 						// Subcommand arguments
 						$(
 							raw_args.$subcommand_arg = value_t!(submatches, &stringify!($subcommand_arg)[stringify!($subcommand).len()+1..], $typ_subcommand_arg).ok();
+						)*
+						$(
+							raw_args.$subcommand_argm = values_t!(submatches, &stringify!($subcommand_argm)[stringify!($subcommand).len()+1..], $typ_subcommand_argm).ok();
 						)*
 					}
 					else {
