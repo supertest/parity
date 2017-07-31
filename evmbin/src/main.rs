@@ -94,7 +94,7 @@ fn run<T: Informant>(args: Args, mut informant: T) {
 #[derive(Debug, Deserialize)]
 struct Args {
 	cmd_stats: bool,
-	flag_from: Option<String>,
+	arg_from: Option<String>,
 	flag_code: Option<String>,
 	flag_gas: Option<String>,
 	flag_input: Option<String>,
@@ -111,7 +111,7 @@ impl Args {
 	}
 
 	pub fn from(&self) -> Result<Address, String> {
-		match self.flag_from {
+		match self.arg_from {
 			Some(ref from) => from.parse().map_err(to_string),
 			None => Ok(Address::default()),
 		}
