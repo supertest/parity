@@ -34,391 +34,336 @@ Operating Options:
     'Specify the database directory path'"
 
 Account Options:
-  --unlock ACCOUNTS                Unlock ACCOUNTS for the duration of the execution.
-                                   ACCOUNTS is a comma-delimited list of addresses.
-                                   Implies --no-ui. (default: {flag_unlock:?})
-  --password FILE                  Provide a file containing a password for unlocking
-                                   an account. Leading and trailing whitespace is trimmed.
-                                   (default: {flag_password:?})
-  --keys-iterations NUM            Specify the number of iterations to use when
-                                   deriving key from the password (bigger is more
-                                   secure) (default: {flag_keys_iterations}).
-  --no-hardware-wallets            Disables hardware wallet support. (default: {flag_no_hardware_wallets})
-  --fast-unlock                    Use drasticly faster unlocking mode. This setting causes
-                                   raw secrets to be stored unprotected in memory,
-                                   so use with care. (default: {flag_fast_unlock})
+"--fast-unlock
+	'Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care. '"
 
 UI Options:
-  --force-ui                       Enable Trusted UI WebSocket endpoint,
-                                   even when --unlock is in use. (default: {flag_force_ui})
-  --no-ui                          Disable Trusted UI WebSocket endpoint.
-                                   (default: {flag_no_ui})
-  --ui-port PORT                   Specify the port of Trusted UI server
-                                   (default: {flag_ui_port}).
-  --ui-interface IP                Specify the hostname portion of the Trusted UI
-                                   server, IP should be an interface's IP address,
-                                   or local (default: {flag_ui_interface}).
-  --ui-hosts HOSTS                 List of allowed Host header values. This option will
-                                   validate the Host header sent by the browser, it
-                                   is additional security against some attack
-                                   vectors. Special options: "all", "none",
-                                   (default: {flag_ui_hosts}).
-  --ui-path PATH                   Specify directory where Trusted UIs tokens should
-                                   be stored. (default: {flag_ui_path})
-  --ui-no-validation               Disable Origin and Host headers validation for
-                                   Trusted UI. WARNING: INSECURE. Used only for
-                                   development. (default: {flag_ui_no_validation})
+"--force-ui
+	'Enable Trusted UI WebSocket endpoint, even when --unlock is in use. '"
+"--no-ui
+	'Disable Trusted UI WebSocket endpoint. '"
+"--ui-port PORT
+	'Specify the port of Trusted UI server.'"
+"--ui-interface IP
+	'Specify the hostname portion of the Trusted UI server, IP should be an interface's IP address, or local.'"
+"--ui-hosts HOSTS
+	'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none",.'"
+"--ui-path PATH
+	'Specify directory where Trusted UIs tokens should be stored. '"
+"--ui-no-validation
+	'Disable Origin and Host headers validation for Trusted UI. WARNING: INSECURE. Used only for development. '"
 
 Networking Options:
-  --no-warp                        Disable syncing from the snapshot over the network. (default: {flag_no_warp})
-  --port PORT                      Override the port on which the node should listen
-                                   (default: {flag_port}).
-  --min-peers NUM                  Try to maintain at least NUM peers (default: {flag_min_peers}).
-  --max-peers NUM                  Allow up to NUM peers (default: {flag_max_peers}).
-  --snapshot-peers NUM             Allow additional NUM peers for a snapshot sync
-                                   (default: {flag_snapshot_peers}).
-  --nat METHOD                     Specify method to use for determining public
-                                   address. Must be one of: any, none, upnp,
-                                   extip:<IP> (default: {flag_nat}).
-  --network-id INDEX               Override the network identifier from the chain we
-                                   are on. (default: {flag_network_id:?})
-  --bootnodes NODES                Override the bootnodes from our chain. NODES should
-                                   be comma-delimited enodes. (default: {flag_bootnodes:?})
-  --no-discovery                   Disable new peer discovery. (default: {flag_no_discovery})
-  --node-key KEY                   Specify node secret key, either as 64-character hex
-                                   string or input to SHA3 operation. (default: {flag_node_key:?})
-  --reserved-peers FILE            Provide a file containing enodes, one per line.
-                                   These nodes will always have a reserved slot on top
-                                   of the normal maximum peers. (default: {flag_reserved_peers:?})
-  --reserved-only                  Connect only to reserved nodes. (default: {flag_reserved_only})
-  --allow-ips FILTER               Filter outbound connections. Must be one of:
-                                   private - connect to private network IP addresses only;
-                                   public - connect to public network IP addresses only;
-                                   all - connect to any IP address.
-                                   (default: {flag_allow_ips})
-  --max-pending-peers NUM          Allow up to NUM pending connections. (default: {flag_max_pending_peers})
-  --no-ancient-blocks              Disable downloading old blocks after snapshot restoration
-                                   or warp sync. (default: {flag_no_ancient_blocks})
-  --no-serve-light                 Disable serving of light peers. (default: {flag_no_serve_light})
+"--no-warp
+	'Disable syncing from the snapshot over the network. '"
+"--port PORT
+	'Override the port on which the node should listen.'"
+"--min-peers NUM
+	'Try to maintain at least NUM peers.'"
+"--max-peers NUM
+	'Allow up to NUM peers.'"
+"--snapshot-peers NUM
+	'Allow additional NUM peers for a snapshot sync.'"
+"--nat METHOD
+	'Specify method to use for determining public address. Must be one of: any, none, upnp, extip:<IP>.'"
+"--network-id INDEX
+	'Override the network identifier from the chain we are on. '"
+"--bootnodes NODES
+	'Override the bootnodes from our chain. NODES should be comma-delimited enodes. '"
+"--no-discovery
+	'Disable new peer discovery. '"
+"--node-key KEY
+	'Specify node secret key, either as 64-character hex string or input to SHA3 operation. '"
+"--reserved-peers FILE
+	'Provide a file containing enodes, one per line. These nodes will always have a reserved slot on top of the normal maximum peers. '"
+"--reserved-only
+	'Connect only to reserved nodes. '"
+"--allow-ips FILTER
+	'Filter outbound connections. Must be one of: private - connect to private network IP addresses only; public - connect to public network IP addresses only; all - connect to any IP address. '"
+"--max-pending-peers NUM
+	'Allow up to NUM pending connections. '"
+"--no-ancient-blocks
+	'Disable downloading old blocks after snapshot restoration or warp sync. '"
+"--no-serve-light
+	'Disable serving of light peers. '"
 
 API and Console Options:
-  --no-jsonrpc                     Disable the JSON-RPC API server. (default: {flag_no_jsonrpc})
-  --jsonrpc-port PORT              Specify the port portion of the JSONRPC API server
-                                   (default: {flag_jsonrpc_port}).
-  --jsonrpc-interface IP           Specify the hostname portion of the JSONRPC API
-                                   server, IP should be an interface's IP address, or
-                                   all (all interfaces) or local (default: {flag_jsonrpc_interface}).
-  --jsonrpc-cors URL               Specify CORS header for JSON-RPC API responses.
-                                   (default: {flag_jsonrpc_cors:?})
-  --jsonrpc-apis APIS              Specify the APIs available through the JSONRPC
-                                   interface. APIS is a comma-delimited list of API
-                                   name. Possible name are all, safe, web3, eth, net, personal,
-                                   parity, parity_set, traces, rpc, parity_accounts.
-                                   You can also disable a specific API by putting '-' in the front: all,-personal
-                                   (default: {flag_jsonrpc_apis}).
-  --jsonrpc-hosts HOSTS            List of allowed Host header values. This option will
-                                   validate the Host header sent by the browser, it
-                                   is additional security against some attack
-                                   vectors. Special options: "all", "none",
-                                   (default: {flag_jsonrpc_hosts}).
-  --jsonrpc-server-threads NUM     Enables experimental faster implementation of JSON-RPC server.
-                                   Requires Dapps server to be disabled
-                                   using --no-dapps. (default: {flag_jsonrpc_server_threads:?})
-  --jsonrpc-threads THREADS        Turn on additional processing threads in all RPC servers.
-                                   Setting this to non-zero value allows parallel cpu-heavy queries
-                                   execution. (default: {flag_jsonrpc_threads})
+"--no-jsonrpc
+	'Disable the JSON-RPC API server. '"
+"--jsonrpc-port PORT
+	'Specify the port portion of the JSONRPC API server.'"
+"--jsonrpc-interface IP
+	'Specify the hostname portion of the JSONRPC API server, IP should be an interface's IP address, or all (all interfaces) or local.'"
+"--jsonrpc-cors URL
+	'Specify CORS header for JSON-RPC API responses. '"
+"--jsonrpc-apis APIS
+	'Specify the APIs available through the JSONRPC interface. APIS is a comma-delimited list of API name. Possible name are all, safe, web3, eth, net, personal, parity, parity_set, traces, rpc, parity_accounts. You can also disable a specific API by putting '-' in the front: all,-personal.'"
+"--jsonrpc-hosts HOSTS
+	'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none",.'"
+"--jsonrpc-server-threads NUM
+	'Enables experimental faster implementation of JSON-RPC server. Requires Dapps server to be disabled using --no-dapps. '"
+"--jsonrpc-threads THREADS
+	'Turn on additional processing threads in all RPC servers. Setting this to non-zero value allows parallel cpu-heavy queries execution. '"
 
-  --no-ws                          Disable the WebSockets server. (default: {flag_no_ws})
-  --ws-port PORT                   Specify the port portion of the WebSockets server
-                                   (default: {flag_ws_port}).
-  --ws-interface IP                Specify the hostname portion of the WebSockets
-                                   server, IP should be an interface's IP address, or
-                                   all (all interfaces) or local (default: {flag_ws_interface}).
-  --ws-apis APIS                   Specify the APIs available through the WebSockets
-                                   interface. APIS is a comma-delimited list of API
-                                   name. Possible name are web3, eth, pubsub, net, personal,
-                                   parity, parity_set, traces, rpc, parity_accounts.
-                                   (default: {flag_ws_apis}).
-  --ws-origins URL                 Specify Origin header values allowed to connect.
-                                   Special options: "all", "none".
-                                   (default: {flag_ws_origins})
-  --ws-hosts HOSTS                 List of allowed Host header values. This option will
-                                   validate the Host header sent by the browser, it
-                                   is additional security against some attack
-                                   vectors. Special options: "all", "none",
-                                   (default: {flag_ws_hosts}).
+"--no-ws
+	'Disable the WebSockets server. '"
+"--ws-port PORT
+	'Specify the port portion of the WebSockets server.'"
+"--ws-interface IP
+	'Specify the hostname portion of the WebSockets server, IP should be an interface's IP address, or all (all interfaces) or local.'"
+"--ws-apis APIS
+	'Specify the APIs available through the WebSockets interface. APIS is a comma-delimited list of API name. Possible name are web3, eth, pubsub, net, personal, parity, parity_set, traces, rpc, parity_accounts..'"
+"--ws-origins URL
+	'Specify Origin header values allowed to connect. Special options: "all", "none". '"
+"--ws-hosts HOSTS
+	'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none",.'"
 
-  --no-ipc                         Disable JSON-RPC over IPC service. (default: {flag_no_ipc})
-  --ipc-path PATH                  Specify custom path for JSON-RPC over IPC service
-                                   (default: {flag_ipc_path}).
-  --ipc-apis APIS                  Specify custom API set available via JSON-RPC over
-                                   IPC (default: {flag_ipc_apis}).
+"--no-ipc
+	'Disable JSON-RPC over IPC service. '"
+"--ipc-path PATH
+	'Specify custom path for JSON-RPC over IPC service.'"
+"--ipc-apis APIS
+	'Specify custom API set available via JSON-RPC over IPC.'"
 
-  --no-dapps                       Disable the Dapps server (e.g. status page). (default: {flag_no_dapps})
-  --dapps-path PATH                Specify directory where dapps should be installed.
-                                   (default: {flag_dapps_path})
-  --ipfs-api                       Enable IPFS-compatible HTTP API. (default: {flag_ipfs_api})
-  --ipfs-api-port PORT             Configure on which port the IPFS HTTP API should listen.
-                                   (default: {flag_ipfs_api_port})
-  --ipfs-api-interface IP          Specify the hostname portion of the IPFS API server,
-                                   IP should be an interface's IP address or local.
-                                   (default: {flag_ipfs_api_interface})
-  --ipfs-api-cors URL              Specify CORS header for IPFS API responses.
-                                   (default: {flag_ipfs_api_cors:?})
-  --ipfs-api-hosts HOSTS           List of allowed Host header values. This option will
-                                   validate the Host header sent by the browser, it
-                                   is additional security against some attack
-                                   vectors. Special options: "all", "none"
-                                   (default: {flag_ipfs_api_hosts}).
+"--no-dapps
+	'Disable the Dapps server (e.g. status page). '"
+"--dapps-path PATH
+	'Specify directory where dapps should be installed. '"
+"--ipfs-api
+	'Enable IPFS-compatible HTTP API. '"
+"--ipfs-api-port PORT
+	'Configure on which port the IPFS HTTP API should listen. '"
+"--ipfs-api-interface IP
+	'Specify the hostname portion of the IPFS API server, IP should be an interface's IP address or local. '"
+"--ipfs-api-cors URL
+	'Specify CORS header for IPFS API responses. '"
+"--ipfs-api-hosts HOSTS
+	'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none".'"
 
 Secret Store Options:
-  --no-secretstore                 Disable Secret Store functionality. (default: {flag_no_secretstore})
-  --secretstore-secret SECRET      Hex-encoded secret key of this node.
-                                   (required, default: {flag_secretstore_secret:?}).
-  --secretstore-nodes NODES        Comma-separated list of other secret store cluster nodes in form
-                                   NODE_PUBLIC_KEY_IN_HEX@NODE_IP_ADDR:NODE_PORT.
-                                   (required, default: {flag_secretstore_nodes}).
-  --secretstore-interface IP       Specify the hostname portion for listening to Secret Store Key Server
-                                   internal requests, IP should be an interface's IP address, or local
-                                   (default: {flag_secretstore_interface}).
-  --secretstore-port PORT          Specify the port portion for listening to Secret Store Key Server
-                                   internal requests (default: {flag_secretstore_port}).
-  --secretstore-http-interface IP  Specify the hostname portion for listening to Secret Store Key Server
-                                   HTTP requests, IP should be an interface's IP address, or local
-                                   (default: {flag_secretstore_http_interface}).
-  --secretstore-http-port PORT     Specify the port portion for listening to Secret Store Key Server
-                                   HTTP requests (default: {flag_secretstore_http_port}).
-  --secretstore-path PATH          Specify directory where Secret Store should save its data.
-                                   (default: {flag_secretstore_path}).
+"--no-secretstore
+	'Disable Secret Store functionality. '"
+"--secretstore-secret SECRET
+	'Hex-encoded secret key of this node. (required, default: {flag_secretstore_secret:?}).'"
+"--secretstore-nodes NODES
+	'Comma-separated list of other secret store cluster nodes in form NODE_PUBLIC_KEY_IN_HEX@NODE_IP_ADDR:NODE_PORT. (required, default: {flag_secretstore_nodes}).'"
+"--secretstore-interface IP
+	'Specify the hostname portion for listening to Secret Store Key Server internal requests, IP should be an interface's IP address, or local.'"
+"--secretstore-port PORT
+	'Specify the port portion for listening to Secret Store Key Server internal requests.'"
+"--secretstore-http-interface IP
+	'Specify the hostname portion for listening to Secret Store Key Server HTTP requests, IP should be an interface's IP address, or local.'"
+"--secretstore-http-port PORT
+	'Specify the port portion for listening to Secret Store Key Server HTTP requests.'"
+"--secretstore-path PATH
+	'Specify directory where Secret Store should save its data..'"
 
 Sealing/Mining Options:
-  --author ADDRESS                 Specify the block author (aka "coinbase") address
-                                   for sending block rewards from sealed blocks.
-                                   NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION.
-                                   (default: {flag_author:?})
-  --engine-signer ADDRESS          Specify the address which should be used to
-                                   sign consensus messages and issue blocks.
-                                   Relevant only to non-PoW chains.
-                                   (default: {flag_engine_signer:?})
-  --force-sealing                  Force the node to author new blocks as if it were
-                                   always sealing/mining.
-                                   (default: {flag_force_sealing})
-  --reseal-on-txs SET              Specify which transactions should force the node
-                                   to reseal a block. SET is one of:
-                                   none - never reseal on new transactions;
-                                   own - reseal only on a new local transaction;
-                                   ext - reseal only on a new external transaction;
-                                   all - reseal on all new transactions
-                                   (default: {flag_reseal_on_txs}).
-  --reseal-on-uncle                Force the node to author new blocks when a new uncle
-                                   block is imported.
-                                   (default: {flag_reseal_on_uncle})
-  --reseal-min-period MS           Specify the minimum time between reseals from
-                                   incoming transactions. MS is time measured in
-                                   milliseconds (default: {flag_reseal_min_period}).
-  --reseal-max-period MS           Specify the maximum time since last block to enable
-                                   force-sealing. MS is time measured in
-                                   milliseconds (default: {flag_reseal_max_period}).
-  --work-queue-size ITEMS          Specify the number of historical work packages
-                                   which are kept cached lest a solution is found for
-                                   them later. High values take more memory but result
-                                   in fewer unusable solutions (default: {flag_work_queue_size}).
-  --tx-gas-limit GAS               Apply a limit of GAS as the maximum amount of gas
-                                   a single transaction may have for it to be mined.
-                                   (default: {flag_tx_gas_limit:?})
-  --tx-time-limit MS               Maximal time for processing single transaction.
-                                   If enabled senders/recipients/code of transactions
-                                   offending the limit will be banned from being included
-                                   in transaction queue for 180 seconds.
-                                   (default: {flag_tx_time_limit:?})
-  --relay-set SET                  Set of transactions to relay. SET may be:
-                                   cheap - Relay any transaction in the queue (this
-                                   may include invalid transactions);
-                                   strict - Relay only executed transactions (this
-                                   guarantees we don't relay invalid transactions, but
-                                   means we relay nothing if not mining);
-                                   lenient - Same as strict when mining, and cheap
-                                   when not (default: {flag_relay_set}).
-  --usd-per-tx USD                 Amount of USD to be paid for a basic transaction
-                                   (default: {flag_usd_per_tx}). The minimum gas price is set
-                                   accordingly.
-  --usd-per-eth SOURCE             USD value of a single ETH. SOURCE may be either an
-                                   amount in USD, a web service or 'auto' to use each
-                                   web service in turn and fallback on the last known
-                                   good value (default: {flag_usd_per_eth}).
-  --price-update-period T          T will be allowed to pass between each gas price
-                                   update. T may be daily, hourly, a number of seconds,
-                                   or a time string of the form "2 days", "30 minutes"
-                                   etc. (default: {flag_price_update_period}).
-  --gas-floor-target GAS           Amount of gas per block to target when sealing a new
-                                   block (default: {flag_gas_floor_target}).
-  --gas-cap GAS                    A cap on how large we will raise the gas limit per
-                                   block due to transaction volume (default: {flag_gas_cap}).
-  --extra-data STRING              Specify a custom extra-data for authored blocks, no
-                                   more than 32 characters. (default: {flag_extra_data:?})
-  --tx-queue-mem-limit MB          Maximum amount of memory that can be used by the
-                                   transaction queue. Setting this parameter to 0
-                                   disables limiting (default: {flag_tx_queue_mem_limit}).
-  --tx-queue-size LIMIT            Maximum amount of transactions in the queue (waiting
-                                   to be included in next block) (default: {flag_tx_queue_size}).
-  --tx-queue-gas LIMIT             Maximum amount of total gas for external transactions in
-                                   the queue. LIMIT can be either an amount of gas or
-                                   'auto' or 'off'. 'auto' sets the limit to be 20x
-                                   the current block gas limit. (default: {flag_tx_queue_gas}).
-  --tx-queue-strategy S            Prioritization strategy used to order transactions
-                                   in the queue. S may be:
-                                   gas - Prioritize txs with low gas limit;
-                                   gas_price - Prioritize txs with high gas price;
-                                   gas_factor - Prioritize txs using gas price
-                                   and gas limit ratio (default: {flag_tx_queue_strategy}).
-  --tx-queue-ban-count C           Number of times maximal time for execution (--tx-time-limit)
-                                   can be exceeded before banning sender/recipient/code.
-                                   (default: {flag_tx_queue_ban_count})
-  --tx-queue-ban-time SEC          Banning time (in seconds) for offenders of specified
-                                   execution time limit. Also number of offending actions
-                                   have to reach the threshold within that time.
-                                   (default: {flag_tx_queue_ban_time} seconds)
-  --remove-solved                  Move solved blocks from the work package queue
-                                   instead of cloning them. This gives a slightly
-                                   faster import speed, but means that extra solutions
-                                   submitted for the same work package will go unused.
-                                   (default: {flag_remove_solved})
-  --notify-work URLS               URLs to which work package notifications are pushed.
-                                   URLS should be a comma-delimited list of HTTP URLs.
-                                   (default: {flag_notify_work:?})
-  --refuse-service-transactions    Always refuse service transactions.
-                                   (default: {flag_refuse_service_transactions}).
-  --stratum                        Run Stratum server for miner push notification. (default: {flag_stratum})
-  --stratum-interface IP           Interface address for Stratum server. (default: {flag_stratum_interface})
-  --stratum-port PORT              Port for Stratum server to listen on. (default: {flag_stratum_port})
-  --stratum-secret STRING          Secret for authorizing Stratum server for peers.
-                                   (default: {flag_stratum_secret:?})
+"--author ADDRESS
+	'Specify the block author (aka "coinbase") address for sending block rewards from sealed blocks. NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION. '"
+"--engine-signer ADDRESS
+	'Specify the address which should be used to sign consensus messages and issue blocks. Relevant only to non-PoW chains. '"
+"--force-sealing
+	'Force the node to author new blocks as if it were always sealing/mining. '"
+"--reseal-on-txs SET
+	'Specify which transactions should force the node to reseal a block. SET is one of: none - never reseal on new transactions; own - reseal only on a new local transaction; ext - reseal only on a new external transaction; all - reseal on all new transactions.'"
+"--reseal-on-uncle
+	'Force the node to author new blocks when a new uncle block is imported. '"
+"--reseal-min-period MS
+	'Specify the minimum time between reseals from incoming transactions. MS is time measured in milliseconds.'"
+"--reseal-max-period MS
+	'Specify the maximum time since last block to enable force-sealing. MS is time measured in milliseconds.'"
+"--work-queue-size ITEMS
+	'Specify the number of historical work packages which are kept cached lest a solution is found for them later. High values take more memory but result in fewer unusable solutions.'"
+"--tx-gas-limit GAS
+	'Apply a limit of GAS as the maximum amount of gas a single transaction may have for it to be mined. '"
+"--tx-time-limit MS
+	'Maximal time for processing single transaction. If enabled senders/recipients/code of transactions offending the limit will be banned from being included in transaction queue for 180 seconds. '"
+"--relay-set SET
+	'Set of transactions to relay. SET may be: cheap - Relay any transaction in the queue (this may include invalid transactions); strict - Relay only executed transactions (this guarantees we don't relay invalid transactions, but means we relay nothing if not mining); lenient - Same as strict when mining, and cheap when not.'"
+"--usd-per-tx USD
+	'Amount of USD to be paid for a basic transaction. The minimum gas price is set accordingly.'"
+"--usd-per-eth SOURCE
+	'USD value of a single ETH. SOURCE may be either an amount in USD, a web service or 'auto' to use each web service in turn and fallback on the last known good value.'"
+"--price-update-period T
+	'T will be allowed to pass between each gas price update. T may be daily, hourly, a number of seconds, or a time string of the form "2 days", "30 minutes" etc..'"
+"--gas-floor-target GAS
+	'Amount of gas per block to target when sealing a new block.'"
+"--gas-cap GAS
+	'A cap on how large we will raise the gas limit per block due to transaction volume.'"
+"--extra-data STRING
+	'Specify a custom extra-data for authored blocks, no more than 32 characters. '"
+"--tx-queue-mem-limit MB
+	'Maximum amount of memory that can be used by the transaction queue. Setting this parameter to 0 disables limiting.'"
+"--tx-queue-size LIMIT
+	'Maximum amount of transactions in the queue (waiting to be included in next block).'"
+"--tx-queue-gas LIMIT
+	'Maximum amount of total gas for external transactions in the queue. LIMIT can be either an amount of gas or 'auto' or 'off'. 'auto' sets the limit to be 20x the current block gas limit..'"
+"--tx-queue-strategy S
+	'Prioritization strategy used to order transactions in the queue. S may be: gas - Prioritize txs with low gas limit; gas_price - Prioritize txs with high gas price; gas_factor - Prioritize txs using gas price and gas limit ratio.'"
+"--tx-queue-ban-count C
+	'Number of times maximal time for execution (--tx-time-limit) can be exceeded before banning sender/recipient/code. '"
+"--tx-queue-ban-time SEC
+	'Banning time (in seconds) for offenders of specified execution time limit. Also number of offending actions have to reach the threshold within that time. (default: {flag_tx_queue_ban_time} seconds)'"
+"--remove-solved
+	'Move solved blocks from the work package queue instead of cloning them. This gives a slightly faster import speed, but means that extra solutions submitted for the same work package will go unused. '"
+"--notify-work URLS
+	'URLs to which work package notifications are pushed. URLS should be a comma-delimited list of HTTP URLs. '"
+"--refuse-service-transactions
+	'Always refuse service transactions..'"
+"--stratum
+	'Run Stratum server for miner push notification. '"
+"--stratum-interface IP
+	'Interface address for Stratum server. '"
+"--stratum-port PORT
+	'Port for Stratum server to listen on. '"
+"--stratum-secret STRING
+	'Secret for authorizing Stratum server for peers. '"
 
 Footprint Options:
-  --tracing BOOL                   Indicates if full transaction tracing should be
-                                   enabled. Works only if client had been fully synced
-                                   with tracing enabled. BOOL may be one of auto, on,
-                                   off. auto uses last used value of this option (off
-                                   if it does not exist) (default: {flag_tracing}).
-  --pruning METHOD                 Configure pruning of the state/storage trie. METHOD
-                                   may be one of auto, archive, fast:
-                                   archive - keep all state trie data. No pruning.
-                                   fast - maintain journal overlay. Fast but 50MB used.
-                                   auto - use the method most recently synced or
-                                   default to fast if none synced (default: {flag_pruning}).
-  --pruning-history NUM            Set a minimum number of recent states to keep when pruning
-                                   is active. (default: {flag_pruning_history}).
-  --pruning-memory MB              The ideal amount of memory in megabytes to use to store
-                                   recent states. As many states as possible will be kept
-                                   within this limit, and at least --pruning-history states
-                                   will always be kept. (default: {flag_pruning_memory})
-  --cache-size-db MB               Override database cache size (default: {flag_cache_size_db}).
-  --cache-size-blocks MB           Specify the prefered size of the blockchain cache in
-                                   megabytes (default: {flag_cache_size_blocks}).
-  --cache-size-queue MB            Specify the maximum size of memory to use for block
-                                   queue (default: {flag_cache_size_queue}).
-  --cache-size-state MB            Specify the maximum size of memory to use for
-                                   the state cache (default: {flag_cache_size_state}).
-  --cache-size MB                  Set total amount of discretionary memory to use for
-                                   the entire system, overrides other cache and queue
-                                   options. (default: {flag_cache_size:?})
-  --fast-and-loose                 Disables DB WAL, which gives a significant speed up
-                                   but means an unclean exit is unrecoverable. (default: {flag_fast_and_loose})
-  --db-compaction TYPE             Database compaction type. TYPE may be one of:
-                                   ssd - suitable for SSDs and fast HDDs;
-                                   hdd - suitable for slow HDDs;
-                                   auto - determine automatically (default: {flag_db_compaction}).
-  --fat-db BOOL                    Build appropriate information to allow enumeration
-                                   of all accounts and storage keys. Doubles the size
-                                   of the state database. BOOL may be one of on, off
-                                   or auto. (default: {flag_fat_db})
-  --scale-verifiers                Automatically scale amount of verifier threads based on
-                                   workload. Not guaranteed to be faster.
-                                   (default: {flag_scale_verifiers})
-  --num-verifiers INT              Amount of verifier threads to use or to begin with, if verifier
-                                   auto-scaling is enabled. (default: {flag_num_verifiers:?})
+"--tracing BOOL
+	'Indicates if full transaction tracing should be enabled. Works only if client had been fully synced with tracing enabled. BOOL may be one of auto, on, off. auto uses last used value of this option (off if it does not exist).'"
+"--pruning METHOD
+	'Configure pruning of the state/storage trie. METHOD may be one of auto, archive, fast: archive - keep all state trie data. No pruning. fast - maintain journal overlay. Fast but 50MB used. auto - use the method most recently synced or default to fast if none synced.'"
+"--pruning-history NUM
+	'Set a minimum number of recent states to keep when pruning is active..'"
+"--pruning-memory MB
+	'The ideal amount of memory in megabytes to use to store recent states. As many states as possible will be kept within this limit, and at least --pruning-history states will always be kept. '"
+"--cache-size-db MB
+	'Override database cache size.'"
+"--cache-size-blocks MB
+	'Specify the prefered size of the blockchain cache in megabytes.'"
+"--cache-size-queue MB
+	'Specify the maximum size of memory to use for block queue.'"
+"--cache-size-state MB
+	'Specify the maximum size of memory to use for the state cache.'"
+"--cache-size MB
+	'Set total amount of discretionary memory to use for the entire system, overrides other cache and queue options. '"
+"--fast-and-loose
+	'Disables DB WAL, which gives a significant speed up but means an unclean exit is unrecoverable. '"
+"--db-compaction TYPE
+	'Database compaction type. TYPE may be one of: ssd - suitable for SSDs and fast HDDs; hdd - suitable for slow HDDs; auto - determine automatically.'"
+"--fat-db BOOL
+	'Build appropriate information to allow enumeration of all accounts and storage keys. Doubles the size of the state database. BOOL may be one of on, off or auto. '"
+"--scale-verifiers
+	'Automatically scale amount of verifier threads based on workload. Not guaranteed to be faster. '"
+"--num-verifiers INT
+	'Amount of verifier threads to use or to begin with, if verifier auto-scaling is enabled. '"
 
 Import/Export Options:
-  --from BLOCK                     Export from block BLOCK, which may be an index or
-                                   hash (default: {flag_from}).
-  --to BLOCK                       Export to (including) block BLOCK, which may be an
-                                   index, hash or 'latest' (default: {flag_to}).
-  --format FORMAT                  For import/export in given format. FORMAT must be
-                                   one of 'hex' and 'binary'.
-                                   (default: {flag_format:?} = Import: auto, Export: binary)
-  --no-seal-check                  Skip block seal check. (default: {flag_no_seal_check})
-  --at BLOCK                       Export state at the given block, which may be an
-                                   index, hash, or 'latest'. (default: {flag_at})
-  --no-storage                     Don't export account storage. (default: {flag_no_storage})
-  --no-code                        Don't export account code. (default: {flag_no_code})
-  --min-balance WEI                Don't export accounts with balance less than specified.
-                                   (default: {flag_min_balance:?})
-  --max-balance WEI                Don't export accounts with balance greater than specified.
-                                   (default: {flag_max_balance:?})
+"--from BLOCK
+	'Export from block BLOCK, which may be an index or hash.'"
+"--to BLOCK
+	'Export to (including) block BLOCK, which may be an index, hash or 'latest'.'"
+"--format FORMAT
+	'For import/export in given format. FORMAT must be one of 'hex' and 'binary'. (default: {flag_format:?} = Import: auto, Export: binary)'"
+"--no-seal-check
+	'Skip block seal check. '"
+"--at BLOCK
+	'Export state at the given block, which may be an index, hash, or 'latest'. '"
+"--no-storage
+	'Don't export account storage. '"
+"--no-code
+	'Don't export account code. '"
+"--min-balance WEI
+	'Don't export accounts with balance less than specified. '"
+"--max-balance WEI
+	'Don't export accounts with balance greater than specified. '"
 
 Snapshot Options:
-  --at BLOCK                       Take a snapshot at the given block, which may be an
-                                   index, hash, or 'latest'. Note that taking snapshots at
-                                   non-recent blocks will only work with --pruning archive
-                                   (default: {flag_at})
-  --no-periodic-snapshot           Disable automated snapshots which usually occur once
-                                   every 10000 blocks. (default: {flag_no_periodic_snapshot})
+"--at BLOCK
+	'Take a snapshot at the given block, which may be an index, hash, or 'latest'. Note that taking snapshots at non-recent blocks will only work with --pruning archive '"
+"--no-periodic-snapshot
+	'Disable automated snapshots which usually occur once every 10000 blocks. '"
 
 Virtual Machine Options:
-  --jitvm                          Enable the JIT VM. (default: {flag_jitvm})
+"--jitvm
+	'Enable the JIT VM. '"
 
 Legacy Options:
-  --geth                           Run in Geth-compatibility mode. Sets the IPC path
-                                   to be the same as Geth's. Overrides the --ipc-path
-                                   and --ipcpath options. Alters RPCs to reflect Geth
-                                   bugs. Includes the personal_ RPC by default.
-  --testnet                        Testnet mode. Equivalent to --chain testnet.
-                                   Overrides the --keys-path option.
-  --import-geth-keys               Attempt to import keys from Geth client.
-  --datadir PATH                   Equivalent to --base-path PATH.
-  --networkid INDEX                Equivalent to --network-id INDEX.
-  --peers NUM                      Equivalent to --min-peers NUM.
-  --nodekey KEY                    Equivalent to --node-key KEY.
-  --nodiscover                     Equivalent to --no-discovery.
-  -j --jsonrpc                     Does nothing; JSON-RPC is on by default now.
-  --jsonrpc-off                    Equivalent to --no-jsonrpc.
-  -w --webapp                      Does nothing; dapps server is on by default now.
-  --dapps-off                      Equivalent to --no-dapps.
-  --dapps-user USERNAME            Dapps server authentication has been removed. (default: {flag_dapps_user:?})
-  --dapps-pass PASSWORD            Dapps server authentication has been removed. (default: {flag_dapps_pass:?})
-  --dapps-apis-all                 Dapps server is merged with RPC server. Use --jsonrpc-apis. (default: {flag_dapps_apis_all:?})
-  --dapps-cors URL                 Dapps server is merged with RPC server. Use --jsonrpc-cors. (default: {flag_dapps_cors:?})
-  --dapps-hosts HOSTS              Dapps server is merged with RPC server. Use --jsonrpc-hosts. (default: {flag_dapps_hosts:?})
-  --dapps-interface IP             Dapps server is merged with RPC server. Use --jsonrpc-interface. (default: {flag_dapps_interface:?})
-  --dapps-port PORT                Dapps server is merged with RPC server. Use --jsonrpc-port. (default: {flag_dapps_port:?})
-  --rpc                            Does nothing; JSON-RPC is on by default now.
-  --warp                           Does nothing; Warp sync is on by default. (default: {flag_warp})
-  --rpcaddr IP                     Equivalent to --jsonrpc-interface IP.
-  --rpcport PORT                   Equivalent to --jsonrpc-port PORT.
-  --rpcapi APIS                    Equivalent to --jsonrpc-apis APIS.
-  --rpccorsdomain URL              Equivalent to --jsonrpc-cors URL.
-  --ipcdisable                     Equivalent to --no-ipc.
-  --ipc-off                        Equivalent to --no-ipc.
-  --ipcapi APIS                    Equivalent to --ipc-apis APIS.
-  --ipcpath PATH                   Equivalent to --ipc-path PATH.
-  --gasprice WEI                   Minimum amount of Wei per GAS to be paid for a
-                                   transaction to be accepted for mining. Overrides
-                                   --basic-tx-usd.
-  --etherbase ADDRESS              Equivalent to --author ADDRESS.
-  --extradata STRING               Equivalent to --extra-data STRING.
-  --cache MB                       Equivalent to --cache-size MB.
+"--geth
+	'Run in Geth-compatibility mode. Sets the IPC path to be the same as Geth's. Overrides the --ipc-path and --ipcpath options. Alters RPCs to reflect Geth bugs. Includes the personal_ RPC by default.'"
+"--testnet
+	'Testnet mode. Equivalent to --chain testnet. Overrides the --keys-path option.'"
+"--import-geth-keys
+	'Attempt to import keys from Geth client.'"
+"--datadir PATH
+	'Equivalent to --base-path PATH.'"
+"--networkid INDEX
+	'Equivalent to --network-id INDEX.'"
+"--peers NUM
+	'Equivalent to --min-peers NUM.'"
+"--nodekey KEY
+	'Equivalent to --node-key KEY.'"
+"--nodiscover
+	'Equivalent to --no-discovery.'"
+"-j --jsonrpc
+	'Does nothing; JSON-RPC is on by default now.'"
+"--jsonrpc-off
+	'Equivalent to --no-jsonrpc.'"
+"-w --webapp
+	'Does nothing; dapps server is on by default now.'"
+"--dapps-off
+	'Equivalent to --no-dapps.'"
+"--dapps-user USERNAME
+	'Dapps server authentication has been removed. '"
+"--dapps-pass PASSWORD
+	'Dapps server authentication has been removed. '"
+"--dapps-apis-all
+	'Dapps server is merged with RPC server. Use --jsonrpc-apis. '"
+"--dapps-cors URL
+	'Dapps server is merged with RPC server. Use --jsonrpc-cors. '"
+"--dapps-hosts HOSTS
+	'Dapps server is merged with RPC server. Use --jsonrpc-hosts. '"
+"--dapps-interface IP
+	'Dapps server is merged with RPC server. Use --jsonrpc-interface. '"
+"--dapps-port PORT
+	'Dapps server is merged with RPC server. Use --jsonrpc-port. '"
+"--rpc
+	'Does nothing; JSON-RPC is on by default now.'"
+"--warp
+	'Does nothing; Warp sync is on by default. '"
+"--rpcaddr IP
+	'Equivalent to --jsonrpc-interface IP.'"
+"--rpcport PORT
+	'Equivalent to --jsonrpc-port PORT.'"
+"--rpcapi APIS
+	'Equivalent to --jsonrpc-apis APIS.'"
+"--rpccorsdomain URL
+	'Equivalent to --jsonrpc-cors URL.'"
+"--ipcdisable
+	'Equivalent to --no-ipc.'"
+"--ipc-off
+	'Equivalent to --no-ipc.'"
+"--ipcapi APIS
+	'Equivalent to --ipc-apis APIS.'"
+"--ipcpath PATH
+	'Equivalent to --ipc-path PATH.'"
+"--gasprice WEI
+	'Minimum amount of Wei per GAS to be paid for a transaction to be accepted for mining. Overrides --basic-tx-usd.'"
+"--etherbase ADDRESS
+	'Equivalent to --author ADDRESS.'"
+"--extradata STRING
+	'Equivalent to --extra-data STRING.'"
+"--cache MB
+	'Equivalent to --cache-size MB.'"
 
 Internal Options:
-  --can-restart                    Executable will auto-restart if exiting with 69.
+"--can-restart
+	'Executable will auto-restart if exiting with 69.'"
 
 Miscellaneous Options:
-  --ntp-server HOST                NTP server to provide current time (host:port). Used to verify node health.
-                                   (default: {flag_ntp_server})
-  -l --logging LOGGING             Specify the logging level. Must conform to the same
-                                   format as RUST_LOG. (default: {flag_logging:?})
-  --log-file FILENAME              Specify a filename into which logging should be
-                                   appended. (default: {flag_log_file:?})
-  --no-config                      Don't load a configuration file.
-  --no-color                       Don't use terminal color codes in output. (default: {flag_no_color})
-  -v --version                     Show information about version.
-  -h --help                        Show this screen.
+"--ntp-server HOST
+	'NTP server to provide current time (host:port). Used to verify node health. '"
+"-l --logging LOGGING
+	'Specify the logging level. Must conform to the same format as RUST_LOG. '"
+"--log-file FILENAME
+	'Specify a filename into which logging should be appended. '"
+"--no-config
+	'Don't load a configuration file.'"
+"--no-color
+	'Don't use terminal color codes in output. '"
+"-v --version
+	'Show information about version.'"
+"-h --help
+	'Show this screen.'"

@@ -52,19 +52,6 @@ usage! {
 		flag_no_config: bool,
 	}
 	{
-		// -- Account Options
-		flag_unlock: Option<String> = None,
-			or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| Some(vec.join(","))),
-		flag_password: Vec<String> = Vec::new(),
-			or |c: &Config| otry!(c.account).password.clone(),
-		flag_keys_iterations: u32 = 10240u32,
-			or |c: &Config| otry!(c.account).keys_iterations.clone(),
-		flag_no_hardware_wallets: bool = false,
-			or |c: &Config| otry!(c.account).disable_hardware.clone(),
-		flag_fast_unlock: bool = false,
-			or |c: &Config| otry!(c.account).fast_unlock.clone(),
-
-
 		flag_force_ui: bool = false,
 			or |c: &Config| otry!(c.ui).force.clone(),
 		flag_no_ui: bool = false,
@@ -482,13 +469,26 @@ usage! {
     		'Specify your node's name.'",
 
 		// -- Convenience Options
-		flag_config: String = "$BASE/config.toml", or |_| None,
+		arg_config: String = "$BASE/config.toml", or |_| None,
 		"-c --config CONFIG
 			'Specify a filename containing a configuration file.'",
 
-		flag_ports_shift: u16 = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
+		arg_ports_shift: u16 = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
 		"--ports-shift SHIFT
 			'Add SHIFT to all port numbers Parity is listening on. Includes network port and all servers (RPC, WebSockets, UI, IPFS, SecretStore).'",
+
+		// -- Account options
+		arg_unlock: Option<String> = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| Some(vec.join(","))),
+		"--unlock ACCOUNTS
+			'Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.'",
+
+		arg_password: Vec<String> = Vec::new(), or |c: &Config| otry!(c.account).password.clone(),
+		"--password FILE
+			'Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.'",
+		
+		arg_keys_iterations: u32 = 10240u32, or |c: &Config| otry!(c.account).keys_iterations.clone(),
+		"--keys-iterations NUM
+			'Specify the number of iterations to use when deriving key from the password (bigger is more secure)'",
 	}
 	{
 		// Flags (i.e. switches) that can be set from the CLI
@@ -523,6 +523,12 @@ usage! {
 		"--unsafe-expose
 			'All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all{n}This option is UNSAFE and should be used with great care!'",
 
+		// -- Options
+		flag_no_hardware_wallets: bool = false, or |c: &Config| otry!(c.account).disable_hardware.clone(),
+
+		flag_fast_unlock: bool = false, or |c: &Config| otry!(c.account).fast_unlock.clone(),
+		"--no-hardware-wallets
+			'Disables hardware wallet support.'",
 	}
 }
 
@@ -851,14 +857,14 @@ mod tests {
 			flag_no_persistent_txqueue: false,
 
 			// -- Convenience Options
-			flag_config: "$BASE/config.toml".into(),
-			flag_ports_shift: 0,
+			arg_config: "$BASE/config.toml".into(),
+			arg_ports_shift: 0,
 			flag_unsafe_expose: false,
 
 			// -- Account Options
-			flag_unlock: Some("0xdeadbeefcafe0000000000000000000000000000".into()),
-			flag_password: vec!["~/.safe/password.file".into()],
-			flag_keys_iterations: 10240u32,
+			arg_unlock: Some("0xdeadbeefcafe0000000000000000000000000000".into()),
+			arg_password: vec!["~/.safe/password.file".into()],
+			arg_keys_iterations: 10240u32,
 			flag_no_hardware_wallets: false,
 			flag_fast_unlock: false,
 

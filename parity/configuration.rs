@@ -147,7 +147,7 @@ impl Configuration {
 			if self.args.cmd_signer_new_token {
 				Cmd::SignerToken(ws_conf, ui_conf)
 			} else if self.args.cmd_signer_sign {
-				let pwfile = self.args.flag_password.get(0).map(|pwfile| {
+				let pwfile = self.args.arg_password.get(0).map(|pwfile| {
 					PathBuf::from(pwfile)
 				});
 				Cmd::SignerSign {
@@ -181,10 +181,10 @@ impl Configuration {
 		} else if self.args.cmd_account {
 			let account_cmd = if self.args.cmd_account_new {
 				let new_acc = NewAccount {
-					iterations: self.args.flag_keys_iterations,
+					iterations: self.args.arg_keys_iterations,
 					path: dirs.keys,
 					spec: spec,
-					password_file: self.args.flag_password.first().cloned(),
+					password_file: self.args.arg_password.first().cloned(),
 				};
 				AccountCmd::New(new_acc)
 			} else if self.args.cmd_account_list {
@@ -216,11 +216,11 @@ impl Configuration {
 			Cmd::Account(account_cmd)
 		} else if self.args.cmd_wallet {
 			let presale_cmd = ImportWallet {
-				iterations: self.args.flag_keys_iterations,
+				iterations: self.args.arg_keys_iterations,
 				path: dirs.keys,
 				spec: spec,
 				wallet_path: self.args.arg_wallet_import_path.unwrap().clone(),
-				password_file: self.args.flag_password.first().cloned(),
+				password_file: self.args.arg_password.first().cloned(),
 			};
 			Cmd::ImportPresaleWallet(presale_cmd)
 		} else if self.args.cmd_import {
@@ -489,10 +489,10 @@ impl Configuration {
 
 	fn accounts_config(&self) -> Result<AccountsConfig, String> {
 		let cfg = AccountsConfig {
-			iterations: self.args.flag_keys_iterations,
+			iterations: self.args.arg_keys_iterations,
 			testnet: self.args.flag_testnet,
-			password_files: self.args.flag_password.clone(),
-			unlocked_accounts: to_addresses(&self.args.flag_unlock)?,
+			password_files: self.args.arg_password.clone(),
+			unlocked_accounts: to_addresses(&self.args.arg_unlock)?,
 			enable_hardware_wallets: !self.args.flag_no_hardware_wallets,
 			enable_fast_unlock: self.args.flag_fast_unlock,
 		};
@@ -505,7 +505,7 @@ impl Configuration {
 			Ok(Some(StratumOptions {
 				io_path: self.directories().db,
 				listen_addr: self.stratum_interface(),
-				port: self.args.flag_ports_shift + self.args.flag_stratum_port,
+				port: self.args.arg_ports_shift + self.args.flag_stratum_port,
 				secret: self.args.flag_stratum_secret.as_ref().map(|s| s.parse::<H256>().unwrap_or_else(|_| s.sha3())),
 			}))
 		} else { Ok(None) }
@@ -558,7 +558,7 @@ impl Configuration {
 			enabled: self.ui_enabled(),
 			ntp_server: self.args.flag_ntp_server.clone(),
 			interface: self.ui_interface(),
-			port: self.args.flag_ports_shift + self.args.flag_ui_port,
+			port: self.args.arg_ports_shift + self.args.flag_ui_port,
 			hosts: self.ui_hosts(),
 		}
 	}
@@ -587,9 +587,9 @@ impl Configuration {
 			self_secret: self.secretstore_self_secret()?,
 			nodes: self.secretstore_nodes()?,
 			interface: self.secretstore_interface(),
-			port: self.args.flag_ports_shift + self.args.flag_secretstore_port,
+			port: self.args.arg_ports_shift + self.args.flag_secretstore_port,
 			http_interface: self.secretstore_http_interface(),
-			http_port: self.args.flag_ports_shift + self.args.flag_secretstore_http_port,
+			http_port: self.args.arg_ports_shift + self.args.flag_secretstore_http_port,
 			data_path: self.directories().secretstore,
 		})
 	}
@@ -597,7 +597,7 @@ impl Configuration {
 	fn ipfs_config(&self) -> IpfsConfiguration {
 		IpfsConfiguration {
 			enabled: self.args.flag_ipfs_api,
-			port: self.args.flag_ports_shift + self.args.flag_ipfs_api_port,
+			port: self.args.arg_ports_shift + self.args.flag_ipfs_api_port,
 			interface: self.ipfs_interface(),
 			cors: self.ipfs_cors(),
 			hosts: self.ipfs_hosts(),
@@ -681,7 +681,7 @@ impl Configuration {
 	}
 
 	fn net_addresses(&self) -> Result<(SocketAddr, Option<SocketAddr>), String> {
-		let port = self.args.flag_ports_shift + self.args.flag_port;
+		let port = self.args.arg_ports_shift + self.args.flag_port;
 		let listen_address = SocketAddr::new("0.0.0.0".parse().unwrap(), port);
 		let public_address = if self.args.flag_nat.starts_with("extip:") {
 			let host = &self.args.flag_nat[6..];
@@ -821,7 +821,7 @@ impl Configuration {
 		let conf = HttpConfiguration {
 			enabled: self.rpc_enabled(),
 			interface: self.rpc_interface(),
-			port: self.args.flag_ports_shift + self.args.flag_rpcport.unwrap_or(self.args.flag_jsonrpc_port),
+			port: self.args.arg_ports_shift + self.args.flag_rpcport.unwrap_or(self.args.flag_jsonrpc_port),
 			apis: match self.args.flag_public_node {
 				false => self.rpc_apis().parse()?,
 				true => self.rpc_apis().parse::<ApiSet>()?.retain(ApiSet::PublicContext),
@@ -845,7 +845,7 @@ impl Configuration {
 		let conf = WsConfiguration {
 			enabled: self.ws_enabled(),
 			interface: self.ws_interface(),
-			port: self.args.flag_ports_shift + self.args.flag_ws_port,
+			port: self.args.arg_ports_shift + self.args.flag_ws_port,
 			apis: self.args.flag_ws_apis.parse()?,
 			hosts: self.ws_hosts(),
 			origins: self.ws_origins(),
@@ -950,7 +950,7 @@ impl Configuration {
 			parity_ipc_path(
 				&self.directories().base,
 				&self.args.flag_ipcpath.clone().unwrap_or(self.args.flag_ipc_path.clone()),
-				self.args.flag_ports_shift,
+				self.args.arg_ports_shift,
 			)
 		}
 	}
@@ -1050,7 +1050,7 @@ impl Configuration {
 			return true;
 		}
 
-		let ui_disabled = self.args.flag_unlock.is_some() ||
+		let ui_disabled = self.args.arg_unlock.is_some() ||
 			self.args.flag_geth ||
 			self.args.flag_no_ui;
 
