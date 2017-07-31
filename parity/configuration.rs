@@ -104,9 +104,9 @@ impl Configuration {
 		let pruning_history = self.args.flag_pruning_history;
 		let vm_type = self.vm_type()?;
 		let spec = self.chain().parse()?;
-		let mode = match self.args.flag_mode.as_ref() {
+		let mode = match self.args.arg_mode.as_ref() {
 			"last" => None,
-			mode => Some(to_mode(&mode, self.args.flag_mode_timeout, self.args.flag_mode_alarm)?),
+			mode => Some(to_mode(&mode, self.args.arg_mode_timeout, self.args.arg_mode_alarm)?),
 		};
 		let update_policy = self.update_policy()?;
 		let logger_config = self.logger_config();
@@ -372,7 +372,7 @@ impl Configuration {
 				secretstore_conf: secretstore_conf,
 				dapp: self.dapp_to_open()?,
 				ui: self.args.cmd_ui,
-				name: self.args.flag_identity,
+				name: self.args.arg_identity,
 				custom_bootnodes: self.args.flag_bootnodes.is_some(),
 				no_periodic_snapshot: self.args.flag_no_periodic_snapshot,
 				check_seal: !self.args.flag_no_seal_check,
@@ -453,7 +453,7 @@ impl Configuration {
 		else if self.args.flag_testnet {
 			"testnet".to_owned()
 		} else {
-			self.args.flag_chain.clone()
+			self.args.arg_chain.clone()
 		}
 	}
 
@@ -861,7 +861,7 @@ impl Configuration {
 		let http_conf = self.http_config()?;
 		let net_addresses = self.net_addresses()?;
 		Ok(NetworkSettings {
-			name: self.args.flag_identity.clone(),
+			name: self.args.arg_identity.clone(),
 			chain: self.chain(),
 			network_port: net_addresses.0.port(),
 			rpc_enabled: http_conf.enabled,
@@ -874,13 +874,13 @@ impl Configuration {
 		Ok(UpdatePolicy {
 			enable_downloading: !self.args.flag_no_download,
 			require_consensus: !self.args.flag_no_consensus,
-			filter: match self.args.flag_auto_update.as_ref() {
+			filter: match self.args.arg_auto_update.as_ref() {
 				"none" => UpdateFilter::None,
 				"critical" => UpdateFilter::Critical,
 				"all" => UpdateFilter::All,
 				_ => return Err("Invalid value for `--auto-update`. See `--help` for more information.".into()),
 			},
-			track: match self.args.flag_release_track.as_ref() {
+			track: match self.args.arg_release_track.as_ref() {
 				"stable" => ReleaseTrack::Stable,
 				"beta" => ReleaseTrack::Beta,
 				"nightly" => ReleaseTrack::Nightly,
@@ -912,7 +912,7 @@ impl Configuration {
 		};
 
 		let db_path = replace_home_and_local(&data_path, &local_path, &base_db_path);
-		let keys_path = replace_home(&data_path, &self.args.flag_keys_path);
+		let keys_path = replace_home(&data_path, &self.args.arg_keys_path);
 		let dapps_path = replace_home(&data_path, &self.args.flag_dapps_path);
 		let secretstore_path = replace_home(&data_path, &self.args.flag_secretstore_path);
 		let ui_path = replace_home(&data_path, &self.args.flag_ui_path);

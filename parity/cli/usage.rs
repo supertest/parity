@@ -352,7 +352,7 @@ macro_rules! usage {
 				args
 			}
 
-			#[allow(unused_variables)] // when there are no args, the submatches aren't used
+			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				let matches = App::new("Parity")
@@ -446,47 +446,3 @@ macro_rules! usage {
 		}
 	};
 }
-
-
-
-
-
-
-
-
-
-
-
-macro_rules! ttx{
-// not executed whyy
-($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident $xo:tt) => {
-	ttx2!($raw_args $subsubmatches $xsubsubcommand_arg $xo);
-}
-}
-
-
-macro_rules! ttx2{
-// not executed whyy
-($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident Vec<String>) => {
-	$raw_args.$xsubsubcommand_arg = values_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
-};
-($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident String) => {
-	$raw_args.$xsubsubcommand_arg = value_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
-};
-}
-
-/*
-
-macro_rules! ttx{
-// not executed whyy
-($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident Vec<String>) => {
-	$raw_args.$xsubsubcommand_arg = values_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
-};
-($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident String) => {
-	$raw_args.$xsubsubcommand_arg = value_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], String).ok();
-};
-($raw_args:ident $subsubmatches:ident $xsubsubcommand_arg:ident bool) => {
-	$raw_args.$xsubsubcommand_arg = value_t!($subsubmatches, &stringify!($xsubsubcommand_arg)[stringify!($xsubsubcommand).len()+1..], bool).ok();
-};
-}
-*/

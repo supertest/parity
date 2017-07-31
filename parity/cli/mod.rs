@@ -350,8 +350,8 @@ usage! {
 		{
 			CMD cmd_wallet_import
 			{
-				ARG arg_wallet_import_path: String, |arg| Arg::required(arg,true).index(3), // setting it to Vec<String> so that it's the same everywhere
-				ARG arg_wallet_import_password: String, |arg| Arg::required(arg,true).value_name("FILE"), // @TODO ?? flag password ??
+				ARG arg_wallet_import_path: String, |arg| Arg::required(arg,true).index(3),
+				ARG arg_wallet_import_password: String, |arg| Arg::required(arg,true).value_name("FILE"),
 			}
 		}
 
@@ -390,7 +390,7 @@ usage! {
 			}
 		}
 		
-		CMD cmd_import // todo already subsubcommand named import
+		CMD cmd_import
 		{
 			ARG arg_import_file: String, |arg| Arg::index(arg,2),
 		}
@@ -443,7 +443,7 @@ usage! {
 		// For each argument, provide default value, config value and CLI usage
 
 		// -- Operating Options
-		flag_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
+		arg_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
 		"--mode MODE\
 			'Set the operating mode. MODE can be one of:\
 				last - Uses the last-used mode, active if none.\
@@ -452,22 +452,22 @@ usage! {
 				dark - Parity syncs only when the RPC is active.\
 				offline - Parity doesn't sync.'",
 
-		flag_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
+		arg_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
 		"--mode-timeout SECS
 			'Specify the number of seconds before inactivity timeout occurs when mode is dark or passive'",
 
-		flag_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
+		arg_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
 		"--mode-alarm SECS
 			'Specify the number of seconds before auto sleep reawake timeout occurs when mode is passive'",
 
-		flag_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
+		arg_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
 		"--auto-update SET
 			'Set a releases set to automatically update and install.
 				all - All updates in the our release track.
 				critical - Only consensus/security updates.
 				none - No updates will be auto-installed.'",
 
-		flag_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
+		arg_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
 		"--release-track TRACK
 			'Set which release track we should use for updates.
 				stable - Stable releases.
@@ -476,15 +476,15 @@ usage! {
 				testing - Testing releases (do not use).
 				current - Whatever track this executable was released on'",
 
-		flag_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
+		arg_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
 		"--chain CHAIN
     		'Specify the blockchain type. CHAIN may be either a JSON chain specification file or olympic, frontier, homestead, mainnet, morden, ropsten, classic, expanse, testnet, kovan or dev.'",
 
-		flag_keys_path: String = "$BASE/keys", or |c: &Config| otry!(c.parity).keys_path.clone(),
+		arg_keys_path: String = "$BASE/keys", or |c: &Config| otry!(c.parity).keys_path.clone(),
 		"--keys-path PATH
 			'Specify the path for JSON key files to be found'",
 
-		flag_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
+		arg_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
 		"--identity NAME
     		'Specify your node's name.'",
 	}
@@ -753,7 +753,7 @@ mod tests {
 		let args = Args::parse_with_config(&["parity"], config).unwrap();
 
 		// then
-		assert_eq!(args.flag_chain, "morden".to_owned());
+		assert_eq!(args.arg_chain, "morden".to_owned());
 	}
 
 	#[test]
@@ -768,7 +768,7 @@ mod tests {
 		let args = Args::parse_with_config(&["parity", "--chain", "xyz"], config).unwrap();
 
 		// then
-		assert_eq!(args.flag_chain, "xyz".to_owned());
+		assert_eq!(args.arg_chain, "xyz".to_owned());
 	}
 
 	#[test]
@@ -825,19 +825,19 @@ mod tests {
 			arg_path: vec![],
 
 			// -- Operating Options
-			flag_mode: "last".into(),
-			flag_mode_timeout: 300u64,
-			flag_mode_alarm: 3600u64,
-			flag_auto_update: "none".into(),
-			flag_release_track: "current".into(),
+			arg_mode: "last".into(),
+			arg_mode_timeout: 300u64,
+			arg_mode_alarm: 3600u64,
+			arg_auto_update: "none".into(),
+			arg_release_track: "current".into(),
 			flag_public_node: false,
 			flag_no_download: false,
 			flag_no_consensus: false,
-			flag_chain: "xyz".into(),
+			arg_chain: "xyz".into(),
 			flag_base_path: Some("$HOME/.parity".into()),
 			flag_db_path: Some("$HOME/.parity/chains".into()),
-			flag_keys_path: "$HOME/.parity/keys".into(),
-			flag_identity: "".into(),
+			arg_keys_path: "$HOME/.parity/keys".into(),
+			arg_identity: "".into(),
 			flag_light: false,
 			flag_no_persistent_txqueue: false,
 
