@@ -52,13 +52,6 @@ usage! {
 		flag_no_config: bool,
 	}
 	{
-		// -- Convenience Options
-		flag_config: String = "$BASE/config.toml", or |_| None,
-		flag_ports_shift: u16 = 0u16,
-			or |c: &Config| otry!(c.misc).ports_shift,
-		flag_unsafe_expose: bool = false,
-			or |c: &Config| otry!(c.misc).unsafe_expose,
-
 		// -- Account Options
 		flag_unlock: Option<String> = None,
 			or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| Some(vec.join(","))),
@@ -487,6 +480,15 @@ usage! {
 		arg_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
 		"--identity NAME
     		'Specify your node's name.'",
+
+		// -- Convenience Options
+		flag_config: String = "$BASE/config.toml", or |_| None,
+		"-c --config CONFIG
+			'Specify a filename containing a configuration file.'",
+
+		flag_ports_shift: u16 = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
+		"--ports-shift SHIFT
+			'Add SHIFT to all port numbers Parity is listening on. Includes network port and all servers (RPC, WebSockets, UI, IPFS, SecretStore).'",
 	}
 	{
 		// Flags (i.e. switches) that can be set from the CLI
@@ -514,6 +516,13 @@ usage! {
 			or |c: &Config| otry!(c.parity).no_persistent_txqueue,
 		"--no-persistent-txqueue
 			'Don't save pending local transactions to disk to be restored whenever the node restarts.'",
+
+		// -- Convenience flags
+		flag_unsafe_expose: bool = false,
+			or |c: &Config| otry!(c.misc).unsafe_expose,
+		"--unsafe-expose
+			'All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all{n}This option is UNSAFE and should be used with great care!'",
+
 	}
 }
 
