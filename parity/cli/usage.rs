@@ -75,7 +75,7 @@ macro_rules! usage {
 		}
 		{
 			$(
-				$field_u:ident : $typ_u:ty = $default_u:expr, or $from_config_u:expr, $usage_u:expr,
+				$field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
 			)*
 		}
 		{
@@ -164,7 +164,7 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub $field_u: $typ_u,
+				pub $field_arg_u: $typ_arg_u,
 			)*
 
 			$(
@@ -208,7 +208,7 @@ macro_rules! usage {
 					)*
 
 					$(
-						$field_u: Default::default(),
+						$field_arg_u: Default::default(),
 					)*
 
 					$(
@@ -250,7 +250,7 @@ macro_rules! usage {
 				)*
 			)*
 			$(
-				$field_u: Option<$typ_u>,
+				$field_arg_u: Option<$typ_arg_u>,
 			)*
 			$(
 				$field_flag_u: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
@@ -340,7 +340,7 @@ macro_rules! usage {
 					)*
 				)*
 				$(
-					args.$field_u = self.$field_u.or_else(|| $from_config_u(&config)).unwrap_or_else(|| $default_u.into());
+					args.$field_arg_u = self.$field_arg_u.or_else(|| $from_config_arg_u(&config)).unwrap_or_else(|| $default_arg_u.into());
 				)*
 				$(
 					// args.$field_flag_u = self.$field_flag_u.or_else(|| $from_config_flag_u(&config)).unwrap_or_else(|| $default_flag_u.into());
@@ -386,7 +386,7 @@ macro_rules! usage {
 						)*
 						.args(&[
 							$(
-								Arg::from_usage($usage_u),
+								Arg::from_usage($usage_arg_u),
 							)*
 							$(
 								Arg::from_usage($usage_flag_u),
@@ -396,7 +396,7 @@ macro_rules! usage {
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
-					raw_args.$field_u = value_t!(matches, &stringify!($field_u)[4..], $typ_u).ok();
+					raw_args.$field_arg_u = value_t!(matches, &stringify!($field_arg_u)[4..], $typ_arg_u).ok();
 				)*
 				
 				$(
