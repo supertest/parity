@@ -357,6 +357,8 @@ macro_rules! usage {
 
 				let matches = App::new("Parity")
 				    	.setting(AppSettings::VersionlessSubcommands)
+				    	.setting(AppSettings::DeriveDisplayOrder)
+				    	.setting(AppSettings::UnifiedHelpMessage)
 						.arg(Arg::with_name("version")
 							.short("v")
 							.long("version")

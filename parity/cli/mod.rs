@@ -48,8 +48,10 @@ usage! {
 		flag_extradata: Option<String>,
 		flag_cache: Option<u32>,
 
-		// -- Miscellaneous Options
+		// I guess the following are options that can only be set from the CLI ?
 		flag_no_config: bool,
+		"--no-configNNNNN			'Don't load a configuration file.'",
+
 	}
 	{ // OLD BLOCK, WIP TO MOVE IT TO ARGS OR FLAGS
 
@@ -525,9 +527,16 @@ usage! {
 
 		// -- Miscellaneous Options
 		flag_ntp_server: String = "pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_server.clone(),
+		"--ntp-server HOSTNNNNN			'NTP server to provide current time (host:port). Used to verify node health.'",
+
 		flag_logging: Option<String> = None, or |c: &Config| otry!(c.misc).logging.clone().map(Some),
+		"-l --logging LOGGINGNNNNN			'Specify the logging level. Must conform to the same format as RUST_LOG.'",
+
 		flag_log_file: Option<String> = None, or |c: &Config| otry!(c.misc).log_file.clone().map(Some),
+		"--log-file FILENAMENNNNN			'Specify a filename into which logging should be appended.'",
+
 		flag_no_color: bool = false, or |c: &Config| otry!(c.misc).color.map(|c| !c).clone(),
+		"--no-colorNNNNN			'Don't use terminal color codes in output.'",
 
 		// -- Legacy Options supported in configs
 		flag_dapps_port: Option<u16> = None, or |c: &Config| otry!(c.dapps).port.clone().map(Some),
