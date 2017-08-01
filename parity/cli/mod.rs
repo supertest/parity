@@ -50,8 +50,8 @@ usage! {
 
 		// I guess the following are options that can only be set from the CLI ?
 		flag_no_config: bool,
-		"--no-config
-			'Don't load a configuration file.'",
+//		"--no-config
+			//'Don't load a configuration file.'",
 
 	}
 	{ // OLD BLOCK, WIP TO MOVE IT TO ARGS OR FLAGS // this block will go away soon
@@ -168,7 +168,7 @@ usage! {
 		}
 	}
 	{
-		"Operating Options" {
+		["Operating Options"]
 			FLAG flag_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
 			"--public-node
 				'Start Parity as a public web server. Account storage and transaction signing will be delegated to the UI.'",
@@ -229,9 +229,8 @@ usage! {
 			ARG arg_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
 			"--identity NAME
 				'Specify your node's name.'",
-		}
 
-		"Convenience options" {
+		["Convenience options"]
 			FLAG flag_unsafe_expose: bool = false, or |c: &Config| otry!(c.misc).unsafe_expose,
 			"--unsafe-expose
 				'All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all{n}This option is UNSAFE and should be used with great care!'",
@@ -243,16 +242,15 @@ usage! {
 			ARG arg_ports_shift: u16 = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
 			"--ports-shift SHIFT
 				'Add SHIFT to all port numbers Parity is listening on. Includes network port and all servers (RPC, WebSockets, UI, IPFS, SecretStore).'",
-		}
 
-		"Account options" {
+		["Account options"]
 			FLAG flag_no_hardware_wallets: bool = false, or |c: &Config| otry!(c.account).disable_hardware.clone(),
 			"--no-hardware-wallets
 				'Disables hardware wallet support.'",
 
 			FLAG flag_fast_unlock: bool = false, or |c: &Config| otry!(c.account).fast_unlock.clone(),
 			"--fast-unlock
-				'Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care.'"
+				'Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care.'",
 
 			ARG arg_unlock: Option<String> = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| Some(vec.join(","))),
 			"--unlock ACCOUNTS
@@ -265,9 +263,8 @@ usage! {
 			ARG arg_keys_iterations: u32 = 10240u32, or |c: &Config| otry!(c.account).keys_iterations.clone(),
 			"--keys-iterations NUM
 				'Specify the number of iterations to use when deriving key from the password (bigger is more secure)'",
-		}
 
-		"UI options" {
+		["UI options"]
 			FLAG flag_force_ui: bool = false, or |c: &Config| otry!(c.ui).force.clone(),
 			"--force-ui
 				'Enable Trusted UI WebSocket endpoint, even when --unlock is in use.'",
@@ -282,7 +279,7 @@ usage! {
 
 			FLAG flag_ui_hosts: String = "none", or |c: &Config| otry!(c.ui).hosts.as_ref().map(|vec| vec.join(",")),
 			"--ui-hosts HOSTS
-				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none",.'",
+				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.'",
 
 			FLAG flag_ui_path: String = "$BASE/signer", or |c: &Config| otry!(c.ui).path.clone(),
 			"--ui-path PATH
@@ -296,9 +293,8 @@ usage! {
 			ARG arg_ui_port: u16 = 8180u16, or |c: &Config| otry!(c.ui).port.clone(),
 			"--ui-port PORT
 				'Specify the port of Trusted UI server.'",
-		}
 
-		"Networking options" {
+		["Networking options"]
 			FLAG flag_no_warp: bool = false, or |c: &Config| otry!(c.network).warp.clone().map(|w| !w),
 			"--no-warp
 				'Disable syncing from the snapshot over the network.'",
@@ -362,9 +358,8 @@ usage! {
 			ARG arg_max_pending_peers: u16 = 64u16, or |c: &Config| otry!(c.network).max_pending_peers.clone(),
 			"--max-pending-peers NUM
 				'Allow up to NUM pending connections.'",
-		}
 
-		"API and Console options: RPC" {
+		["API and Console options: RPC"]
 			// RPC
 			FLAG flag_no_jsonrpc: bool = false, or |c: &Config| otry!(c.rpc).disable.clone(),
 			"--no-jsonrpc
@@ -388,7 +383,7 @@ usage! {
 
 			ARG arg_jsonrpc_hosts: String = "none", or |c: &Config| otry!(c.rpc).hosts.as_ref().map(|vec| vec.join(",")),
 			"--jsonrpc-hosts HOSTS
-				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none",.'",
+				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.'",
 
 			ARG arg_jsonrpc_server_threads: Option<usize> = None, or |c: &Config| otry!(c.rpc).server_threads.map(Some),
 			"--jsonrpc-server-threads NUM
@@ -397,9 +392,8 @@ usage! {
 			ARG arg_jsonrpc_threads: usize = 0usize, or |c: &Config| otry!(c.rpc).processing_threads,
 			"--jsonrpc-threads THREADS
 				'Turn on additional processing threads in all RPC servers. Setting this to non-zero value allows parallel cpu-heavy queries execution.'",
-		}
 
-		"API and Console options: WS" {
+		["API and Console options: WS"]
 			FLAG flag_no_ws: bool = false, or |c: &Config| otry!(c.websockets).disable.clone(),
 			"--no-ws
 				'Disable the WebSockets server.'",
@@ -418,14 +412,13 @@ usage! {
 
 			ARG arg_ws_origins: String = "chrome-extension://*", or |c: &Config| otry!(c.websockets).origins.as_ref().map(|vec| vec.join(",")),
 			"--ws-origins URL
-				'Specify Origin header values allowed to connect. Special options: "all", "none".'",
+				'Specify Origin header values allowed to connect. Special options: \"all\", \"none\".'",
 
 			ARG arg_ws_hosts: String = "none", or |c: &Config| otry!(c.websockets).hosts.as_ref().map(|vec| vec.join(",")),
 			"--ws-hosts HOSTS
-				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none",.'",
-		}
+				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.'",
 
-		"API and Console options: IPC" {
+		["API and Console options: IPC"]
 			FLAG flag_no_ipc: bool = false, or |c: &Config| otry!(c.ipc).disable.clone(),
 			"--no-ipc
 				'Disable JSON-RPC over IPC service.'",
@@ -437,9 +430,8 @@ usage! {
 			ARG arg_ipc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,parity_accounts,traces,rpc,secretstore", or |c: &Config| otry!(c.ipc).apis.as_ref().map(|vec| vec.join(",")),
 			"--ipc-apis APIS
 				'Specify custom API set available via JSON-RPC over IPC.'",
-		}
 
-		"API and Console options: Dapps" {
+		["API and Console options: Dapps"]
 			FLAG flag_no_dapps: bool = false, or |c: &Config| otry!(c.dapps).disable.clone(),
 			"--no-dapps
 				'Disable the Dapps server (e.g. status page).'",
@@ -447,9 +439,8 @@ usage! {
 			ARG arg_dapps_path: String = "$BASE/dapps", or |c: &Config| otry!(c.dapps).path.clone(),
 			"--dapps-path PATH
 				'Specify directory where dapps should be installed.'",
-		}
 
-		"API and Console options: IPFS" {
+		["API and Console options: IPFS"]
 			FLAG flag_ipfs_api: bool = false, or |c: &Config| otry!(c.ipfs).enable.clone(),
 			"--ipfs-api
 				'Enable IPFS-compatible HTTP API.'",
@@ -468,10 +459,9 @@ usage! {
 
 			ARG arg_ipfs_api_hosts: String = "none", or |c: &Config| otry!(c.ipfs).hosts.as_ref().map(|vec| vec.join(",")),
 			"--ipfs-api-hosts HOSTS
-				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: "all", "none".'",
-		}
+				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\".'",
 
-		"Secret store options" {
+		["Secret store options"]
 			FLAG flag_no_secretstore: bool = false, or |c: &Config| otry!(c.secretstore).disable.clone(),
 			"--no-secretstore
 				'Disable Secret Store functionality.'",
@@ -503,9 +493,8 @@ usage! {
 			ARG arg_secretstore_path: String = "$BASE/secretstore", or |c: &Config| otry!(c.secretstore).path.clone(),
 			"--secretstore-path PATH
 				'Specify directory where Secret Store should save its data..'",
-		}
 
-		"Sealing/Mining options" {
+		["Sealing/Mining options"]
 			FLAG flag_force_sealing: bool = false, or |c: &Config| otry!(c.mining).force_sealing.clone(),
 			"--force-sealing
 				'Force the node to author new blocks as if it were always sealing/mining.'",
@@ -532,7 +521,7 @@ usage! {
 
 			ARG arg_author: Option<String> = None, or |c: &Config| otry!(c.mining).author.clone().map(Some),
 			"--author ADDRESS
-				'Specify the block author (aka "coinbase") address for sending block rewards from sealed blocks. NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION.'", // Sealing/Mining Option
+				'Specify the block author (aka \"coinbase\") address for sending block rewards from sealed blocks. NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION.'", // Sealing/Mining Option
 
 			ARG arg_engine_signer: Option<String> = None, or |c: &Config| otry!(c.mining).engine_signer.clone().map(Some),
 			"--engine-signer ADDRESS
@@ -576,7 +565,7 @@ usage! {
 
 			ARG arg_price_update_period: String = "hourly", or |c: &Config| otry!(c.mining).price_update_period.clone(),
 			"--price-update-period T
-				'T will be allowed to pass between each gas price update. T may be daily, hourly, a number of seconds, or a time string of the form "2 days", "30 minutes" etc..'",
+				'T will be allowed to pass between each gas price update. T may be daily, hourly, a number of seconds, or a time string of the form \"2 days\", \"30 minutes\" etc..'",
 
 			ARG arg_gas_floor_target: String = "4700000", or |c: &Config| otry!(c.mining).gas_floor_target.clone(),
 			"--gas-floor-target GAS
@@ -629,9 +618,8 @@ usage! {
 			ARG arg_stratum_secret: Option<String> = None, or |c: &Config| otry!(c.stratum).secret.clone().map(Some),
 			"--stratum-secret STRING
 				'Secret for authorizing Stratum server for peers.'",
-		}
 
-		"Miscellaneous options" {
+		["Miscellaneous options"]
 			FLAG flag_ntp_server: String = "pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_server.clone(),
 			"--ntp-server HOST
 				'NTP server to provide current time (host:port). Used to verify node health.'",
@@ -647,9 +635,16 @@ usage! {
 			FLAG flag_no_color: bool = false, or |c: &Config| otry!(c.misc).color.map(|c| !c).clone(),
 			"--no-color
 				'Don't use terminal color codes in output.'",
-		}
 
-		"Footprint options" {
+		["Footprint options"]
+			FLAG flag_fast_and_loose: bool = false, or |c: &Config| otry!(c.footprint).fast_and_loose.clone(),
+			"--fast-and-loose
+				'Disables DB WAL, which gives a significant speed up but means an unclean exit is unrecoverable.'",
+
+			FLAG flag_scale_verifiers: bool = false, or |c: &Config| otry!(c.footprint).scale_verifiers.clone(),
+			"--scale-verifiers
+				'Automatically scale amount of verifier threads based on workload. Not guaranteed to be faster.'",
+
 			ARG arg_tracing: String = "auto", or |c: &Config| otry!(c.footprint).tracing.clone(),
 			"--tracing BOOL
 				'Indicates if full transaction tracing should be enabled. Works only if client had been fully synced with tracing enabled. BOOL may be one of auto, on, off. auto uses last used value of this option (off if it does not exist).'", // footprint option
@@ -686,10 +681,6 @@ usage! {
 			"--cache-size MB
 				'Set total amount of discretionary memory to use for the entire system, overrides other cache and queue options.'",
 
-			flag_fast_and_loose: bool = false, or |c: &Config| otry!(c.footprint).fast_and_loose.clone(),
-			"--fast-and-loose
-				'Disables DB WAL, which gives a significant speed up but means an unclean exit is unrecoverable.'",
-
 			ARG arg_db_compaction: String = "auto", or |c: &Config| otry!(c.footprint).db_compaction.clone(),
 			"--db-compaction TYPE
 				'Database compaction type. TYPE may be one of: ssd - suitable for SSDs and fast HDDs; hdd - suitable for slow HDDs; auto - determine automatically.'",
@@ -698,16 +689,11 @@ usage! {
 			"--fat-db BOOL
 				'Build appropriate information to allow enumeration of all accounts and storage keys. Doubles the size of the state database. BOOL may be one of on, off or auto.'",
 
-			flag_scale_verifiers: bool = false, or |c: &Config| otry!(c.footprint).scale_verifiers.clone(),
-			"--scale-verifiers
-				'Automatically scale amount of verifier threads based on workload. Not guaranteed to be faster.'",
-
 			ARG arg_num_verifiers: Option<usize> = None, or |c: &Config| otry!(c.footprint).num_verifiers.clone().map(Some),
 			"--num-verifiers INT
 				'Amount of verifier threads to use or to begin with, if verifier auto-scaling is enabled.'",
-		}
 
-		"Import/export options" {
+		["Import/export options"]
 			FLAG flag_no_seal_check: bool = false, or |_| None,
 			"--no-seal-check
 				'Skip block seal check.'",
@@ -739,9 +725,8 @@ usage! {
 			ARG arg_max_balance: Option<String> = None, or |_| None,
 			"--max-balance WEI
 				'Don't export accounts with balance greater than specified.'",
-		}
 
-		"Snapshot options" {
+		["Snapshot options"]
 			FLAG flag_no_periodic_snapshot: bool = false, or |c: &Config| otry!(c.snapshots).disable_periodic.clone(),
 			"--no-periodic-snapshot
 				'Disable automated snapshots which usually occur once every 10000 blocks.'",
@@ -749,13 +734,11 @@ usage! {
 			ARG arg_at: String = "latest", or |_| None,
 			"--at BLOCK
 				'Take a snapshot at the given block, which may be an index, hash, or 'latest'. Note that taking snapshots at non-recent blocks will only work with --pruning archive'", // Snapshot Option
-		}
 
-		"Virtual Machine Options" {
-			flag_jitvm: bool = false, or |c: &Config| otry!(c.vm).jit.clone(),
+		["Virtual Machine Options"]
+			FLAG flag_jitvm: bool = false, or |c: &Config| otry!(c.vm).jit.clone(),
 			"--jitvm
 				'Enable the JIT VM.'",
-		}
 	}
 }
 

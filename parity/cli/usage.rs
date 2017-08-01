@@ -75,14 +75,15 @@ macro_rules! usage {
 		}
 		{
 			$(
-				$field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
+			[$group_name:expr]
+				$(
+					FLAG $field_flag_u:ident : $typ_flag_u:ty = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
+				)*
+				$(
+					ARG $field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
+				)*
 			)*
 		}
-		// {
-		// 	$(
-		// 		$field_flag_u:ident : $typ_flag_u:ty = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
-		// 	)*
-		// }
 	) => {
 		use toml;
 		use std::{fs, io, process};
@@ -164,11 +165,12 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub $field_arg_u: $typ_arg_u,
-			)*
-
-			$(
-				pub $field_flag_u: $typ_flag_u,
+				$(
+					pub $field_flag_u: $typ_flag_u,
+				)*
+				$(
+					pub $field_arg_u: $typ_arg_u,
+				)*
 			)*
 		}
 
@@ -208,12 +210,14 @@ macro_rules! usage {
 					)*
 
 					$(
-						$field_arg_u: Default::default(),
+						$(
+							$field_flag_u: Default::default(),
+						)*
+						$(
+							$field_arg_u: Default::default(),
+						)*
 					)*
-
-					$(
-						$field_flag_u: Default::default(),
-					)*
+					
 				}
 			}
 		}
@@ -250,10 +254,12 @@ macro_rules! usage {
 				)*
 			)*
 			$(
-				$field_arg_u: Option<$typ_arg_u>,
-			)*
-			$(
-				$field_flag_u: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+				$(
+					$field_flag_u: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+				)*
+				$(
+					$field_arg_u: Option<$typ_arg_u>,
+				)*
 			)*
 		}
 
@@ -339,14 +345,17 @@ macro_rules! usage {
 						args.$subcommand_argm = self.$subcommand_argm;
 					)*
 				)*
-				$(
-					args.$field_arg_u = self.$field_arg_u.or_else(|| $from_config_arg_u(&config)).unwrap_or_else(|| $default_arg_u.into());
-				)*
-				$(
-					// args.$field_flag_u = self.$field_flag_u.or_else(|| $from_config_flag_u(&config)).unwrap_or_else(|| $default_flag_u.into());
 
-					// Presence of CLI switch || config || default
-					args.$field_flag_u = self.$field_flag_u || $from_config_flag_u(&config).unwrap_or_else(|| $default_flag_u.into());
+				$(
+					$(
+						// args.$field_flag_u = self.$field_flag_u.or_else(|| $from_config_flag_u(&config)).unwrap_or_else(|| $default_flag_u.into());
+
+						// Presence of CLI switch || config || default
+						args.$field_flag_u = self.$field_flag_u || $from_config_flag_u(&config).unwrap_or_else(|| $default_flag_u.into());
+					)*
+					$(
+						args.$field_arg_u = self.$field_arg_u.or_else(|| $from_config_arg_u(&config)).unwrap_or_else(|| $default_arg_u.into());
+					)*
 				)*
 
 				args
@@ -388,17 +397,24 @@ macro_rules! usage {
 						)*
 						.args(&[
 							$(
-								Arg::from_usage($usage_arg_u),
-							)*
-							$(
-								Arg::from_usage($usage_flag_u),
+								$(
+									Arg::from_usage($usage_arg_u),
+								)*
+								$(
+									Arg::from_usage($usage_flag_u),
+								)*
 							)*
 						])
 						.get_matches_safe()?;
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
-					raw_args.$field_arg_u = value_t!(matches, &stringify!($field_arg_u)[4..], $typ_arg_u).ok();
+					$(
+						raw_args.$field_arg_u = value_t!(matches, &stringify!($field_arg_u)[4..], $typ_arg_u).ok();
+					)*
+					$(
+						raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
+					)*
 				)*
 				
 				$(
@@ -438,9 +454,7 @@ macro_rules! usage {
 					}
 				)*
 				
-				$(
-					raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
-				)*
+				
 				
 
 				Ok(raw_args)				
