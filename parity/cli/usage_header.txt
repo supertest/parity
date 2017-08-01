@@ -71,11 +71,4 @@
 		Internal Options:
 		"--can-restartNNNNN			'Executable will auto-restart if exiting with 69.'",
 
-		Miscellaneous Options:
-		"--ntp-server HOSTNNNNN			'NTP server to provide current time (host:port). Used to verify node health.'",
-		"-l --logging LOGGINGNNNNN			'Specify the logging level. Must conform to the same format as RUST_LOG.'",
-		"--log-file FILENAMENNNNN			'Specify a filename into which logging should be appended.'",
-		"--no-configNNNNN			'Don't load a configuration file.'",
-		"--no-colorNNNNN			'Don't use terminal color codes in output.'",
-		"-v --versionNNNNN			'Show information about version.'",
-		"-h --helpNNNNN			'Show this screen.'",
+		

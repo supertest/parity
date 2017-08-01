@@ -273,22 +273,22 @@ usage! {
 			"--no-ui
 				'Disable Trusted UI WebSocket endpoint.'",
 
-			FLAG flag_ui_interface: String = "local", or |c: &Config| otry!(c.ui).interface.clone(),
-			"--ui-interface IP
-				'Specify the hostname portion of the Trusted UI server, IP should be an interface's IP address, or local.'",
-
-			FLAG flag_ui_hosts: String = "none", or |c: &Config| otry!(c.ui).hosts.as_ref().map(|vec| vec.join(",")),
-			"--ui-hosts HOSTS
-				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.'",
-
-			FLAG flag_ui_path: String = "$BASE/signer", or |c: &Config| otry!(c.ui).path.clone(),
-			"--ui-path PATH
-				'Specify directory where Trusted UIs tokens should be stored.'",
-
 			// NOTE [todr] For security reasons don't put this to config files
 			FLAG flag_ui_no_validation: bool = false, or |_| None,
 			"--ui-no-validation
 				'Disable Origin and Host headers validation for Trusted UI. WARNING: INSECURE. Used only for development.'",
+
+			ARG arg_ui_interface: String = "local", or |c: &Config| otry!(c.ui).interface.clone(),
+			"--ui-interface IP
+				'Specify the hostname portion of the Trusted UI server, IP should be an interface's IP address, or local.'",
+
+			ARG arg_ui_hosts: String = "none", or |c: &Config| otry!(c.ui).hosts.as_ref().map(|vec| vec.join(",")),
+			"--ui-hosts HOSTS
+				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.'",
+
+			ARG arg_ui_path: String = "$BASE/signer", or |c: &Config| otry!(c.ui).path.clone(),
+			"--ui-path PATH
+				'Specify directory where Trusted UIs tokens should be stored.'",
 
 			ARG arg_ui_port: u16 = 8180u16, or |c: &Config| otry!(c.ui).port.clone(),
 			"--ui-port PORT
@@ -620,21 +620,21 @@ usage! {
 				'Secret for authorizing Stratum server for peers.'",
 
 		["Miscellaneous options"]
-			FLAG flag_ntp_server: String = "pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_server.clone(),
-			"--ntp-server HOST
-				'NTP server to provide current time (host:port). Used to verify node health.'",
-
-			FLAG flag_logging: Option<String> = None, or |c: &Config| otry!(c.misc).logging.clone().map(Some),
-			"-l --logging LOGGING
-				'Specify the logging level. Must conform to the same format as RUST_LOG.'",
-
-			FLAG flag_log_file: Option<String> = None, or |c: &Config| otry!(c.misc).log_file.clone().map(Some),
-			"--log-file FILENAME
-				'Specify a filename into which logging should be appended.'",
-
 			FLAG flag_no_color: bool = false, or |c: &Config| otry!(c.misc).color.map(|c| !c).clone(),
 			"--no-color
 				'Don't use terminal color codes in output.'",
+
+			ARG arg_ntp_server: String = "pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_server.clone(),
+			"--ntp-server HOST
+				'NTP server to provide current time (host:port). Used to verify node health.'",
+
+			ARG arg_logging: Option<String> = None, or |c: &Config| otry!(c.misc).logging.clone().map(Some),
+			"-l --logging LOGGING
+				'Specify the logging level. Must conform to the same format as RUST_LOG.'",
+
+			ARG arg_log_file: Option<String> = None, or |c: &Config| otry!(c.misc).log_file.clone().map(Some),
+			"--log-file FILENAME
+				'Specify a filename into which logging should be appended.'",
 
 		["Footprint options"]
 			FLAG flag_fast_and_loose: bool = false, or |c: &Config| otry!(c.footprint).fast_and_loose.clone(),
@@ -1081,9 +1081,9 @@ mod tests {
 			flag_force_ui: false,
 			flag_no_ui: false,
 			flag_ui_port: 8180u16,
-			flag_ui_interface: "127.0.0.1".into(),
-			flag_ui_hosts: "none".into(),
-			flag_ui_path: "$HOME/.parity/signer".into(),
+			arg_ui_interface: "127.0.0.1".into(),
+			arg_ui_hosts: "none".into(),
+			arg_ui_path: "$HOME/.parity/signer".into(),
 			flag_ui_no_validation: false,
 
 			// -- Networking Options
@@ -1251,9 +1251,9 @@ mod tests {
 			flag_dapps_apis_all: None,
 
 			// -- Miscellaneous Options
-			flag_ntp_server: "pool.ntp.org:123".into(),
-			flag_logging: Some("own_tx=trace".into()),
-			flag_log_file: Some("/var/log/parity.log".into()),
+			arg_ntp_server: "pool.ntp.org:123".into(),
+			arg_logging: Some("own_tx=trace".into()),
+			arg_log_file: Some("/var/log/parity.log".into()),
 			flag_no_color: false,
 			flag_no_config: false,
 		});
