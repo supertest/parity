@@ -440,9 +440,9 @@ impl Configuration {
 
 	fn logger_config(&self) -> LogConfig {
 		LogConfig {
-			mode: self.args.flag_logging.clone(),
+			mode: self.args.arg_logging.clone(),
 			color: !self.args.flag_no_color && !cfg!(windows),
-			file: self.args.flag_log_file.clone(),
+			file: self.args.arg_log_file.clone(),
 		}
 	}
 
@@ -556,7 +556,7 @@ impl Configuration {
 	fn ui_config(&self) -> UiConfiguration {
 		UiConfiguration {
 			enabled: self.ui_enabled(),
-			ntp_server: self.args.flag_ntp_server.clone(),
+			ntp_server: self.args.arg_ntp_server.clone(),
 			interface: self.ui_interface(),
 			port: self.args.arg_ports_shift + self.args.flag_ui_port,
 			hosts: self.ui_hosts(),
@@ -566,7 +566,7 @@ impl Configuration {
 	fn dapps_config(&self) -> DappsConfiguration {
 		DappsConfiguration {
 			enabled: self.dapps_enabled(),
-			ntp_server: self.args.flag_ntp_server.clone(),
+			ntp_server: self.args.arg_ntp_server.clone(),
 			dapps_path: PathBuf::from(self.directories().dapps),
 			extra_dapps: if self.args.cmd_dapp {
 				self.args.arg_dapp_path.iter().map(|path| PathBuf::from(path)).collect()
@@ -775,7 +775,7 @@ impl Configuration {
 	}
 
 	fn ui_hosts(&self) -> Option<Vec<String>> {
-		self.hosts(&self.args.flag_ui_hosts, &self.ui_interface())
+		self.hosts(&self.args.arg_ui_hosts, &self.ui_interface())
 	}
 
 	fn rpc_hosts(&self) -> Option<Vec<String>> {
@@ -915,7 +915,7 @@ impl Configuration {
 		let keys_path = replace_home(&data_path, &self.args.arg_keys_path);
 		let dapps_path = replace_home(&data_path, &self.args.arg_dapps_path);
 		let secretstore_path = replace_home(&data_path, &self.args.arg_secretstore_path);
-		let ui_path = replace_home(&data_path, &self.args.flag_ui_path);
+		let ui_path = replace_home(&data_path, &self.args.arg_ui_path);
 
 		if self.args.flag_geth && !cfg!(windows) {
 			let geth_root  = if self.chain() == "testnet".to_owned() { path::ethereum::test() } else {  path::ethereum::default() };
@@ -969,7 +969,7 @@ impl Configuration {
 
 
 	fn ui_interface(&self) -> String {
-		self.interface(&self.args.flag_ui_interface)
+		self.interface(&self.args.arg_ui_interface)
 	}
 
 	fn rpc_interface(&self) -> String {

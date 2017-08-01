@@ -97,8 +97,8 @@ Usage:
 
 	#[derive(Debug, RustcDecodable)]
 	struct Args {
-		flag_logging: Option<String>,
-		flag_log_file: Option<String>,
+		arg_logging: Option<String>,
+		arg_log_file: Option<String>,
 		flag_no_color: bool,
 	}
 
@@ -106,8 +106,8 @@ Usage:
 		pub fn log_settings(&self) -> LogConfig {
 			LogConfig {
 				color: self.flag_no_color || cfg!(windows),
-				mode: self.flag_logging.clone(),
-				file: self.flag_log_file.clone(),
+				mode: self.arg_logging.clone(),
+				file: self.arg_log_file.clone(),
 			}
 		}
 	}
