@@ -78,11 +78,11 @@ macro_rules! usage {
 				$field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
 			)*
 		}
-		{
-			$(
-				$field_flag_u:ident : $typ_flag_u:ty = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
-			)*
-		}
+		// {
+		// 	$(
+		// 		$field_flag_u:ident : $typ_flag_u:ty = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
+		// 	)*
+		// }
 	) => {
 		use toml;
 		use std::{fs, io, process};
