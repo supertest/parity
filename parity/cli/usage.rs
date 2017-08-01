@@ -169,7 +169,7 @@ macro_rules! usage {
 					pub $field_flag_u: $typ_flag_u,
 				)*
 				$(
-					pub $field_arg_u: $typ_arg_u,
+					pub $field_arg_u: Option<$typ_arg_u>,
 				)*
 			)*
 		}

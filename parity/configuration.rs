@@ -558,7 +558,7 @@ impl Configuration {
 			enabled: self.ui_enabled(),
 			ntp_server: self.args.arg_ntp_server.clone(),
 			interface: self.ui_interface(),
-			port: self.args.arg_ports_shift + self.args.flag_ui_port,
+			port: self.args.arg_ports_shift + self.args.arg_ui_port,
 			hosts: self.ui_hosts(),
 		}
 	}
