@@ -74,6 +74,7 @@ usage! {
 		// CLI subcommands
 		// Subcommands/sub-subcommands must start with cmd_
 		// Arguments must start with arg_
+		// Option<> will be automatically wrapped around the types
 
 		CMD cmd_wallet
 		{
@@ -252,7 +253,7 @@ usage! {
 			"--fast-unlock
 				'Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care.'",
 
-			ARG arg_unlock: String = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| Some(vec.join(","))),
+			ARG arg_unlock: Option<String> = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| Some(vec.join(","))),
 			"--unlock ACCOUNTS
 				'Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.'",
 
@@ -335,19 +336,19 @@ usage! {
 			"--nat METHOD
 				'Specify method to use for determining public address. Must be one of: any, none, upnp, extip:<IP>.'",
 
-			ARG arg_network_id: u64 = None, or |c: &Config| otry!(c.network).id.clone().map(Some),
+			ARG arg_network_id: Option<u64> = None, or |c: &Config| otry!(c.network).id.clone().map(Some),
 			"--network-id INDEX
 				'Override the network identifier from the chain we are on.'",
 
-			ARG arg_bootnodes: String = None, or |c: &Config| otry!(c.network).bootnodes.as_ref().map(|vec| Some(vec.join(","))),
+			ARG arg_bootnodes: Option<String> = None, or |c: &Config| otry!(c.network).bootnodes.as_ref().map(|vec| Some(vec.join(","))),
 			"--bootnodes NODES
 				'Override the bootnodes from our chain. NODES should be comma-delimited enodes.'",
 
-			ARG arg_node_key: String = None, or |c: &Config| otry!(c.network).node_key.clone().map(Some),
+			ARG arg_node_key: Option<String> = None, or |c: &Config| otry!(c.network).node_key.clone().map(Some),
 			"--node-key KEY
 				'Specify node secret key, either as 64-character hex string or input to SHA3 operation.'",
 
-			ARG arg_reserved_peers: String = None, or |c: &Config| otry!(c.network).reserved_peers.clone().map(Some),
+			ARG arg_reserved_peers: Option<String> = None, or |c: &Config| otry!(c.network).reserved_peers.clone().map(Some),
 			"--reserved-peers FILE
 				'Provide a file containing enodes, one per line. These nodes will always have a reserved slot on top of the normal maximum peers.'",
 
@@ -373,7 +374,7 @@ usage! {
 			"--jsonrpc-interface IP
 				'Specify the hostname portion of the JSONRPC API server, IP should be an interface's IP address, or all (all interfaces) or local.'",
 
-			ARG arg_jsonrpc_cors: String = None, or |c: &Config| otry!(c.rpc).cors.clone().map(Some),
+			ARG arg_jsonrpc_cors: Option<String> = None, or |c: &Config| otry!(c.rpc).cors.clone().map(Some),
 			"--jsonrpc-cors URL
 				'Specify CORS header for JSON-RPC API responses.'",
 
@@ -385,7 +386,7 @@ usage! {
 			"--jsonrpc-hosts HOSTS
 				'List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.'",
 
-			ARG arg_jsonrpc_server_threads: usize = None, or |c: &Config| otry!(c.rpc).server_threads.map(Some),
+			ARG arg_jsonrpc_server_threads: Option<usize> = None, or |c: &Config| otry!(c.rpc).server_threads.map(Some),
 			"--jsonrpc-server-threads NUM
 				'Enables experimental faster implementation of JSON-RPC server. Requires Dapps server to be disabled using --no-dapps.'",
 
@@ -453,7 +454,7 @@ usage! {
 			"--ipfs-api-interface IP
 				'Specify the hostname portion of the IPFS API server, IP should be an interface's IP address or local.'",
 
-			ARG arg_ipfs_api_cors: String = None, or |c: &Config| otry!(c.ipfs).cors.clone().map(Some),
+			ARG arg_ipfs_api_cors: Option<String> = None, or |c: &Config| otry!(c.ipfs).cors.clone().map(Some),
 			"--ipfs-api-cors URL
 				'Specify CORS header for IPFS API responses.'",
 
@@ -466,7 +467,7 @@ usage! {
 			"--no-secretstore
 				'Disable Secret Store functionality.'",
 
-			ARG arg_secretstore_secret: String = None, or |c: &Config| otry!(c.secretstore).self_secret.clone().map(Some),
+			ARG arg_secretstore_secret: Option<String> = None, or |c: &Config| otry!(c.secretstore).self_secret.clone().map(Some),
 			"--secretstore-secret SECRET
 				'Hex-encoded secret key of this node. (required, default: {arg_secretstore_secret:?}).'",
 
@@ -519,11 +520,11 @@ usage! {
 			"--stratum
 				'Run Stratum server for miner push notification.'",
 
-			ARG arg_author: String = None, or |c: &Config| otry!(c.mining).author.clone().map(Some),
+			ARG arg_author: Option<String> = None, or |c: &Config| otry!(c.mining).author.clone().map(Some),
 			"--author ADDRESS
 				'Specify the block author (aka \"coinbase\") address for sending block rewards from sealed blocks. NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION.'", // Sealing/Mining Option
 
-			ARG arg_engine_signer: String = None, or |c: &Config| otry!(c.mining).engine_signer.clone().map(Some),
+			ARG arg_engine_signer: Option<String> = None, or |c: &Config| otry!(c.mining).engine_signer.clone().map(Some),
 			"--engine-signer ADDRESS
 				'Specify the address which should be used to sign consensus messages and issue blocks. Relevant only to non-PoW chains.'",
 
@@ -543,11 +544,11 @@ usage! {
 			"--work-queue-size ITEMS
 				'Specify the number of historical work packages which are kept cached lest a solution is found for them later. High values take more memory but result in fewer unusable solutions.'",
 
-			ARG arg_tx_gas_limit: String = None, or |c: &Config| otry!(c.mining).tx_gas_limit.clone().map(Some),
+			ARG arg_tx_gas_limit: Option<String> = None, or |c: &Config| otry!(c.mining).tx_gas_limit.clone().map(Some),
 			"--tx-gas-limit GAS
 				'Apply a limit of GAS as the maximum amount of gas a single transaction may have for it to be mined.'",
 
-			ARG arg_tx_time_limit: u64 = None, or |c: &Config| otry!(c.mining).tx_time_limit.clone().map(Some),
+			ARG arg_tx_time_limit: Option<u64> = None, or |c: &Config| otry!(c.mining).tx_time_limit.clone().map(Some),
 			"--tx-time-limit MS
 				'Maximal time for processing single transaction. If enabled senders/recipients/code of transactions offending the limit will be banned from being included in transaction queue for 180 seconds.'",
 
@@ -575,7 +576,7 @@ usage! {
 			"--gas-cap GAS
 				'A cap on how large we will raise the gas limit per block due to transaction volume.'",
 
-			ARG arg_extra_data: String = None, or |c: &Config| otry!(c.mining).extra_data.clone().map(Some),
+			ARG arg_extra_data: Option<String> = None, or |c: &Config| otry!(c.mining).extra_data.clone().map(Some),
 			"--extra-data STRING
 				'Specify a custom extra-data for authored blocks, no more than 32 characters.'",
 
@@ -603,7 +604,7 @@ usage! {
 			"--tx-queue-ban-time SEC
 				'Banning time (in seconds) for offenders of specified execution time limit. Also number of offending actions have to reach the threshold within that time. (default: {arg_tx_queue_ban_time} seconds)'",
 
-			ARG arg_notify_work: String = None, or |c: &Config| otry!(c.mining).notify_work.as_ref().map(|vec| Some(vec.join(","))),
+			ARG arg_notify_work: Option<String> = None, or |c: &Config| otry!(c.mining).notify_work.as_ref().map(|vec| Some(vec.join(","))),
 			"--notify-work URLS
 				'URLs to which work package notifications are pushed. URLS should be a comma-delimited list of HTTP URLs.'",
 
@@ -615,7 +616,7 @@ usage! {
 			"--stratum-port PORT
 				'Port for Stratum server to listen on.'",
 
-			ARG arg_stratum_secret: String = None, or |c: &Config| otry!(c.stratum).secret.clone().map(Some),
+			ARG arg_stratum_secret: Option<String> = None, or |c: &Config| otry!(c.stratum).secret.clone().map(Some),
 			"--stratum-secret STRING
 				'Secret for authorizing Stratum server for peers.'",
 
@@ -628,11 +629,11 @@ usage! {
 			"--ntp-server HOST
 				'NTP server to provide current time (host:port). Used to verify node health.'",
 
-			ARG arg_logging: String = None, or |c: &Config| otry!(c.misc).logging.clone().map(Some),
+			ARG arg_logging: Option<String> = None, or |c: &Config| otry!(c.misc).logging.clone().map(Some),
 			"-l --logging LOGGING
 				'Specify the logging level. Must conform to the same format as RUST_LOG.'",
 
-			ARG arg_log_file: String = None, or |c: &Config| otry!(c.misc).log_file.clone().map(Some),
+			ARG arg_log_file: Option<String> = None, or |c: &Config| otry!(c.misc).log_file.clone().map(Some),
 			"--log-file FILENAME
 				'Specify a filename into which logging should be appended.'",
 
@@ -677,7 +678,7 @@ usage! {
 			"--cache-size-state MB
 				'Specify the maximum size of memory to use for the state cache.'",
 
-			ARG arg_cache_size: u32 = None, or |c: &Config| otry!(c.footprint).cache_size.clone().map(Some),
+			ARG arg_cache_size: Option<u32> = None, or |c: &Config| otry!(c.footprint).cache_size.clone().map(Some),
 			"--cache-size MB
 				'Set total amount of discretionary memory to use for the entire system, overrides other cache and queue options.'",
 
@@ -689,7 +690,7 @@ usage! {
 			"--fat-db BOOL
 				'Build appropriate information to allow enumeration of all accounts and storage keys. Doubles the size of the state database. BOOL may be one of on, off or auto.'",
 
-			ARG arg_num_verifiers: usize = None, or |c: &Config| otry!(c.footprint).num_verifiers.clone().map(Some),
+			ARG arg_num_verifiers: Option<usize> = None, or |c: &Config| otry!(c.footprint).num_verifiers.clone().map(Some),
 			"--num-verifiers INT
 				'Amount of verifier threads to use or to begin with, if verifier auto-scaling is enabled.'",
 
@@ -714,15 +715,15 @@ usage! {
 			"--to BLOCK
 				'Export to (including) block BLOCK, which may be an index, hash or 'latest'.'",
 
-			ARG arg_format: String = None, or |_| None,
+			ARG arg_format: Option<String> = None, or |_| None,
 			"--format FORMAT
 				'For import/export in given format. FORMAT must be one of 'hex' and 'binary'. (default: {arg_format:?} = Import: auto, Export: binary)'",
 
-			ARG arg_min_balance: String = None, or |_| None,
+			ARG arg_min_balance: Option<String> = None, or |_| None,
 			"--min-balance WEI
 				'Don't export accounts with balance less than specified.'",
 
-			ARG arg_max_balance: String = None, or |_| None,
+			ARG arg_max_balance: Option<String> = None, or |_| None,
 			"--max-balance WEI
 				'Don't export accounts with balance greater than specified.'",
 
