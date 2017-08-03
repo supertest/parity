@@ -83,6 +83,9 @@ macro_rules! usage {
 					ARG $field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
 				)*
 				$(
+					ARGM $field_argm_u:ident : $typ_argm_u:ty = $default_argm_u:expr, or $from_config_argm_u:expr, $usage_argm_u:expr,
+				)*
+				$(
 					ARG_OPTION $field_argo_u:ident : $innertyp_argo_u:ty = $default_argo_u:expr, or $from_config_argo_u:expr, $usage_argo_u:expr,
 				)*
 			)*
@@ -175,6 +178,9 @@ macro_rules! usage {
 					pub $field_arg_u: $typ_arg_u,
 				)*
 				$(
+					pub $field_argm_u: Vec<$typ_argm_u>,
+				)*
+				$(
 					pub $field_argo_u: Option<$innertyp_argo_u>,
 				)*
 			)*
@@ -223,6 +229,9 @@ macro_rules! usage {
 							$field_arg_u: Default::default(),
 						)*
 						$(
+							$field_argm_u: Default::default(),
+						)*
+						$(
 							$field_argo_u: Default::default(),
 						)*
 					)*
@@ -268,6 +277,9 @@ macro_rules! usage {
 				)*
 				$(
 					$field_arg_u: Option<$typ_arg_u>,
+				)*
+				$(
+					$field_argm_u: Option<Vec<$typ_argm_u>>,
 				)*
 				$(
 					$field_argo_u: Option<$innertyp_argo_u>,
@@ -369,6 +381,9 @@ macro_rules! usage {
 						args.$field_arg_u = self.$field_arg_u.or_else(|| $from_config_arg_u(&config)).unwrap_or_else(|| $default_arg_u.into());
 					)*
 					$(
+						args.$field_argm_u = self.$field_argm_u.or_else(|| $from_config_argm_u(&config)).unwrap_or_else(|| $default_argm_u.into());
+					)*
+					$(
 						args.$field_argo_u = self.$field_argo_u.or_else(|| $from_config_argo_u(&config)).or_else(|| $default_argo_u.into()); // before was:unwrap_or_else intead of .or_else
 					)*
 				)*
@@ -426,6 +441,9 @@ macro_rules! usage {
 				$(
 					$(
 						raw_args.$field_arg_u = value_t!(matches, &stringify!($field_arg_u)[4..], $typ_arg_u).ok();
+					)*
+					$(
+						raw_args.$field_argm_u = values_t!(matches, &stringify!($field_argm_u)[4..], $typ_argm_u).ok();
 					)*
 					$(
 						raw_args.$field_argo_u = value_t!(matches, &stringify!($field_argo_u)[4..], $innertyp_argo_u).ok();

@@ -252,19 +252,18 @@ usage! {
 			FLAG flag_fast_unlock: bool = false, or |c: &Config| otry!(c.account).fast_unlock.clone(),
 			"--fast-unlock
 				'Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care.'",
-
-			ARG arg_password: Vec<String> = Vec::new(), or |c: &Config| otry!(c.account).password.clone(), // @TODO
-			"--password FILE
-				'Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.'",
 			
 			ARG arg_keys_iterations: u32 = 10240u32, or |c: &Config| otry!(c.account).keys_iterations.clone(),
 			"--keys-iterations NUM
 				'Specify the number of iterations to use when deriving key from the password (bigger is more secure)'",
 
+			ARGM arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(), // @TODO
+			"--password FILE
+				'Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.'",
+
 			ARG_OPTION arg_unlock: String = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| vec.join(",")),
 			"--unlock ACCOUNTS
 				'Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.'",
-
 
 		["UI options"]
 			FLAG flag_force_ui: bool = false, or |c: &Config| otry!(c.ui).force.clone(),
@@ -613,7 +612,7 @@ usage! {
 			"--extra-data STRING
 				'Specify a custom extra-data for authored blocks, no more than 32 characters.'",
 
-			ARG_OPTION arg_notify_work: String = None, or |c: &Config| otry!(c.mining).notify_work.as_ref().map(|vec| Some(vec.join(","))),
+			ARG_OPTION arg_notify_work: String = None, or |c: &Config| otry!(c.mining).notify_work.as_ref().map(|vec| vec.join(",")),
 			"--notify-work URLS
 				'URLs to which work package notifications are pushed. URLS should be a comma-delimited list of HTTP URLs.'",
 
