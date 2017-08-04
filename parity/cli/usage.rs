@@ -67,7 +67,7 @@ macro_rules! usage {
 			$(
 			[$group_name:expr]
 				$(
-					FLAG $field_flag_u:ident : $typ_flag_u:ty = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
+					FLAG $field_flag_u:ident : bool = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
 				)*
 				$(
 					ARG $field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
@@ -82,7 +82,7 @@ macro_rules! usage {
 		}
 		{
 			$(
-				FLAG $field_a_flag:ident : $typ_a_flag:ty,
+				FLAG $field_a_flag:ident : bool,
 			)*
 			$(
 				ARG_OPTION $field_a_arg:ident : $typ_a_arg:ty,
@@ -162,7 +162,7 @@ macro_rules! usage {
 
 			$(
 				$(
-					pub $field_flag_u: bool, // @TODO hardcoded
+					pub $field_flag_u: bool,
 				)*
 				$(
 					pub $field_arg_u: $typ_arg_u,
@@ -176,7 +176,7 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub $field_a_flag: bool, // @TODO hardcoded
+				pub $field_a_flag: bool,
 			)*
 			$(
 				pub $field_a_arg: Option<$typ_a_arg>,
@@ -264,7 +264,7 @@ macro_rules! usage {
 			)*
 			$(
 				$(
-					$field_flag_u: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+					$field_flag_u: bool,
 				)*
 				$(
 					$field_arg_u: Option<$typ_arg_u>,
@@ -278,7 +278,7 @@ macro_rules! usage {
 			)*
 
 			$(
-				$field_a_flag: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+				$field_a_flag: bool,
 			)*
 
 			$(
