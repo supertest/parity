@@ -48,12 +48,6 @@ usage! {
 		flag_etherbase: Option<String>,
 		flag_extradata: Option<String>,
 		flag_cache: Option<u32>,
-
-		// I guess the following are options that can only be set from the CLI ?
-		flag_no_config: bool,
-//		"--no-config
-			//'Don't load a configuration file.'",
-
 	}
 	{
 		// Values with optional default value. (@TODO prune? merge with the other block?)
@@ -352,10 +346,9 @@ usage! {
 				'Provide a file containing enodes, one per line. These nodes will always have a reserved slot on top of the normal maximum peers.'",
 
 		["API and Console options: RPC"]
-			// RPC
 			FLAG flag_no_jsonrpc: bool = false, or |c: &Config| otry!(c.rpc).disable.clone(),
 			"--no-jsonrpc
-				'Disable the JSON-RPC API server.'", // API and Console Options:
+				'Disable the JSON-RPC API server.'",
 
 			ARG arg_jsonrpc_port: u16 = 8545u16, or |c: &Config| otry!(c.rpc).port.clone(),
 			"--jsonrpc-port PORT
@@ -620,6 +613,10 @@ usage! {
 			"--no-color
 				'Don't use terminal color codes in output.'",
 
+			FLAG flag_no_config: bool = false, or |_| None,
+			"--no-config
+				'Don't load a configuration file.'",
+
 			ARG arg_ntp_server: String = "none", or |c: &Config| otry!(c.misc).ntp_server.clone(),
 			"--ntp-server HOST
 				'NTP server to provide current time (host:port). Used to verify node health.'",
@@ -747,7 +744,7 @@ usage! {
 		
 		// -- Legacy options supported in configs
 		["Legacy options"]
-			FLAG flag_dapps_apis_all: bool = false, or |_| Some(false),
+			FLAG flag_dapps_apis_all: bool = false, or |_| None,
 			"--dapps-apis-all
 				'Dapps server is merged with RPC server. Use --jsonrpc-apis.'",
 
@@ -774,8 +771,6 @@ usage! {
 			ARG_OPTION arg_dapps_pass: String = None, or |c: &Config| otry!(c.dapps).pass.clone(),
 			"--dapps-pass PASSWORD
 					'Dapps server authentication has been removed.'",
-		
-		
 		
 	}
 }
