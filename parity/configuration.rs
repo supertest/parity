@@ -148,7 +148,7 @@ impl Configuration {
 			if self.args.cmd_signer_new_token {
 				Cmd::SignerToken(ws_conf, ui_conf, logger_config.clone())
 			} else if self.args.cmd_signer_sign {
-				let pwfile = self.args.flag_password.get(0).map(|pwfile| {
+				let pwfile = self.args.arg_password.get(0).map(|pwfile| {
 					PathBuf::from(pwfile)
 				});
 				Cmd::SignerSign {
@@ -342,7 +342,7 @@ impl Configuration {
 				pruning_memory: self.args.arg_pruning_memory,
 				daemon: daemon,
 				logger_config: logger_config.clone(),
-				miner_options: self.miner_options(self.args.flag_reseal_min_period)?,
+				miner_options: self.miner_options(self.args.arg_reseal_min_period)?,
 				ws_conf: ws_conf,
 				http_conf: http_conf,
 				ipc_conf: ipc_conf,
@@ -623,7 +623,7 @@ impl Configuration {
 
 		if let Some(dec) = self.args.flag_gasprice.as_ref() {
 			return Ok(GasPricerConfig::Fixed(to_u256(dec)?));
-		} else if let Some(dec) = self.args.flag_min_gas_price {
+		} else if let Some(dec) = self.args.arg_min_gas_price {
 			return Ok(GasPricerConfig::Fixed(U256::from(dec)));
 		}
 
