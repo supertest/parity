@@ -49,7 +49,7 @@ usage! {
 
 			CMD cmd_account_import
 			{
-				ARGM arg_account_import_path: String, |arg| Arg::required(arg,true).index(3),
+				ARG_MULTIPLE arg_account_import_path: String, |arg| Arg::required(arg,true).index(3),
 			}
 		}
 
@@ -214,7 +214,7 @@ usage! {
 			"--keys-iterations NUM
 				'Specify the number of iterations to use when deriving key from the password (bigger is more secure)'",
 
-			ARGM arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(), // @TODO
+			ARG_MULTIPLE arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(), // @TODO
 			"--password FILE
 				'Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.'",
 

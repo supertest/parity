@@ -40,25 +40,25 @@ macro_rules! usage {
 		}
 		{
 			$(
-				CMD $subcommand:ident
+				CMD $subc:ident
 				{
 					$(
-						CMD $subsubcommand:ident
+						CMD $subc_subc:ident
 						{
 							$(
-								ARG $subsubcommand_arg:ident : $typ_subsubcommand_arg:ty, $clap_subsubcommand_arg:expr,
+								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty, $subc_subc_arg_clap:expr,
 							)*
 							$(
-								ARGM $subsubcommand_argm:ident : $typ_subsubcommand_argm:ty, $clap_subsubcommand_argm:expr,
+								ARG_MULTIPLE $subc_subc_argm:ident : $subc_subc_argm_type:ty, $subc_subc_argm_clap:expr,
 							)*
 						}
 					)*
 
 					$(
-						ARG $subcommand_arg:ident : $typ_subcommand_arg:ty, $clap_subcommand_arg:expr,
+						ARG $subc_arg:ident : $subc_arg_type:ty, $subc_arg_clap:expr,
 					)*
 					$(
-						ARGM $subcommand_argm:ident : $typ_subcommand_argm:ty, $clap_subcommand_argm:expr,
+						ARG_MULTIPLE $subc_argm:ident : $subc_argm_type:ty, $subc_argm_clap:expr,
 					)*
 				}
 			)*
@@ -67,25 +67,25 @@ macro_rules! usage {
 			$(
 			[$group_name:expr]
 				$(
-					FLAG $field_flag_u:ident : bool = $default_flag_u:expr, or $from_config_flag_u:expr, $usage_flag_u:expr,
+					FLAG $flag:ident : bool = $flag_default:expr, or $flag_from_config:expr, $flag_usage:expr,
 				)*
 				$(
-					ARG $field_arg_u:ident : $typ_arg_u:ty = $default_arg_u:expr, or $from_config_arg_u:expr, $usage_arg_u:expr,
+					ARG $arg:ident : $arg_type:ty = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr,
 				)*
 				$(
-					ARGM $field_argm_u:ident : $typ_argm_u:ty = $default_argm_u:expr, or $from_config_argm_u:expr, $usage_argm_u:expr,
+					ARG_MULTIPLE $argm:ident : $argm_type:ty = $argm_default:expr, or $argm_from_config:expr, $argm_usage:expr,
 				)*
 				$(
-					ARG_OPTION $field_argo_u:ident : $innertyp_argo_u:ty = $default_argo_u:expr, or $from_config_argo_u:expr, $usage_argo_u:expr,
+					ARG_OPTION $argo:ident : $argo_type:ty = $argo_default:expr, or $argo_from_config:expr, $argo_usage:expr,
 				)*
 			)*
 		}
 		{
 			$(
-				FLAG $field_a_flag:ident : bool,
+				FLAG $legacy_flag:ident : bool,
 			)*
 			$(
-				ARG_OPTION $field_a_arg:ident : $typ_a_arg:ty,
+				ARG_OPTION $legacy_arg:ident : $legacy_arg_type:ty,
 			)*
 		}
 	) => {
@@ -140,46 +140,46 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub $subcommand: bool,
+				pub $subc: bool,
 
 				$(
-					pub $subsubcommand: bool,
+					pub $subc_subc: bool,
 					$(
-						pub $subsubcommand_arg: Option<$typ_subsubcommand_arg>,
+						pub $subc_subc_arg: Option<$subc_subc_arg_type>,
 					)*
 					$(
-						pub $subsubcommand_argm: Option<Vec<$typ_subsubcommand_argm>>,
+						pub $subc_subc_argm: Option<Vec<$subc_subc_argm_type>>,
 					)*
 				)*
 
 				$(
-					pub $subcommand_arg: Option<$typ_subcommand_arg>,
+					pub $subc_arg: Option<$subc_arg_type>,
 				)*
 				$(
-					pub $subcommand_argm: Option<Vec<$typ_subcommand_argm>>,
+					pub $subc_argm: Option<Vec<$subc_argm_type>>,
 				)*
 			)*
 
 			$(
 				$(
-					pub $field_flag_u: bool,
+					pub $flag: bool,
 				)*
 				$(
-					pub $field_arg_u: $typ_arg_u,
+					pub $arg: $arg_type,
 				)*
 				$(
-					pub $field_argm_u: Vec<$typ_argm_u>,
+					pub $argm: Vec<$argm_type>,
 				)*
 				$(
-					pub $field_argo_u: Option<$innertyp_argo_u>,
+					pub $argo: Option<$argo_type>,
 				)*
 			)*
 
 			$(
-				pub $field_a_flag: bool,
+				pub $legacy_flag: bool,
 			)*
 			$(
-				pub $field_a_arg: Option<$typ_a_arg>,
+				pub $legacy_arg: Option<$legacy_arg_type>,
 			)*
 		}
 
@@ -192,46 +192,46 @@ macro_rules! usage {
 					)*
 
 					$(
-						$subcommand: Default::default(),
+						$subc: Default::default(),
 						$(
-							$subsubcommand: Default::default(),
+							$subc_subc: Default::default(),
 							$(
-								$subsubcommand_arg: Default::default(),
+								$subc_subc_arg: Default::default(),
 							)*
 							$(
-								$subsubcommand_argm: Default::default(),
+								$subc_subc_argm: Default::default(),
 							)*
 						)*
 
 						$(
-							$subcommand_arg: Default::default(),
+							$subc_arg: Default::default(),
 						)*
 						$(
-							$subcommand_argm: Default::default(),
+							$subc_argm: Default::default(),
 						)*
 					)*
 
 					$(
 						$(
-							$field_flag_u: Default::default(),
+							$flag: Default::default(),
 						)*
 						$(
-							$field_arg_u: Default::default(),
+							$arg: Default::default(),
 						)*
 						$(
-							$field_argm_u: Default::default(),
+							$argm: Default::default(),
 						)*
 						$(
-							$field_argo_u: Default::default(),
+							$argo: Default::default(),
 						)*
 					)*
 
 					$(
-						$field_a_flag: Default::default(),
+						$legacy_flag: Default::default(),
 					)*
 
 					$(
-						$field_a_arg: Default::default(),
+						$legacy_arg: Default::default(),
 					)*
 				}
 			}
@@ -243,46 +243,46 @@ macro_rules! usage {
 				$field_s: Option<$typ_s>,
 			)*
 			$(
-				$subcommand: bool,
+				$subc: bool,
 				
 				$(
-					$subsubcommand: bool,
+					$subc_subc: bool,
 					$(
-						$subsubcommand_arg: Option<$typ_subsubcommand_arg>,
+						$subc_subc_arg: Option<$subc_subc_arg_type>,
 					)*
 					$(
-						$subsubcommand_argm: Option<Vec<$typ_subsubcommand_argm>>,
+						$subc_subc_argm: Option<Vec<$subc_subc_argm_type>>,
 					)*
 				)*
 
 				$(
-					$subcommand_arg: Option<$typ_subcommand_arg>,
+					$subc_arg: Option<$subc_arg_type>,
 				)*
 				$(
-					$subcommand_argm: Option<Vec<$typ_subcommand_argm>>,
+					$subc_argm: Option<Vec<$subc_argm_type>>,
 				)*
 			)*
 			$(
 				$(
-					$field_flag_u: bool,
+					$flag: bool,
 				)*
 				$(
-					$field_arg_u: Option<$typ_arg_u>,
+					$arg: Option<$arg_type>,
 				)*
 				$(
-					$field_argm_u: Option<Vec<$typ_argm_u>>,
+					$argm: Option<Vec<$argm_type>>,
 				)*
 				$(
-					$field_argo_u: Option<$innertyp_argo_u>,
+					$argo: Option<$argo_type>,
 				)*
-			)*
-
-			$(
-				$field_a_flag: bool,
 			)*
 
 			$(
-				$field_a_arg: Option<$typ_a_arg>,
+				$legacy_flag: bool,
+			)*
+
+			$(
+				$legacy_arg: Option<$legacy_arg_type>,
 			)*
 		}
 
@@ -344,48 +344,48 @@ macro_rules! usage {
 					args.$field_s = self.$field_s.or_else(|| $from_config_s(&config)).unwrap_or(None);
 				)*
 				$(
-					args.$subcommand = self.$subcommand;
+					args.$subc = self.$subc;
 
 					$(
-						args.$subsubcommand = self.$subsubcommand;
+						args.$subc_subc = self.$subc_subc;
 						$(
-							args.$subsubcommand_arg = self.$subsubcommand_arg;
+							args.$subc_subc_arg = self.$subc_subc_arg;
 						)*
 						$(
-							args.$subsubcommand_argm = self.$subsubcommand_argm;
+							args.$subc_subc_argm = self.$subc_subc_argm;
 						)*
 					)*
 
 					$(
-						args.$subcommand_arg = self.$subcommand_arg;
+						args.$subc_arg = self.$subc_arg;
 					)*
 					$(
-						args.$subcommand_argm = self.$subcommand_argm;
+						args.$subc_argm = self.$subc_argm;
 					)*
 				)*
 
 				$(
 					$(
-						// args.$field_flag_u = self.$field_flag_u.or_else(|| $from_config_flag_u(&config)).unwrap_or_else(|| $default_flag_u.into());
+						// args.$flag = self.$flag.or_else(|| $flag_from_config(&config)).unwrap_or_else(|| $flag_default.into());
 
 						// Presence of CLI switch || config || default
-						args.$field_flag_u = self.$field_flag_u || $from_config_flag_u(&config).unwrap_or_else(|| $default_flag_u.into());
+						args.$flag = self.$flag || $flag_from_config(&config).unwrap_or_else(|| $flag_default.into());
 					)*
 					$(
-						args.$field_arg_u = self.$field_arg_u.or_else(|| $from_config_arg_u(&config)).unwrap_or_else(|| $default_arg_u.into());
+						args.$arg = self.$arg.or_else(|| $arg_from_config(&config)).unwrap_or_else(|| $arg_default.into());
 					)*
 					$(
-						args.$field_argm_u = self.$field_argm_u.or_else(|| $from_config_argm_u(&config)).unwrap_or_else(|| $default_argm_u.into());
+						args.$argm = self.$argm.or_else(|| $argm_from_config(&config)).unwrap_or_else(|| $argm_default.into());
 					)*
 					$(
-						args.$field_argo_u = self.$field_argo_u.or_else(|| $from_config_argo_u(&config)).or_else(|| $default_argo_u.into()); // before was:unwrap_or_else intead of .or_else
+						args.$argo = self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into()); // before was:unwrap_or_else intead of .or_else
 					)*
 				)*
 				$(
-					args.$field_a_flag = self.$field_a_flag;
+					args.$legacy_flag = self.$legacy_flag;
 				)*
 				$(
-					args.$field_a_arg = self.$field_a_arg;
+					args.$legacy_arg = self.$legacy_arg;
 				)*
 				args
 			}
@@ -404,40 +404,40 @@ macro_rules! usage {
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&(stringify!($subcommand)[4..])) // @TODO remove () after &
+								SubCommand::with_name(&(stringify!($subc)[4..])) // @TODO remove () after &
 								$(
 									.subcommand(
-										SubCommand::with_name(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..]))
+										SubCommand::with_name(&(stringify!($subc_subc)[stringify!($subc).len()+1..]))
 										$(
-											.arg($clap_subsubcommand_arg(Arg::with_name(&(stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..]))))
+											.arg($subc_subc_arg_clap(Arg::with_name(&(stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..]))))
 										)*
 										$(
-											.arg($clap_subsubcommand_argm(Arg::with_name(&(stringify!($subsubcommand_argm)[stringify!($subsubcommand).len()+1..])).multiple(true)))
+											.arg($subc_subc_argm_clap(Arg::with_name(&(stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])).multiple(true)))
 										)*
 									)
 								)*
 								$(
-									.arg($clap_subcommand_arg(Arg::with_name(&(stringify!($subcommand_arg)[stringify!($subcommand).len()+1..]))))
+									.arg($subc_arg_clap(Arg::with_name(&(stringify!($subc_arg)[stringify!($subc).len()+1..]))))
 								)*
 								$(
-									.arg($clap_subcommand_argm(Arg::with_name(&(stringify!($subcommand_argm)[stringify!($subcommand).len()+1..])).multiple(true)))
+									.arg($subc_argm_clap(Arg::with_name(&(stringify!($subc_argm)[stringify!($subc).len()+1..])).multiple(true)))
 								)*
 							)
 						)*
 						.args(&[
 							$(
 								$(
-									Arg::from_usage($usage_arg_u),
+									Arg::from_usage($arg_usage),
 								)*
 								$(
-									Arg::from_usage($usage_flag_u),
+									Arg::from_usage($flag_usage),
 								)*
 							)*
 							$(
-								Arg::with_name(&(stringify!($field_a_flag)[5..])).hidden(true),
+								Arg::with_name(&(stringify!($legacy_flag)[5..])).hidden(true),
 							)*
 							$(
-								Arg::with_name(&(stringify!($field_a_arg)[4..])).takes_value(true).hidden(true),
+								Arg::with_name(&(stringify!($legacy_arg)[4..])).takes_value(true).hidden(true),
 							)*
 						])
 						.get_matches_safe()?;
@@ -445,62 +445,62 @@ macro_rules! usage {
 				let mut raw_args : RawArgs = Default::default();
 				$(
 					$(
-						raw_args.$field_arg_u = value_t!(matches, &stringify!($field_arg_u)[4..], $typ_arg_u).ok();
+						raw_args.$arg = value_t!(matches, &stringify!($arg)[4..], $arg_type).ok();
 					)*
 					$(
-						raw_args.$field_argm_u = values_t!(matches, &stringify!($field_argm_u)[4..], $typ_argm_u).ok();
+						raw_args.$argm = values_t!(matches, &stringify!($argm)[4..], $argm_type).ok();
 					)*
 					$(
-						raw_args.$field_argo_u = value_t!(matches, &stringify!($field_argo_u)[4..], $innertyp_argo_u).ok();
+						raw_args.$argo = value_t!(matches, &stringify!($argo)[4..], $argo_type).ok();
 					)*
 					$(
-						raw_args.$field_flag_u = matches.is_present(&(stringify!($field_flag_u)[5..]));
+						raw_args.$flag = matches.is_present(&(stringify!($flag)[5..]));
 					)*
 				)*
 				
 				$(
 					// Subcommand
-					if let Some(submatches) = matches.subcommand_matches(&(stringify!($subcommand)[4..])) {
-						raw_args.$subcommand = true;
+					if let Some(submatches) = matches.subcommand_matches(&(stringify!($subc)[4..])) {
+						raw_args.$subc = true;
 
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subsubcommand)[stringify!($subcommand).len()+1..])) {
-								raw_args.$subsubcommand = true;
+							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subc_subc)[stringify!($subc).len()+1..])) {
+								raw_args.$subc_subc = true;
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subsubcommand_arg = value_t!(subsubmatches, &stringify!($subsubcommand_arg)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_arg).ok();
+									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..], $subc_subc_arg_type).ok();
 								)*
 								$(
 									// might need to convert from values to vec
-									raw_args.$subsubcommand_argm = values_t!(subsubmatches, &stringify!($subsubcommand_argm)[stringify!($subsubcommand).len()+1..], $typ_subsubcommand_argm).ok();
+									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..], $subc_subc_argm_type).ok();
 								)*
 							}
 							else {
-								raw_args.$subsubcommand = false;
+								raw_args.$subc_subc = false;
 							}
 						)*
 
 						// Subcommand arguments
 						$(
-							raw_args.$subcommand_arg = value_t!(submatches, &stringify!($subcommand_arg)[stringify!($subcommand).len()+1..], $typ_subcommand_arg).ok();
+							raw_args.$subc_arg = value_t!(submatches, &stringify!($subc_arg)[stringify!($subc).len()+1..], $subc_arg_type).ok();
 						)*
 						$(
-							raw_args.$subcommand_argm = values_t!(submatches, &stringify!($subcommand_argm)[stringify!($subcommand).len()+1..], $typ_subcommand_argm).ok();
+							raw_args.$subc_argm = values_t!(submatches, &stringify!($subc_argm)[stringify!($subc).len()+1..], $subc_argm_type).ok();
 						)*
 					}
 					else {
-						raw_args.$subcommand = false;
+						raw_args.$subc = false;
 					}
 				)*
 				
 
 				$(
-					raw_args.$field_a_flag = matches.is_present(&(stringify!($field_a_flag)[5..]));
+					raw_args.$legacy_flag = matches.is_present(&(stringify!($legacy_flag)[5..]));
 				)*
 				$(
-					raw_args.$field_a_arg = value_t!(matches, &stringify!($field_a_arg)[4..], $typ_a_arg).ok();
+					raw_args.$legacy_arg = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
 				)*
 				
 
