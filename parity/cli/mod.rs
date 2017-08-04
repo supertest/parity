@@ -55,16 +55,6 @@ usage! {
 			//'Don't load a configuration file.'",
 
 	}
-	{ // OLD BLOCK, WIP TO MOVE IT TO ARGS OR FLAGS // this block will go away soon
-		// -- Legacy Options supported in configs
-		flag_dapps_port: Option<u16> = None, or |c: &Config| otry!(c.dapps).port.clone().map(Some),
-		flag_dapps_interface: Option<String> = None, or |c: &Config| otry!(c.dapps).interface.clone().map(Some),
-		flag_dapps_hosts: Option<String> = None, or |c: &Config| otry!(c.dapps).hosts.as_ref().map(|vec| Some(vec.join(","))),
-		flag_dapps_cors: Option<String> = None, or |c: &Config| otry!(c.dapps).cors.clone().map(Some),
-		flag_dapps_user: Option<String> = None, or |c: &Config| otry!(c.dapps).user.clone().map(Some),
-		flag_dapps_pass: Option<String> = None, or |c: &Config| otry!(c.dapps).pass.clone().map(Some),
-		flag_dapps_apis_all: Option<bool> = None, or |_| None,
-	}
 	{
 		// Values with optional default value. (@TODO prune? merge with the other block?)
 		flag_base_path: Option<String>, display dir::default_data_path(), or |c: &Config| otry!(c.parity).base_path.clone().map(Some),
@@ -755,6 +745,38 @@ usage! {
 			 "--whisper-pool-size MB
 			 	'Target size of the whisper message pool in megabytes.'",
 		
+		// -- Legacy options supported in configs
+		["Legacy options"]
+			FLAG flag_dapps_apis_all: Option<bool> = None, or |_| None, // @todo option ???
+			"--dapps-apis-all
+				'Dapps server is merged with RPC server. Use --jsonrpc-apis.'",
+
+			ARG_OPTION arg_dapps_port: u16 = None, or |c: &Config| otry!(c.dapps).port.clone(),
+			"--dapps-port PORT
+						'Dapps server is merged with RPC server. Use --jsonrpc-port.'",
+
+			ARG_OPTION arg_dapps_interface: String = None, or |c: &Config| otry!(c.dapps).interface.clone(),
+			"--dapps-interface IP
+				'Dapps server is merged with RPC server. Use --jsonrpc-interface.'",
+
+			ARG_OPTION arg_dapps_hosts: String = None, or |c: &Config| otry!(c.dapps).hosts.as_ref().map(|vec| vec.join(",")),
+			"--dapps-hosts HOSTS
+				'Dapps server is merged with RPC server. Use --jsonrpc-hosts.'",
+
+			ARG_OPTION arg_dapps_cors: String = None, or |c: &Config| otry!(c.dapps).cors.clone(),
+			"--dapps-cors URL
+				'Dapps server is merged with RPC server. Use --jsonrpc-cors.'",
+
+			ARG_OPTION arg_dapps_user: String = None, or |c: &Config| otry!(c.dapps).user.clone(),
+			"--dapps-user USERNAME
+				'Dapps server authentication has been removed.'",
+
+			ARG_OPTION arg_dapps_pass: String = None, or |c: &Config| otry!(c.dapps).pass.clone(),
+			"--dapps-pass PASSWORD
+					'Dapps server authentication has been removed.'",
+		
+		
+		
 	}
 }
 
@@ -1271,12 +1293,12 @@ mod tests {
 			flag_cache: None,
 			flag_warp: Some(true),
 			// Legacy-Dapps
-			flag_dapps_port: Some(8080),
-			flag_dapps_interface: Some("local".into()),
-			flag_dapps_hosts: Some("none".into()),
-			flag_dapps_cors: None,
-			flag_dapps_user: Some("test_user".into()),
-			flag_dapps_pass: Some("test_pass".into()),
+			arg_dapps_port: Some(8080),
+			arg_dapps_interface: Some("local".into()),
+			arg_dapps_hosts: Some("none".into()),
+			arg_dapps_cors: None,
+			arg_dapps_user: Some("test_user".into()),
+			arg_dapps_pass: Some("test_pass".into()),
 			flag_dapps_apis_all: None,
 
 			// -- Miscellaneous Options

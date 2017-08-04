@@ -74,27 +74,27 @@ pub fn find_deprecated(args: &Args) -> Vec<Deprecated> {
 	}
 
 	// Removed in 1.7
-	if args.flag_dapps_port.is_some() {
+	if args.arg_dapps_port.is_some() {
 		result.push(Deprecated::Replaced("--dapps-port", "--jsonrpc-port"));
 	}
 
-	if args.flag_dapps_interface.is_some() {
+	if args.arg_dapps_interface.is_some() {
 		result.push(Deprecated::Replaced("--dapps-interface", "--jsonrpc-interface"));
 	}
 
-	if args.flag_dapps_hosts.is_some() {
+	if args.arg_dapps_hosts.is_some() {
 		result.push(Deprecated::Replaced("--dapps-hosts", "--jsonrpc-hosts"));
 	}
 
-	if args.flag_dapps_cors.is_some() {
+	if args.arg_dapps_cors.is_some() {
 		result.push(Deprecated::Replaced("--dapps-cors", "--jsonrpc-cors"));
 	}
 
-	if args.flag_dapps_user.is_some() {
+	if args.arg_dapps_user.is_some() {
 		result.push(Deprecated::Removed("--dapps-user"));
 	}
 
-	if args.flag_dapps_pass.is_some() {
+	if args.arg_dapps_pass.is_some() {
 		result.push(Deprecated::Removed("--dapps-pass"));
 	}
 
@@ -126,12 +126,12 @@ mod tests {
 			args.flag_ipc_off = true;
 			args.flag_etherbase = Some(Default::default());
 			args.flag_extradata = Some(Default::default());
-			args.flag_dapps_port = Some(Default::default());
-			args.flag_dapps_interface = Some(Default::default());
-			args.flag_dapps_hosts = Some(Default::default());
-			args.flag_dapps_cors = Some(Default::default());
-			args.flag_dapps_user = Some(Default::default());
-			args.flag_dapps_pass = Some(Default::default());
+			args.arg_dapps_port = Some(Default::default());
+			args.arg_dapps_interface = Some(Default::default());
+			args.arg_dapps_hosts = Some(Default::default());
+			args.arg_dapps_cors = Some(Default::default());
+			args.arg_dapps_user = Some(Default::default());
+			args.arg_dapps_pass = Some(Default::default());
 			args.flag_dapps_apis_all = Some(Default::default());
 			args
 		}), vec![

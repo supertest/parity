@@ -40,11 +40,6 @@ macro_rules! usage {
 		}
 		{
 			$(
-				$field:ident : $typ:ty = $default:expr, or $from_config:expr,
-			)*
-		}
-		{
-			$(
 				$field_s:ident : $typ_s:ty, display $default_s:expr, or $from_config_s:expr,
 			)*
 		}
@@ -142,10 +137,6 @@ macro_rules! usage {
 			)*
 
 			$(
-				pub $field: $typ,
-			)*
-
-			$(
 				pub $field_s: $typ_s,
 			)*
 
@@ -191,10 +182,6 @@ macro_rules! usage {
 				Args {
 					$(
 						$field_a: Default::default(),
-					)*
-
-					$(
-						$field: $default.into(),
 					)*
 
 					$(
@@ -244,9 +231,6 @@ macro_rules! usage {
 		struct RawArgs {
 			$(
 				$field_a: $typ_a,
-			)*
-			$(
-				$field: Option<$typ>,
 			)*
 			$(
 				$field_s: Option<$typ_s>,
@@ -343,9 +327,6 @@ macro_rules! usage {
 				let mut args = Args::default();
 				$(
 					args.$field_a = self.$field_a;
-				)*
-				$(
-					args.$field = self.$field.or_else(|| $from_config(&config)).unwrap_or_else(|| $default.into());
 				)*
 				$(
 					args.$field_s = self.$field_s.or_else(|| $from_config_s(&config)).unwrap_or(None);
