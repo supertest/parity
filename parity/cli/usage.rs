@@ -35,11 +35,6 @@ macro_rules! usage {
 	(
 		{
 			$(
-				$field_a:ident : $typ_a:ty,
-			)*
-		}
-		{
-			$(
 				$field_s:ident : $typ_s:ty, display $default_s:expr, or $from_config_s:expr,
 			)*
 		}
@@ -83,6 +78,14 @@ macro_rules! usage {
 				$(
 					ARG_OPTION $field_argo_u:ident : $innertyp_argo_u:ty = $default_argo_u:expr, or $from_config_argo_u:expr, $usage_argo_u:expr,
 				)*
+			)*
+		}
+		{
+			$(
+				FLAG $field_a_flag:ident : $typ_a_flag:ty,
+			)*
+			$(
+				ARG_OPTION $field_a_arg:ident : $typ_a_arg:ty,
 			)*
 		}
 	) => {
@@ -133,10 +136,6 @@ macro_rules! usage {
 		#[derive(Debug, PartialEq)]
 		pub struct Args {
 			$(
-				pub $field_a: $typ_a,
-			)*
-
-			$(
 				pub $field_s: $typ_s,
 			)*
 
@@ -163,7 +162,7 @@ macro_rules! usage {
 
 			$(
 				$(
-					pub $field_flag_u: $typ_flag_u,
+					pub $field_flag_u: bool, // @TODO hardcoded
 				)*
 				$(
 					pub $field_arg_u: $typ_arg_u,
@@ -175,14 +174,18 @@ macro_rules! usage {
 					pub $field_argo_u: Option<$innertyp_argo_u>,
 				)*
 			)*
+
+			$(
+				pub $field_a_flag: bool, // @TODO hardcoded
+			)*
+			$(
+				pub $field_a_arg: Option<$typ_a_arg>,
+			)*
 		}
 
 		impl Default for Args {
 			fn default() -> Self {
 				Args {
-					$(
-						$field_a: Default::default(),
-					)*
 
 					$(
 						$field_s: Default::default(),
@@ -222,16 +225,20 @@ macro_rules! usage {
 							$field_argo_u: Default::default(),
 						)*
 					)*
-					
+
+					$(
+						$field_a_flag: Default::default(),
+					)*
+
+					$(
+						$field_a_arg: Default::default(),
+					)*
 				}
 			}
 		}
 
 		#[derive(Default, Debug, PartialEq, Clone, Deserialize)]
 		struct RawArgs {
-			$(
-				$field_a: $typ_a,
-			)*
 			$(
 				$field_s: Option<$typ_s>,
 			)*
@@ -268,6 +275,14 @@ macro_rules! usage {
 				$(
 					$field_argo_u: Option<$innertyp_argo_u>,
 				)*
+			)*
+
+			$(
+				$field_a_flag: bool, // @TODO HARDCODED / REMOVE TYPE FROM MACRO CALL
+			)*
+
+			$(
+				$field_a_arg: Option<$typ_a_arg>,
 			)*
 		}
 
@@ -326,9 +341,6 @@ macro_rules! usage {
 			fn into_args(self, config: Config) -> Args {
 				let mut args = Args::default();
 				$(
-					args.$field_a = self.$field_a;
-				)*
-				$(
 					args.$field_s = self.$field_s.or_else(|| $from_config_s(&config)).unwrap_or(None);
 				)*
 				$(
@@ -369,7 +381,12 @@ macro_rules! usage {
 						args.$field_argo_u = self.$field_argo_u.or_else(|| $from_config_argo_u(&config)).or_else(|| $default_argo_u.into()); // before was:unwrap_or_else intead of .or_else
 					)*
 				)*
-
+				$(
+					args.$field_a_flag = self.$field_a_flag;
+				)*
+				$(
+					args.$field_a_arg = self.$field_a_arg;
+				)*
 				args
 			}
 
@@ -415,6 +432,12 @@ macro_rules! usage {
 								$(
 									Arg::from_usage($usage_flag_u),
 								)*
+							)*
+							$(
+								Arg::with_name(&(stringify!($field_a_flag)[5..])).hidden(true),
+							)*
+							$(
+								Arg::with_name(&(stringify!($field_a_arg)[4..])).takes_value(true).hidden(true),
 							)*
 						])
 						.get_matches_safe()?;
@@ -472,7 +495,13 @@ macro_rules! usage {
 					}
 				)*
 				
-				
+
+				$(
+					raw_args.$field_a_flag = matches.is_present(&(stringify!($field_a_flag)[5..]));
+				)*
+				$(
+					raw_args.$field_a_arg = value_t!(matches, &stringify!($field_a_arg)[4..], $typ_a_arg).ok();
+				)*
 				
 
 				Ok(raw_args)				

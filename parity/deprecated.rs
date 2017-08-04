@@ -65,11 +65,11 @@ pub fn find_deprecated(args: &Args) -> Vec<Deprecated> {
 		result.push(Deprecated::Replaced("--ipc-off", "--no-ipc"));
 	}
 
-	if args.flag_etherbase.is_some() {
+	if args.arg_etherbase.is_some() {
 		result.push(Deprecated::Replaced("--etherbase", "--author"));
 	}
 
-	if args.flag_extradata.is_some() {
+	if args.arg_extradata.is_some() {
 		result.push(Deprecated::Replaced("--extradata", "--extra-data"));
 	}
 
@@ -124,8 +124,8 @@ mod tests {
 			args.flag_dapps_off = true;
 			args.flag_ipcdisable = true;
 			args.flag_ipc_off = true;
-			args.flag_etherbase = Some(Default::default());
-			args.flag_extradata = Some(Default::default());
+			args.arg_etherbase = Some(Default::default());
+			args.arg_extradata = Some(Default::default());
 			args.arg_dapps_port = Some(Default::default());
 			args.arg_dapps_interface = Some(Default::default());
 			args.arg_dapps_hosts = Some(Default::default());

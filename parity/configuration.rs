@@ -410,7 +410,7 @@ impl Configuration {
 	}
 
 	fn author(&self) -> Result<Address, String> {
-		to_address(self.args.flag_etherbase.clone().or(self.args.arg_author.clone()))
+		to_address(self.args.arg_etherbase.clone().or(self.args.arg_author.clone()))
 	}
 
 	fn engine_signer(&self) -> Result<Address, String> {
@@ -425,7 +425,7 @@ impl Configuration {
 	}
 
 	fn cache_config(&self) -> CacheConfig {
-		match self.args.arg_cache_size.or(self.args.flag_cache) {
+		match self.args.arg_cache_size.or(self.args.arg_cache) {
 			Some(size) => CacheConfig::new_with_total_cache_size(size),
 			None => CacheConfig::new(
 				self.args.arg_cache_size_db,
@@ -468,7 +468,7 @@ impl Configuration {
 	}
 
 	fn min_peers(&self) -> u32 {
-		self.args.flag_peers.unwrap_or(self.args.arg_min_peers) as u32
+		self.args.arg_peers.unwrap_or(self.args.arg_min_peers) as u32
 	}
 
 	fn max_pending_peers(&self) -> u32 {
@@ -621,7 +621,7 @@ impl Configuration {
 			U256::from_dec_str(&format!("{:.0}", wei_per_gas)).unwrap()
 		}
 
-		if let Some(dec) = self.args.flag_gasprice.as_ref() {
+		if let Some(dec) = self.args.arg_gasprice.as_ref() {
 			return Ok(GasPricerConfig::Fixed(to_u256(dec)?));
 		} else if let Some(dec) = self.args.arg_min_gas_price {
 			return Ok(GasPricerConfig::Fixed(U256::from(dec)));
@@ -653,7 +653,7 @@ impl Configuration {
 	}
 
 	fn extra_data(&self) -> Result<Bytes, String> {
-		match self.args.flag_extradata.as_ref().or(self.args.arg_extra_data.as_ref()) {
+		match self.args.arg_extradata.as_ref().or(self.args.arg_extra_data.as_ref()) {
 			Some(x) if x.len() <= 32 => Ok(x.as_bytes().to_owned()),
 			None => Ok(version_data()),
 			Some(_) => Err("Extra data must be at most 32 characters".into()),
@@ -720,11 +720,11 @@ impl Configuration {
 	}
 
 	fn network_id(&self) -> Option<u64> {
-		self.args.arg_network_id.or(self.args.flag_networkid)
+		self.args.arg_network_id.or(self.args.arg_networkid)
 	}
 
 	fn rpc_apis(&self) -> String {
-		let mut apis: Vec<&str> = self.args.flag_rpcapi
+		let mut apis: Vec<&str> = self.args.arg_rpcapi
 			.as_ref()
 			.unwrap_or(&self.args.arg_jsonrpc_apis)
 			.split(",")
@@ -742,7 +742,7 @@ impl Configuration {
 	}
 
 	fn rpc_cors(&self) -> Option<Vec<String>> {
-		let cors = self.args.arg_jsonrpc_cors.as_ref().or(self.args.flag_rpccorsdomain.as_ref());
+		let cors = self.args.arg_jsonrpc_cors.as_ref().or(self.args.arg_rpccorsdomain.as_ref());
 		Self::cors(cors)
 	}
 
@@ -801,7 +801,7 @@ impl Configuration {
 			enabled: !(self.args.flag_ipcdisable || self.args.flag_ipc_off || self.args.flag_no_ipc),
 			socket_addr: self.ipc_path(),
 			apis: {
-				let mut apis = self.args.flag_ipcapi.clone().unwrap_or(self.args.arg_ipc_apis.clone());
+				let mut apis = self.args.arg_ipcapi.clone().unwrap_or(self.args.arg_ipc_apis.clone());
 				if self.args.flag_geth {
 					if !apis.is_empty() {
  						apis.push_str(",");
@@ -819,7 +819,7 @@ impl Configuration {
 		let conf = HttpConfiguration {
 			enabled: self.rpc_enabled(),
 			interface: self.rpc_interface(),
-			port: self.args.arg_ports_shift + self.args.flag_rpcport.unwrap_or(self.args.arg_jsonrpc_port),
+			port: self.args.arg_ports_shift + self.args.arg_rpcport.unwrap_or(self.args.arg_jsonrpc_port),
 			apis: match self.args.flag_public_node {
 				false => self.rpc_apis().parse()?,
 				true => self.rpc_apis().parse::<ApiSet>()?.retain(ApiSet::PublicContext),
@@ -894,7 +894,7 @@ impl Configuration {
 		use path;
 
 		let local_path = default_local_path();
-		let base_path = self.args.flag_base_path.as_ref().or_else(|| self.args.flag_datadir.as_ref()).map_or_else(|| default_data_path(), |s| s.clone());
+		let base_path = self.args.flag_base_path.as_ref().or_else(|| self.args.arg_datadir.as_ref()).map_or_else(|| default_data_path(), |s| s.clone());
 		let data_path = replace_home("", &base_path);
 		let is_using_base_path = self.args.flag_base_path.is_some();
 		// If base_path is set and db_path is not we default to base path subdir instead of LOCAL.
@@ -944,7 +944,7 @@ impl Configuration {
 		} else {
 			parity_ipc_path(
 				&self.directories().base,
-				&self.args.flag_ipcpath.clone().unwrap_or(self.args.arg_ipc_path.clone()),
+				&self.args.arg_ipcpath.clone().unwrap_or(self.args.arg_ipc_path.clone()),
 				self.args.arg_ports_shift,
 			)
 		}
@@ -967,7 +967,7 @@ impl Configuration {
 	}
 
 	fn rpc_interface(&self) -> String {
-		let rpc_interface = self.args.flag_rpcaddr.clone().unwrap_or(self.args.arg_jsonrpc_interface.clone());
+		let rpc_interface = self.args.arg_rpcaddr.clone().unwrap_or(self.args.arg_jsonrpc_interface.clone());
 		self.interface(&rpc_interface)
 	}
 

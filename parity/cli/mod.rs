@@ -21,35 +21,6 @@ use dir;
 
 usage! {
 	{
-		// Flags
-		// -- Legacy Options
-		flag_geth: bool,
-		flag_testnet: bool,
-		flag_import_geth_keys: bool,
-		flag_datadir: Option<String>,
-		flag_networkid: Option<u64>,
-		flag_peers: Option<u16>,
-		flag_nodekey: Option<String>,
-		flag_nodiscover: bool,
-		flag_jsonrpc: bool,
-		flag_jsonrpc_off: bool,
-		flag_webapp: bool,
-		flag_dapps_off: bool,
-		flag_rpc: bool,
-		flag_rpcaddr: Option<String>,
-		flag_rpcport: Option<u16>,
-		flag_rpcapi: Option<String>,
-		flag_rpccorsdomain: Option<String>,
-		flag_ipcdisable: bool,
-		flag_ipc_off: bool,
-		flag_ipcapi: Option<String>,
-		flag_ipcpath: Option<String>,
-		flag_gasprice: Option<String>,
-		flag_etherbase: Option<String>,
-		flag_extradata: Option<String>,
-		flag_cache: Option<u32>,
-	}
-	{
 		// Values with optional default value. (@TODO prune? merge with the other block?)
 		flag_base_path: Option<String>, display dir::default_data_path(), or |c: &Config| otry!(c.parity).base_path.clone().map(Some),
 		flag_db_path: Option<String>, display dir::CHAINS_PATH, or |c: &Config| otry!(c.parity).db_path.clone().map(Some),
@@ -92,7 +63,7 @@ usage! {
 			ARG arg_daemon_pid_file: String, |arg| Arg::index(arg,2).required(true),
 		}
 
-		CMD cmd_export // evtl: |&sc: SubCommand| sc.help("blablabla")
+		CMD cmd_export // evtl: |&sc: SubCommand| sc.help("Help message") @TODO
 		{
 			CMD cmd_export_blocks
 			{
@@ -154,6 +125,7 @@ usage! {
 		}
 	}
 	{
+		// Flags and arguments
 		["Operating Options"]
 			FLAG flag_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
 			"--public-node
@@ -773,6 +745,38 @@ usage! {
 					'Dapps server authentication has been removed.'",
 		
 	}
+	{
+		// Legacy flags and arguments (hidden from help message)
+		// Can only be set from the CLI
+		// Option<> will be wrapped around the arguments
+
+		FLAG flag_geth: bool,
+		FLAG flag_testnet: bool,
+		FLAG flag_import_geth_keys: bool,
+		FLAG flag_ipcdisable: bool,
+		FLAG flag_ipc_off: bool,
+		FLAG flag_nodiscover: bool,
+		FLAG flag_jsonrpc: bool,
+		FLAG flag_jsonrpc_off: bool,
+		FLAG flag_webapp: bool,
+		FLAG flag_dapps_off: bool,
+		FLAG flag_rpc: bool,
+
+		ARG_OPTION arg_datadir: String,
+		ARG_OPTION arg_networkid: u64,
+		ARG_OPTION arg_peers: u16,
+		ARG_OPTION arg_nodekey: String,
+		ARG_OPTION arg_rpcaddr: String,
+		ARG_OPTION arg_rpcport: u16,
+		ARG_OPTION arg_rpcapi: String,
+		ARG_OPTION arg_rpccorsdomain: String,
+		ARG_OPTION arg_ipcapi: String,
+		ARG_OPTION arg_ipcpath: String,
+		ARG_OPTION arg_gasprice: String,
+		ARG_OPTION arg_etherbase: String,
+		ARG_OPTION arg_extradata: String,
+		ARG_OPTION arg_cache: u32,
+	}
 }
 
 #[derive(Default, Debug, PartialEq, Deserialize)]
@@ -1264,28 +1268,28 @@ mod tests {
 			flag_geth: false,
 			flag_testnet: false,
 			flag_import_geth_keys: false,
-			flag_datadir: None,
-			flag_networkid: None,
-			flag_peers: None,
-			flag_nodekey: None,
+			arg_datadir: None,
+			arg_networkid: None,
+			arg_peers: None,
+			arg_nodekey: None,
 			flag_nodiscover: false,
 			flag_jsonrpc: false,
 			flag_jsonrpc_off: false,
 			flag_webapp: false,
 			flag_dapps_off: false,
 			flag_rpc: false,
-			flag_rpcaddr: None,
-			flag_rpcport: None,
-			flag_rpcapi: None,
-			flag_rpccorsdomain: None,
+			arg_rpcaddr: None,
+			arg_rpcport: None,
+			arg_rpcapi: None,
+			arg_rpccorsdomain: None,
 			flag_ipcdisable: false,
 			flag_ipc_off: false,
-			flag_ipcapi: None,
-			flag_ipcpath: None,
-			flag_gasprice: None,
-			flag_etherbase: None,
-			flag_extradata: None,
-			flag_cache: None,
+			arg_ipcapi: None,
+			arg_ipcpath: None,
+			arg_gasprice: None,
+			arg_etherbase: None,
+			arg_extradata: None,
+			arg_cache: None,
 			flag_warp: Some(true),
 			// Legacy-Dapps
 			arg_dapps_port: Some(8080),
