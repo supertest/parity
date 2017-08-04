@@ -16,6 +16,7 @@
 
 #[macro_use]
 mod usage;
+mod presets;
 use dir;
 
 usage! {
@@ -374,7 +375,7 @@ usage! {
 			"--jsonrpc-interface IP
 				'Specify the hostname portion of the JSONRPC API server, IP should be an interface's IP address, or all (all interfaces) or local.'",
 
-			ARG arg_jsonrpc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore", or |c: &Config| otry!(c.rpc).apis.as_ref().map(|vec| vec.join(",")),
+			ARG arg_jsonrpc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.rpc).apis.as_ref().map(|vec| vec.join(",")),
 			"--jsonrpc-apis APIS
 				'Specify the APIs available through the JSONRPC interface. APIS is a comma-delimited list of API name. Possible name are all, safe, web3, eth, net, personal, parity, parity_set, traces, rpc, parity_accounts. You can also disable a specific API by putting '-' in the front: all,-personal.'",
 
@@ -407,7 +408,7 @@ usage! {
 			"--ws-interface IP
 				'Specify the hostname portion of the WebSockets server, IP should be an interface's IP address, or all (all interfaces) or local.'",
 
-			ARG arg_ws_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore", or |c: &Config| otry!(c.websockets).apis.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ws_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.websockets).apis.as_ref().map(|vec| vec.join(",")),
 			"--ws-apis APIS
 				'Specify the APIs available through the WebSockets interface. APIS is a comma-delimited list of API name. Possible name are web3, eth, pubsub, net, personal, parity, parity_set, traces, rpc, parity_accounts..'",
 
@@ -428,7 +429,7 @@ usage! {
 			"--ipc-path PATH
 				'Specify custom path for JSON-RPC over IPC service.'",
 
-			ARG arg_ipc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,parity_accounts,traces,rpc,secretstore", or |c: &Config| otry!(c.ipc).apis.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ipc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,parity_accounts,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.ipc).apis.as_ref().map(|vec| vec.join(",")),
 			"--ipc-apis APIS
 				'Specify custom API set available via JSON-RPC over IPC.'",
 
@@ -592,6 +593,10 @@ usage! {
 			"--stratum-port PORT
 				'Port for Stratum server to listen on.'",
 
+			ARG_OPTION arg_min_gas_price: u64 = None, or |c: &Config| otry!(c.mining).relay_set.clone(),
+			"--min-gas-price STRING
+				'Minimum amount of Wei per GAS to be paid for a transaction to be accepted for mining. Overrides --basic-tx-usd.'",
+
 			ARG_OPTION arg_author: String = None, or |c: &Config| otry!(c.mining).author.clone(),
 			"--author ADDRESS
 				'Specify the block author (aka \"coinbase\") address for sending block rewards from sealed blocks. NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION.'", // Sealing/Mining Option
@@ -625,7 +630,7 @@ usage! {
 			"--no-color
 				'Don't use terminal color codes in output.'",
 
-			ARG arg_ntp_server: String = "pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_server.clone(),
+			ARG arg_ntp_server: String = "none", or |c: &Config| otry!(c.misc).ntp_server.clone(),
 			"--ntp-server HOST
 				'NTP server to provide current time (host:port). Used to verify node health.'",
 
@@ -736,10 +741,20 @@ usage! {
 			"--at BLOCK
 				'Take a snapshot at the given block, which may be an index, hash, or 'latest'. Note that taking snapshots at non-recent blocks will only work with --pruning archive'", // Snapshot Option
 
-		["Virtual Machine Options"]
+		["Virtual Machine options"]
 			FLAG flag_jitvm: bool = false, or |c: &Config| otry!(c.vm).jit.clone(),
 			"--jitvm
 				'Enable the JIT VM.'",
+
+		["Whisper options"]
+			FLAG flag_whisper: bool = false, or |c: &Config| otry!(c.whisper).enabled,
+			"--whisper
+				'Enable the Whisper network.'",
+			
+ 			FLAG flag_whisper_pool_size: usize = 10usize, or |c: &Config| otry!(c.whisper).pool_size.clone(),
+			 "--whisper-pool-size MB
+			 	'Target size of the whisper message pool in megabytes.'",
+		
 	}
 }
 
@@ -762,6 +777,7 @@ struct Config {
 	vm: Option<VM>,
 	misc: Option<Misc>,
 	stratum: Option<Stratum>,
+	whisper: Option<Whisper>,
 }
 
 #[derive(Default, Debug, PartialEq, Deserialize)]
@@ -896,6 +912,7 @@ struct Mining {
 	tx_gas_limit: Option<String>,
 	tx_time_limit: Option<u64>,
 	relay_set: Option<String>,
+	min_gas_price: Option<u64>,
 	usd_per_tx: Option<String>,
 	usd_per_eth: Option<String>,
 	price_update_period: Option<String>,
@@ -958,12 +975,18 @@ struct Misc {
 	unsafe_expose: Option<bool>,
 }
 
+#[derive(Default, Debug, PartialEq, Deserialize)]
+struct Whisper {
+	enabled: Option<bool>,
+	pool_size: Option<usize>,
+}
+
 #[cfg(test)]
 mod tests {
 	use super::{
 		Args, ArgsError,
 		Config, Operating, Account, Ui, Network, Ws, Rpc, Ipc, Dapps, Ipfs, Mining, Footprint,
-		Snapshots, VM, Misc, SecretStore,
+		Snapshots, VM, Misc, Whisper, SecretStore,
 	};
 	use toml;
 
@@ -1161,6 +1184,7 @@ mod tests {
 			arg_tx_gas_limit: Some("6283184".into()),
 			arg_tx_time_limit: Some(100u64),
 			arg_relay_set: "cheap".into(),
+			arg_min_gas_price: Some(0u64),
 			arg_usd_per_tx: "0.0025".into(),
 			arg_usd_per_eth: "auto".into(),
 			arg_price_update_period: "hourly".into(),
@@ -1215,6 +1239,10 @@ mod tests {
 			// -- Virtual Machine Options
 			flag_jitvm: false,
 
+			// -- Whisper options.
+			flag_whisper: false,
+			flag_whisper_pool_size: 20,
+
 			// -- Legacy Options
 			flag_geth: false,
 			flag_testnet: false,
@@ -1252,7 +1280,8 @@ mod tests {
 			flag_dapps_apis_all: None,
 
 			// -- Miscellaneous Options
-			arg_ntp_server: "pool.ntp.org:123".into(),
+			arg_ntp_server: "none".into(),
+			flag_version: false, // @TODO ??
 			arg_logging: Some("own_tx=trace".into()),
 			arg_log_file: Some("/var/log/parity.log".into()),
 			flag_no_color: false,
@@ -1388,6 +1417,7 @@ mod tests {
 				reseal_max_period: Some(60000),
 				work_queue_size: None,
 				relay_set: None,
+				min_gas_price: None,
 				usd_per_tx: None,
 				usd_per_eth: None,
 				price_update_period: Some("hourly".into()),
@@ -1435,6 +1465,10 @@ mod tests {
 				color: Some(true),
 				ports_shift: Some(0),
 				unsafe_expose: Some(false),
+			}),
+			whisper: Some(Whisper {
+				enabled: Some(true),
+				pool_size: Some(50),
 			}),
 			stratum: None,
 		});

@@ -15,9 +15,11 @@
 // along with Parity.  If not, see <http://www.gnu.org/licenses/>.
 
 use std::time::{Instant, Duration};
+use std::collections::{BTreeMap, HashSet};
+use std::sync::Arc;
 
 use util::*;
-use util::using_queue::{UsingQueue, GetAction};
+use using_queue::{UsingQueue, GetAction};
 use account_provider::{AccountProvider, SignError as AccountError};
 use state::{State, CleanupMode};
 use client::{MiningBlockChainClient, Executive, Executed, EnvInfo, TransactOptions, BlockId, CallAnalytics, TransactionId};
@@ -33,9 +35,10 @@ use miner::{MinerService, MinerStatus, TransactionQueue, RemovalReason, Transact
 	AccountDetails, TransactionOrigin};
 use miner::banning_queue::{BanningTransactionQueue, Threshold};
 use miner::work_notify::{WorkPoster, NotifyWork};
-use miner::price_info::PriceInfo;
 use miner::local_transactions::{Status as LocalTransactionStatus};
 use miner::service_transaction_checker::ServiceTransactionChecker;
+use price_info::{Client as PriceInfoClient, PriceInfo};
+use price_info::fetch::Client as FetchClient;
 use header::BlockNumber;
 
 /// Different possible definitions for pending transaction set.
@@ -154,6 +157,7 @@ pub struct GasPriceCalibratorOptions {
 pub struct GasPriceCalibrator {
 	options: GasPriceCalibratorOptions,
 	next_calibration: Instant,
+	price_info: PriceInfoClient,
 }
 
 impl GasPriceCalibrator {
@@ -163,7 +167,7 @@ impl GasPriceCalibrator {
 			let usd_per_tx = self.options.usd_per_tx;
 			trace!(target: "miner", "Getting price info");
 
-			PriceInfo::get(move |price: PriceInfo| {
+			self.price_info.get(move |price: PriceInfo| {
 				trace!(target: "miner", "Price info arrived: {:?}", price);
 				let usd_per_eth = price.ethusd;
 				let wei_per_usd: f32 = 1.0e18 / usd_per_eth;
@@ -189,10 +193,11 @@ pub enum GasPricer {
 
 impl GasPricer {
 	/// Create a new Calibrated `GasPricer`.
-	pub fn new_calibrated(options: GasPriceCalibratorOptions) -> GasPricer {
+	pub fn new_calibrated(options: GasPriceCalibratorOptions, fetch: FetchClient) -> GasPricer {
 		GasPricer::Calibrated(GasPriceCalibrator {
 			options: options,
 			next_calibration: Instant::now(),
+			price_info: PriceInfoClient::new(fetch),
 		})
 	}
 
@@ -1109,6 +1114,8 @@ impl MinerService for Miner {
 	/// Prepare the block and work if the Engine does not seal internally.
 	fn update_sealing(&self, chain: &MiningBlockChainClient) {
 		trace!(target: "miner", "update_sealing");
+		const NO_NEW_CHAIN_WITH_FORKS: &str = "Your chain specification contains one or more hard forks which are required to be \
+			on by default. Please remove these forks and start your chain again.";
 
 		if self.requires_reseal(chain.chain_info().best_block_number) {
 			// --------------------------------------------------------------------------
@@ -1117,6 +1124,14 @@ impl MinerService for Miner {
 			// --------------------------------------------------------------------------
 			trace!(target: "miner", "update_sealing: preparing a block");
 			let (block, original_work_hash) = self.prepare_block(chain);
+
+			// refuse to seal the first block of the chain if it contains hard forks
+			// which should be on by default.
+			if block.block().fields().header.number() == 1 && self.engine.params().contains_bugfix_hard_fork() {
+				warn!("{}", NO_NEW_CHAIN_WITH_FORKS);
+				return;
+			}
+
 			match self.engine.seals_internally() {
 				Some(true) => {
 					trace!(target: "miner", "update_sealing: engine indicates internal sealing");
@@ -1124,11 +1139,11 @@ impl MinerService for Miner {
 						trace!(target: "miner", "update_sealing: imported internally sealed block");
 					}
 				},
+				Some(false) => trace!(target: "miner", "update_sealing: engine is not keen to seal internally right now"),
 				None => {
 					trace!(target: "miner", "update_sealing: engine does not seal internally, preparing work");
 					self.prepare_work(block, original_work_hash)
 				},
-				_ => trace!(target: "miner", "update_sealing: engine is not keen to seal internally right now")
 			}
 		}
 	}
