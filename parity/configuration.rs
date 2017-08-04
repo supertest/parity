@@ -1064,7 +1064,7 @@ impl Configuration {
 	fn whisper_config(&self) -> ::whisper::Config {
 		::whisper::Config {
 			enabled: self.args.flag_whisper,
-			target_message_pool_size: self.args.flag_whisper_pool_size * 1024 * 1024,
+			target_message_pool_size: self.args.arg_whisper_pool_size * 1024 * 1024,
 		}
 	}
 }

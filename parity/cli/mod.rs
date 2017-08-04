@@ -593,7 +593,7 @@ usage! {
 			"--stratum-port PORT
 				'Port for Stratum server to listen on.'",
 
-			ARG_OPTION arg_min_gas_price: u64 = None, or |c: &Config| otry!(c.mining).relay_set.clone(),
+			ARG_OPTION arg_min_gas_price: u64 = None, or |c: &Config| otry!(c.mining).min_gas_price.clone(),
 			"--min-gas-price STRING
 				'Minimum amount of Wei per GAS to be paid for a transaction to be accepted for mining. Overrides --basic-tx-usd.'",
 
@@ -751,7 +751,7 @@ usage! {
 			"--whisper
 				'Enable the Whisper network.'",
 			
- 			FLAG flag_whisper_pool_size: usize = 10usize, or |c: &Config| otry!(c.whisper).pool_size.clone(),
+ 			ARG arg_whisper_pool_size: usize = 10usize, or |c: &Config| otry!(c.whisper).pool_size.clone(),
 			 "--whisper-pool-size MB
 			 	'Target size of the whisper message pool in megabytes.'",
 		
@@ -1241,7 +1241,7 @@ mod tests {
 
 			// -- Whisper options.
 			flag_whisper: false,
-			flag_whisper_pool_size: 20,
+			arg_whisper_pool_size: 20,
 
 			// -- Legacy Options
 			flag_geth: false,
