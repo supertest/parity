@@ -98,7 +98,7 @@ pub fn find_deprecated(args: &Args) -> Vec<Deprecated> {
 		result.push(Deprecated::Removed("--dapps-pass"));
 	}
 
-	if args.flag_dapps_apis_all.is_some() {
+	if args.flag_dapps_apis_all {
 		result.push(Deprecated::Replaced("--dapps-apis-all", "--jsonrpc-apis"));
 	}
 

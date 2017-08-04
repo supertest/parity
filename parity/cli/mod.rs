@@ -747,7 +747,7 @@ usage! {
 		
 		// -- Legacy options supported in configs
 		["Legacy options"]
-			FLAG flag_dapps_apis_all: Option<bool> = None, or |_| None, // @todo option ???
+			FLAG flag_dapps_apis_all: bool = false, or |_| Some(false),
 			"--dapps-apis-all
 				'Dapps server is merged with RPC server. Use --jsonrpc-apis.'",
 
