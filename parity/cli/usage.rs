@@ -384,10 +384,10 @@ macro_rules! usage {
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&stringify!($subc)[4..]) // @TODO remove () after &
+								SubCommand::with_name(&str::replace(&stringify!($subc)[4..], "_", "-"))
 								$(
 									.subcommand(
-										SubCommand::with_name(&stringify!($subc_subc)[stringify!($subc).len()+1..])
+										SubCommand::with_name(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"))
 										$(
 											.arg($subc_subc_arg_clap(Arg::with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])))
 										)*
@@ -414,10 +414,10 @@ macro_rules! usage {
 								)*
 							)*
 							$(
-								Arg::with_name(&stringify!($legacy_flag)[5..]).hidden(true),
+								Arg::with_name(&str::replace(&stringify!($legacy_flag)[5..], "_", "-")).hidden(true),
 							)*
 							$(
-								Arg::with_name(&stringify!($legacy_arg)[4..]).takes_value(true).hidden(true),
+								Arg::with_name(&str::replace(&stringify!($legacy_arg)[4..], "_", "-")).takes_value(true).hidden(true),
 							)*
 						])
 						.get_matches_safe()?;
@@ -440,12 +440,12 @@ macro_rules! usage {
 				
 				$(
 					// Subcommand
-					if let Some(submatches) = matches.subcommand_matches(&stringify!($subc)[4..]) {
+					if let Some(submatches) = matches.subcommand_matches(&str::replace(&stringify!($subc)[4..], "_", "-")) {
 						raw_args.$subc = true;
 
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&stringify!($subc_subc)[stringify!($subc).len()+1..]) {
+							if let Some(subsubmatches) = submatches.subcommand_matches(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-")) {
 								raw_args.$subc_subc = true;
 
 								// Sub-subcommand arguments
@@ -477,10 +477,10 @@ macro_rules! usage {
 				
 
 				$(
-					raw_args.$legacy_flag = matches.is_present(&stringify!($legacy_flag)[5..]);
+					raw_args.$legacy_flag = matches.is_present(&str::replace(&stringify!($legacy_flag)[5..], "_", "-"));
 				)*
 				$(
-					raw_args.$legacy_arg = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
+					raw_args.$legacy_arg = value_t!(matches, &str::replace(&stringify!($legacy_arg)[4..], "_", "-"), $legacy_arg_type).ok();
 				)*
 				
 
