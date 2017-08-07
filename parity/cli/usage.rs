@@ -389,10 +389,21 @@ macro_rules! usage {
 									.subcommand(
 										SubCommand::with_name(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"))
 										$(
-											.arg($subc_subc_arg_clap(Arg::with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])))
+											.arg(
+												$subc_subc_arg_clap(
+													Arg::with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
+														.long(str::replace(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
+												)
+											)
 										)*
 										$(
-											.arg($subc_subc_argm_clap(Arg::with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..]).multiple(true)))
+											.arg(
+												$subc_subc_argm_clap(
+													Arg::with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
+														.long(str::replace(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
+														.multiple(true)
+												)
+											)
 										)*
 									)
 								)*
@@ -400,7 +411,7 @@ macro_rules! usage {
 									.arg(
 										$subc_arg_clap(
 											Arg::with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
-											.long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
+												.long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
 										)
 									)
 								)*
@@ -408,8 +419,8 @@ macro_rules! usage {
 									.arg(
 										$subc_argm_clap(
 											Arg::with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
-											.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..],"_","-").as_ref())
-											.multiple(true)
+												.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..],"_","-").as_ref())
+												.multiple(true)
 										)
 									)
 								)*
@@ -425,10 +436,12 @@ macro_rules! usage {
 								)*
 							)*
 							$(
-								Arg::with_name(&stringify!($legacy_flag)[5..]).long(str::replace(&stringify!($legacy_flag)[5..], "_", "-").as_ref()).hidden(true),
+								Arg::with_name(&stringify!($legacy_flag)[5..])
+									.long(str::replace(&stringify!($legacy_flag)[5..], "_", "-").as_ref()).hidden(true),
 							)*
 							$(
-								Arg::with_name(&stringify!($legacy_arg)[4..]).long(str::replace(&stringify!($legacy_arg)[4..], "_", "-").as_ref()).takes_value(true).hidden(true),
+								Arg::with_name(&stringify!($legacy_arg)[4..])
+									.long(str::replace(&stringify!($legacy_arg)[4..], "_", "-").as_ref()).takes_value(true).hidden(true),
 							)*
 						])
 						.get_matches_safe()?;
