@@ -384,23 +384,23 @@ macro_rules! usage {
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&(stringify!($subc)[4..])) // @TODO remove () after &
+								SubCommand::with_name(&stringify!($subc)[4..]) // @TODO remove () after &
 								$(
 									.subcommand(
-										SubCommand::with_name(&(stringify!($subc_subc)[stringify!($subc).len()+1..]))
+										SubCommand::with_name(&stringify!($subc_subc)[stringify!($subc).len()+1..])
 										$(
-											.arg($subc_subc_arg_clap(Arg::with_name(&(stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..]))))
+											.arg($subc_subc_arg_clap(Arg::with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])))
 										)*
 										$(
-											.arg($subc_subc_argm_clap(Arg::with_name(&(stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])).multiple(true)))
+											.arg($subc_subc_argm_clap(Arg::with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..]).multiple(true)))
 										)*
 									)
 								)*
 								$(
-									.arg($subc_arg_clap(Arg::with_name(&(stringify!($subc_arg)[stringify!($subc).len()+1..]))))
+									.arg($subc_arg_clap(Arg::with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])))
 								)*
 								$(
-									.arg($subc_argm_clap(Arg::with_name(&(stringify!($subc_argm)[stringify!($subc).len()+1..])).multiple(true)))
+									.arg($subc_argm_clap(Arg::with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..]).multiple(true)))
 								)*
 							)
 						)*
@@ -414,10 +414,10 @@ macro_rules! usage {
 								)*
 							)*
 							$(
-								Arg::with_name(&(stringify!($legacy_flag)[5..])).hidden(true),
+								Arg::with_name(&stringify!($legacy_flag)[5..]).hidden(true),
 							)*
 							$(
-								Arg::with_name(&(stringify!($legacy_arg)[4..])).takes_value(true).hidden(true),
+								Arg::with_name(&stringify!($legacy_arg)[4..]).takes_value(true).hidden(true),
 							)*
 						])
 						.get_matches_safe()?;
@@ -434,18 +434,18 @@ macro_rules! usage {
 						raw_args.$argo = value_t!(matches, &stringify!($argo)[4..], $argo_type).ok();
 					)*
 					$(
-						raw_args.$flag = matches.is_present(&(stringify!($flag)[5..]));
+						raw_args.$flag = matches.is_present(&stringify!($flag)[5..]);
 					)*
 				)*
 				
 				$(
 					// Subcommand
-					if let Some(submatches) = matches.subcommand_matches(&(stringify!($subc)[4..])) {
+					if let Some(submatches) = matches.subcommand_matches(&stringify!($subc)[4..]) {
 						raw_args.$subc = true;
 
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&(stringify!($subc_subc)[stringify!($subc).len()+1..])) {
+							if let Some(subsubmatches) = submatches.subcommand_matches(&stringify!($subc_subc)[stringify!($subc).len()+1..]) {
 								raw_args.$subc_subc = true;
 
 								// Sub-subcommand arguments
@@ -477,7 +477,7 @@ macro_rules! usage {
 				
 
 				$(
-					raw_args.$legacy_flag = matches.is_present(&(stringify!($legacy_flag)[5..]));
+					raw_args.$legacy_flag = matches.is_present(&stringify!($legacy_flag)[5..]);
 				)*
 				$(
 					raw_args.$legacy_arg = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
