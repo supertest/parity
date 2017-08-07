@@ -21,11 +21,6 @@ use dir;
 
 usage! {
 	{
-		// Values with optional default value. (@TODO prune? merge with the other block?)
-		flag_base_path: Option<String>, display dir::default_data_path(), or |c: &Config| otry!(c.parity).base_path.clone().map(Some),
-		flag_db_path: Option<String>, display dir::CHAINS_PATH, or |c: &Config| otry!(c.parity).db_path.clone().map(Some),
-	}
-	{
 		// CLI subcommands
 		// Subcommands/sub-subcommands must start with cmd_
 		// Arguments must start with arg_
@@ -186,6 +181,14 @@ usage! {
 			ARG arg_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
 			"--identity NAME
 				'Specify your node's name.'",
+			
+			ARG_OPTION arg_base_path: String = None, or |c: &Config| otry!(c.parity).base_path.clone(),
+			"-d --base-path PATH
+				'Specify the base data storage path.'",
+
+			ARG_OPTION arg_db_path: String = None, or |c: &Config| otry!(c.parity).db_path.clone(),
+			"--db-path PATH
+				'Specify the database directory path'",
 
 		["Convenience options"]
 			FLAG flag_unsafe_expose: bool = false, or |c: &Config| otry!(c.misc).unsafe_expose,
@@ -1103,8 +1106,8 @@ mod tests {
 			flag_no_download: false,
 			flag_no_consensus: false,
 			arg_chain: "xyz".into(),
-			flag_base_path: Some("$HOME/.parity".into()),
-			flag_db_path: Some("$HOME/.parity/chains".into()),
+			arg_base_path: Some("$HOME/.parity".into()),
+			arg_db_path: Some("$HOME/.parity/chains".into()),
 			arg_keys_path: "$HOME/.parity/keys".into(),
 			arg_identity: "".into(),
 			flag_light: false,

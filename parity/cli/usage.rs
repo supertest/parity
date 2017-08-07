@@ -35,11 +35,6 @@ macro_rules! usage {
 	(
 		{
 			$(
-				$field_s:ident : $typ_s:ty, display $default_s:expr, or $from_config_s:expr,
-			)*
-		}
-		{
-			$(
 				CMD $subc:ident
 				{
 					$(
@@ -136,10 +131,6 @@ macro_rules! usage {
 		#[derive(Debug, PartialEq)]
 		pub struct Args {
 			$(
-				pub $field_s: $typ_s,
-			)*
-
-			$(
 				pub $subc: bool,
 
 				$(
@@ -186,11 +177,6 @@ macro_rules! usage {
 		impl Default for Args {
 			fn default() -> Self {
 				Args {
-
-					$(
-						$field_s: Default::default(),
-					)*
-
 					$(
 						$subc: Default::default(),
 						$(
@@ -239,9 +225,6 @@ macro_rules! usage {
 
 		#[derive(Default, Debug, PartialEq, Clone, Deserialize)]
 		struct RawArgs {
-			$(
-				$field_s: Option<$typ_s>,
-			)*
 			$(
 				$subc: bool,
 				
@@ -340,9 +323,6 @@ macro_rules! usage {
 		impl RawArgs {
 			fn into_args(self, config: Config) -> Args {
 				let mut args = Args::default();
-				$(
-					args.$field_s = self.$field_s.or_else(|| $from_config_s(&config)).unwrap_or(None);
-				)*
 				$(
 					args.$subc = self.$subc;
 

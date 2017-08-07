@@ -897,14 +897,14 @@ impl Configuration {
 		use path;
 
 		let local_path = default_local_path();
-		let base_path = self.args.flag_base_path.as_ref().or_else(|| self.args.arg_datadir.as_ref()).map_or_else(|| default_data_path(), |s| s.clone());
+		let base_path = self.args.arg_base_path.as_ref().or_else(|| self.args.arg_datadir.as_ref()).map_or_else(|| default_data_path(), |s| s.clone());
 		let data_path = replace_home("", &base_path);
-		let is_using_base_path = self.args.flag_base_path.is_some();
+		let is_using_base_path = self.args.arg_base_path.is_some();
 		// If base_path is set and db_path is not we default to base path subdir instead of LOCAL.
-		let base_db_path = if is_using_base_path && self.args.flag_db_path.is_none() {
+		let base_db_path = if is_using_base_path && self.args.arg_db_path.is_none() {
 			"$BASE/chains"
 		} else {
-			self.args.flag_db_path.as_ref().map_or(dir::CHAINS_PATH, |s| &s)
+			self.args.arg_db_path.as_ref().map_or(dir::CHAINS_PATH, |s| &s)
 		};
 		let cache_path = if is_using_base_path { "$BASE/cache" } else { dir::CACHE_PATH };
 

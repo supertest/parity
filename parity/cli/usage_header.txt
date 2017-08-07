@@ -1,8 +1,3 @@
 Parity. Ethereum Client.
 	By Wood/Paronyan/Kotewicz/Drwięga/Volf et al.
 	Copyright 2015, 2016, 2017 Parity Technologies (UK) Ltd
-
-Operating Options:
-	"-d --base-path PATHNNNNN				'Specify the base data storage path.'",
-
-	"--db-path PATHNNNNN				'Specify the database directory path'",
