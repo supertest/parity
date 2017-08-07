@@ -30,8 +30,8 @@ usage! {
 		{
 			CMD cmd_wallet_import
 			{
-				ARG arg_wallet_import_path: String, |arg| Arg::required(arg,true).index(3),
-				ARG arg_wallet_import_password: String, |arg| Arg::required(arg,true).value_name("FILE"),
+				ARG arg_wallet_import_path: String, |arg| Arg::long(arg,"path").required(true).index(3),
+				ARG arg_wallet_import_password: String, |arg| Arg::long(arg,"password").required(true).value_name("FILE"),
 			}
 		}
 
@@ -43,21 +43,21 @@ usage! {
 
 			CMD cmd_account_import
 			{
-				ARG_MULTIPLE arg_account_import_path: String, |arg| Arg::required(arg,true).index(3),
+				ARG_MULTIPLE arg_account_import_path: String, |arg| Arg::long(arg,"path").required(true).index(3),
 			}
 		}
 
 		CMD cmd_dapp
 		{
-			ARG arg_dapp_path: String, |arg| Arg::index(arg,2).required(true),
+			ARG arg_dapp_path: String, |arg| Arg::long(arg,"path").index(2).required(true),
 		}
 		
 		CMD cmd_daemon
 		{
-			ARG arg_daemon_pid_file: String, |arg| Arg::index(arg,2).required(true),
+			ARG arg_daemon_pid_file: String, |arg| Arg::long(arg,"file").index(2).required(true),
 		}
 
-		CMD cmd_export // evtl: |&sc: SubCommand| sc.help("Help message") @TODO
+		CMD cmd_export
 		{
 			CMD cmd_export_blocks
 			{

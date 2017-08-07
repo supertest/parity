@@ -397,10 +397,21 @@ macro_rules! usage {
 									)
 								)*
 								$(
-									.arg($subc_arg_clap(Arg::with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])))
+									.arg(
+										$subc_arg_clap(
+											Arg::with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
+											.long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
+										)
+									)
 								)*
 								$(
-									.arg($subc_argm_clap(Arg::with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..]).multiple(true)))
+									.arg(
+										$subc_argm_clap(
+											Arg::with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
+											.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..],"_","-").as_ref())
+											.multiple(true)
+										)
+									)
 								)*
 							)
 						)*
@@ -414,10 +425,10 @@ macro_rules! usage {
 								)*
 							)*
 							$(
-								Arg::with_name(&str::replace(&stringify!($legacy_flag)[5..], "_", "-")).hidden(true),
+								Arg::with_name(&stringify!($legacy_flag)[5..]).long(str::replace(&stringify!($legacy_flag)[5..], "_", "-").as_ref()).hidden(true),
 							)*
 							$(
-								Arg::with_name(&str::replace(&stringify!($legacy_arg)[4..], "_", "-")).takes_value(true).hidden(true),
+								Arg::with_name(&stringify!($legacy_arg)[4..]).long(str::replace(&stringify!($legacy_arg)[4..], "_", "-").as_ref()).takes_value(true).hidden(true),
 							)*
 						])
 						.get_matches_safe()?;
@@ -453,7 +464,6 @@ macro_rules! usage {
 									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..], $subc_subc_arg_type).ok();
 								)*
 								$(
-									// might need to convert from values to vec
 									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..], $subc_subc_argm_type).ok();
 								)*
 							}
@@ -473,14 +483,14 @@ macro_rules! usage {
 					else {
 						raw_args.$subc = false;
 					}
-				)*
-				
+				)*				
 
+				// Parameter is the argument name (not the long version)
 				$(
-					raw_args.$legacy_flag = matches.is_present(&str::replace(&stringify!($legacy_flag)[5..], "_", "-"));
+					raw_args.$legacy_flag = matches.is_present(&stringify!($legacy_flag)[5..]);
 				)*
 				$(
-					raw_args.$legacy_arg = value_t!(matches, &str::replace(&stringify!($legacy_arg)[4..], "_", "-"), $legacy_arg_type).ok();
+					raw_args.$legacy_arg = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
 				)*
 				
 
