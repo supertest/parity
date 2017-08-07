@@ -122,14 +122,17 @@ impl Configuration {
 		let fat_db = self.args.arg_fat_db.parse()?;
 		let compaction = self.args.arg_db_compaction.parse()?;
 		let wal = !self.args.flag_fast_and_loose;
-		match self.args.flag_warp {
-			// Logging is not initialized yet, so we print directly to stderr
-			Some(true) if fat_db == Switch::On => writeln!(&mut stderr(), "Warning: Warp Sync is disabled because Fat DB is turned on").expect("Error writing to stderr"),
-			Some(true) if tracing == Switch::On => writeln!(&mut stderr(), "Warning: Warp Sync is disabled because tracing is turned on").expect("Error writing to stderr"),
-			Some(true) if pruning == Pruning::Specific(Algorithm::Archive) => writeln!(&mut stderr(), "Warning: Warp Sync is disabled because pruning mode is set to archive").expect("Error writing to stderr"),
-			_ => {},
-		};
 		let public_node = self.args.flag_public_node;
+		if !self.args.flag_no_warp {
+			// Logging is not initialized yet, so we print directly to stderr
+			if fat_db == Switch::On {
+				writeln!(&mut stderr(), "Warning: Warp Sync is disabled because Fat DB is turned on").expect("Error writing to stderr");
+			} else if tracing == Switch::On {
+				writeln!(&mut stderr(), "Warning: Warp Sync is disabled because tracing is turned on").expect("Error writing to stderr");
+			} else if pruning == Pruning::Specific(Algorithm::Archive) {
+				writeln!(&mut stderr(), "Warning: Warp Sync is disabled because pruning mode is set to archive").expect("Error writing to stderr");
+			}
+		}
 		let warp_sync = !self.args.flag_no_warp && fat_db != Switch::On && tracing != Switch::On && pruning != Pruning::Specific(Algorithm::Archive);
 		let geth_compatibility = self.args.flag_geth;
 		let mut dapps_conf = self.dapps_config();
@@ -139,7 +142,7 @@ impl Configuration {
 
 		if self.args.arg_jsonrpc_server_threads.is_some() && dapps_conf.enabled {
 			dapps_conf.enabled = false;
-			writeln!(&mut stderr(), "Warning: Disabling Dapps server because fast RPC server was enabled.").expect("Error writing to stderr.")
+			writeln!(&mut stderr(), "Warning: Disabling Dapps server because fast RPC server was enabled.").expect("Error writing to stderr.");
 		}
 
 		let cmd = if self.args.cmd_signer {

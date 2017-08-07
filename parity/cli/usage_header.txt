@@ -1,67 +1,8 @@
-		Parity. Ethereum Client.
-			By Wood/Paronyan/Kotewicz/Drwięga/Volf et al.
-			Copyright 2015, 2016, 2017 Parity Technologies (UK) Ltd
+Parity. Ethereum Client.
+	By Wood/Paronyan/Kotewicz/Drwięga/Volf et al.
+	Copyright 2015, 2016, 2017 Parity Technologies (UK) Ltd
 
-		Usage:
-			parity [options] OK
-			parity ui [options] OK
-			parity dapp <path> [options] OK
-			parity daemon <pid-file> [options] OK
-			parity account (new | list ) [options] OK
-			parity account import <path>... [options] OK
-			parity wallet import <path> --password FILE [options] OK
-			parity import [ <file> ] [options] OK
-			parity export (blocks | state) [ <file> ] [options] OK
-			parity signer new-token [options] OK
-			parity signer list [options] OK
-			parity signer sign [ <id> ] [ --password FILE ] [options] OK
-			parity signer reject <id> [options] OK
-			parity snapshot <file> [options] OK
-			parity restore [ <file> ] [options] OK
-			parity tools hash <file> OK
-			parity db kill [options]
+Operating Options:
+	"-d --base-path PATHNNNNN				'Specify the base data storage path.'",
 
-		#todo remove:
-
-		Operating Options:
-			"--force-direct [[PARSED BEFORE CLAP]]NNNNN				'Run the originally installed version of Parity, ignoring any updates that have since been installed.'",
-
-			"-d --base-path PATHNNNNN				'Specify the base data storage path.'",
-
-			"--db-path PATHNNNNN				'Specify the database directory path'",
-
-
-			// jusqu'à là c'estOK. STOP ICI.
-
-		Legacy Options:
-		"--gethNNNNN			'Run in Geth-compatibility mode. Sets the IPC path to be the same as Geth's. Overrides the --ipc-path and --ipcpath options. Alters RPCs to reflect Geth bugs. Includes the personal_ RPC by default.'",
-		"--testnetNNNNN			'Testnet mode. Equivalent to --chain testnet. Overrides the --keys-path option.'",
-		"--import-geth-keysNNNNN			'Attempt to import keys from Geth client.'",
-		"--datadir PATHNNNNN			'Equivalent to --base-path PATH.'",
-		"--networkid INDEXNNNNN			'Equivalent to --network-id INDEX.'",
-		"--peers NUMNNNNN			'Equivalent to --min-peers NUM.'",
-		"--nodekey KEYNNNNN			'Equivalent to --node-key KEY.'",
-		"--nodiscoverNNNNN			'Equivalent to --no-discovery.'",
-		"-j --jsonrpcNNNNN			'Does nothing; JSON-RPC is on by default now.'",
-		"--jsonrpc-offNNNNN			'Equivalent to --no-jsonrpc.'",
-		"-w --webappNNNNN			'Does nothing; dapps server is on by default now.'",
-		"--dapps-offNNNNN			'Equivalent to --no-dapps.'",
-		"--rpcNNNNN			'Does nothing; JSON-RPC is on by default now.'",
-		"--warpNNNNN			'Does nothing; Warp sync is on by default.'",
-		"--rpcaddr IPNNNNN			'Equivalent to --jsonrpc-interface IP.'",
-		"--rpcport PORTNNNNN			'Equivalent to --jsonrpc-port PORT.'",
-		"--rpcapi APISNNNNN			'Equivalent to --jsonrpc-apis APIS.'",
-		"--rpccorsdomain URLNNNNN			'Equivalent to --jsonrpc-cors URL.'",
-		"--ipcdisableNNNNN			'Equivalent to --no-ipc.'",
-		"--ipc-offNNNNN			'Equivalent to --no-ipc.'",
-		"--ipcapi APISNNNNN			'Equivalent to --ipc-apis APIS.'",
-		"--ipcpath PATHNNNNN			'Equivalent to --ipc-path PATH.'",
-		"--gasprice WEINNNNN			'Minimum amount of Wei per GAS to be paid for a transaction to be accepted for mining. Overrides --basic-tx-usd.'",
-		"--etherbase ADDRESSNNNNN			'Equivalent to --author ADDRESS.'",
-		"--extradata STRINGNNNNN			'Equivalent to --extra-data STRING.'",
-		"--cache MBNNNNN			'Equivalent to --cache-size MB.'",
-
-		Internal Options:
-		"--can-restartNNNNN			'Executable will auto-restart if exiting with 69.'",
-
-		
+	"--db-path PATHNNNNN				'Specify the database directory path'",

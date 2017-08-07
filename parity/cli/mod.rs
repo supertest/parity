@@ -24,13 +24,12 @@ usage! {
 		// Values with optional default value. (@TODO prune? merge with the other block?)
 		flag_base_path: Option<String>, display dir::default_data_path(), or |c: &Config| otry!(c.parity).base_path.clone().map(Some),
 		flag_db_path: Option<String>, display dir::CHAINS_PATH, or |c: &Config| otry!(c.parity).db_path.clone().map(Some),
-		flag_warp: Option<bool>, display true, or |c: &Config| Some(otry!(c.network).warp.clone()),
 	}
 	{
 		// CLI subcommands
 		// Subcommands/sub-subcommands must start with cmd_
 		// Arguments must start with arg_
-		// Option<> will be automatically wrapped around the types
+		// Option<> will be automatically wrapped around the arguments
 
 		CMD cmd_wallet
 		{
@@ -1290,7 +1289,6 @@ mod tests {
 			arg_etherbase: None,
 			arg_extradata: None,
 			arg_cache: None,
-			flag_warp: Some(true),
 			// Legacy-Dapps
 			arg_dapps_port: Some(8080),
 			arg_dapps_interface: Some("local".into()),
