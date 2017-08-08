@@ -501,15 +501,6 @@ macro_rules! usage {
 					else {
 						raw_args.$subc = false;
 					}
-				)*		
-
-				$(
-					$(
-						raw_args.$flag = matches.is_present(&stringify!($flag)[5..]);
-					)*
-					$(
-						raw_args.$arg = value_t!(matches, &stringify!($arg)[4..], $arg_type).ok();
-					)*		
 				)*
 
 				// Parameter is the argument name (not the long version)
