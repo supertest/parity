@@ -346,9 +346,6 @@ macro_rules! usage {
 
 				$(
 					$(
-						// args.$flag = self.$flag.or_else(|| $flag_from_config(&config)).unwrap_or_else(|| $flag_default.into());
-
-						// Presence of CLI switch || config || default
 						args.$flag = self.$flag || $flag_from_config(&config).unwrap_or_else(|| $flag_default.into());
 					)*
 					$(
@@ -378,6 +375,12 @@ macro_rules! usage {
 					$(
 						$(
 							format!("[{}] {}",&stringify!($arg_usage)[4..],$arg_usage),
+						)*
+						$(
+							format!("[{}] {}",&stringify!($argm_usage)[4..],$argm_usage),
+						)*
+						$(
+							format!("[{}] {}",&stringify!($argo_usage)[4..],$argo_usage),
 						)*
 						$(
 							format!("[{}] {}",&stringify!($flag_usage)[5..],$flag_usage),
