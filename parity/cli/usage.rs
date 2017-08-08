@@ -395,8 +395,7 @@ macro_rules! usage {
 				    	.global_setting(AppSettings::UnifiedHelpMessage)
 						.arg(Arg::with_name("version")
 							.short("v")
-							.long("version")
-							.help(&Args::print_version()))
+							.long("version"))
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(
 							.subcommand(
