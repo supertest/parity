@@ -373,13 +373,14 @@ macro_rules! usage {
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
+				// Add the variable name as argument identifier
 				let usages = vec![
 					$(
 						$(
-							format!("[{}] {}",str::replace(&stringify!($arg_usage)[4..], "_", "-"),$arg_usage),
+							format!("[{}] {}",&stringify!($arg_usage)[4..],$arg_usage),
 						)*
 						$(
-							format!("[{}] {}",str::replace(&stringify!($flag_usage)[5..], "_", "-"),$flag_usage),
+							format!("[{}] {}",&stringify!($flag_usage)[5..],$flag_usage),
 						)*
 					)*
 				];
@@ -502,13 +503,14 @@ macro_rules! usage {
 					}
 				)*		
 
-				// ???
-				// $(
-				// 	raw_args.$flag_usage = matches.is_present(&stringify!($legacy_flag)[5..]);
-				// )*
-				// $(
-				// 	raw_args.$arg_usage = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
-				// )*		
+				$(
+					$(
+						raw_args.$flag = matches.is_present(&stringify!($flag)[5..]);
+					)*
+					$(
+						raw_args.$arg = value_t!(matches, &stringify!($arg)[4..], $arg_type).ok();
+					)*		
+				)*
 
 				// Parameter is the argument name (not the long version)
 				$(
