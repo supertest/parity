@@ -373,15 +373,26 @@ macro_rules! usage {
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
+				let usages = vec![
+					$(
+						$(
+							format!("[{}] {}",str::replace(&stringify!($arg_usage)[4..], "_", "-"),$arg_usage),
+						)*
+						$(
+							format!("[{}] {}",str::replace(&stringify!($flag_usage)[5..], "_", "-"),$flag_usage),
+						)*
+					)*
+				];
+
 				let matches = App::new("Parity")
-				    	.setting(AppSettings::VersionlessSubcommands)
-				    	.setting(AppSettings::DeriveDisplayOrder)
-				    	.setting(AppSettings::UnifiedHelpMessage)
+				    	.global_setting(AppSettings::VersionlessSubcommands)
+				    	.global_setting(AppSettings::DeriveDisplayOrder)
+				    	.global_setting(AppSettings::UnifiedHelpMessage)
 						.arg(Arg::with_name("version")
 							.short("v")
 							.long("version")
 							.help(&Args::print_version()))
-						.about(include_str!("./usage_header.txt"))
+						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(
 							.subcommand(
 								SubCommand::with_name(&str::replace(&stringify!($subc)[4..], "_", "-"))
@@ -419,22 +430,15 @@ macro_rules! usage {
 									.arg(
 										$subc_argm_clap(
 											Arg::with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
-												.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..],"_","-").as_ref())
+												.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..], "_", "-").as_ref())
 												.multiple(true)
 										)
 									)
 								)*
 							)
 						)*
+						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 						.args(&[
-							$(
-								$(
-									Arg::from_usage($arg_usage),
-								)*
-								$(
-									Arg::from_usage($flag_usage),
-								)*
-							)*
 							$(
 								Arg::with_name(&stringify!($legacy_flag)[5..])
 									.long(str::replace(&stringify!($legacy_flag)[5..], "_", "-").as_ref()).hidden(true),
@@ -496,7 +500,15 @@ macro_rules! usage {
 					else {
 						raw_args.$subc = false;
 					}
-				)*				
+				)*		
+
+				// ???
+				// $(
+				// 	raw_args.$flag_usage = matches.is_present(&stringify!($legacy_flag)[5..]);
+				// )*
+				// $(
+				// 	raw_args.$arg_usage = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
+				// )*		
 
 				// Parameter is the argument name (not the long version)
 				$(
