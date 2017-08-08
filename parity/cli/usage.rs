@@ -227,7 +227,7 @@ macro_rules! usage {
 		struct RawArgs {
 			$(
 				$subc: bool,
-				
+
 				$(
 					$subc_subc: bool,
 					$(
@@ -371,19 +371,20 @@ macro_rules! usage {
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				// Add the variable name as argument identifier
+				// To do so, we have to specify if the argument is required; we default to optional
 				let usages = vec![
 					$(
 						$(
-							format!("[{}] {}",&stringify!($arg_usage)[4..],$arg_usage),
+							format!("[{}] {}",&stringify!($arg)[4..],$arg_usage),
 						)*
 						$(
-							format!("[{}] {}",&stringify!($argm_usage)[4..],$argm_usage),
+							format!("[{}] {}",&stringify!($argm)[4..],$argm_usage),
 						)*
 						$(
-							format!("[{}] {}",&stringify!($argo_usage)[4..],$argo_usage),
+							format!("[{}] {}",&stringify!($argo)[4..],$argo_usage),
 						)*
 						$(
-							format!("[{}] {}",&stringify!($flag_usage)[5..],$flag_usage),
+							format!("[{}] {}",&stringify!($flag)[5..],$flag_usage),
 						)*
 					)*
 				];
@@ -469,7 +470,7 @@ macro_rules! usage {
 						raw_args.$flag = matches.is_present(&stringify!($flag)[5..]);
 					)*
 				)*
-				
+
 				$(
 					// Subcommand
 					if let Some(submatches) = matches.subcommand_matches(&str::replace(&stringify!($subc)[4..], "_", "-")) {
@@ -513,9 +514,9 @@ macro_rules! usage {
 				$(
 					raw_args.$legacy_arg = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
 				)*
-				
 
-				Ok(raw_args)				
+
+				Ok(raw_args)
 			}
 		}
 	};
