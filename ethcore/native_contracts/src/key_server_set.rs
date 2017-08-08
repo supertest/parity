@@ -14,17 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Parity.  If not, see <http://www.gnu.org/licenses/>.
 
-/// General block status
-#[derive(Debug, Eq, PartialEq)]
-pub enum BlockStatus {
-	/// Part of the blockchain.
-	InChain,
-	/// Queued for import.
-	Queued,
-	/// Known as bad.
-	Bad,
-	/// Pending block.
-	Pending,
-	/// Unknown.
-	Unknown,
-}
+#![allow(unused_mut, unused_variables, unused_imports)]
+
+//! Secret store Key Server set contract.
+
+include!(concat!(env!("OUT_DIR"), "/key_server_set.rs"));
