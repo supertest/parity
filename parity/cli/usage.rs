@@ -324,8 +324,8 @@ macro_rules! usage {
 
 				help.push_str("\n\n");
 
+				// Subcommands
 				help.push_str("parity [options]\n");
-
 				$(
 					{
 						let mut subc_subc_exist = false;
@@ -367,16 +367,29 @@ macro_rules! usage {
 					}
 				)*
 
-				// Usage:
-				//   parity [options]
-				//   // foreach subcommand
-				//   	parity {subcommand} [options]
-				// 	// foreach subcommand args (iterate over subcommand args)
-				// 		parity {subcommand} {arg_list} [options]
-				// 	// foreach subcommand subsubcommand
-				// 		parity {subcommand} {subsubcommand} [options]
-				// 		// foreach subcommand subsubcommand arg
-				// 			parity {subcommand} {subsubcommand} {args} [options]
+
+				$(
+					help.push_str("\n");
+					help.push_str($group_name); help.push_str(":\n");
+
+					// foreach
+					$(
+						help.push_str(&format!("\t{}\n\t\t{}\n", $flag_usage, $flag_help));
+					)*
+
+					$(
+						help.push_str(&format!("\t{}\n\t\t{}\n", $arg_usage, $arg_help));
+					)*
+
+					$(
+						help.push_str(&format!("\t{}\n\t\t{}\n", $argm_usage, $argm_help));
+					)*
+
+					$(
+						help.push_str(&format!("\t{}\n\t\t{}\n", $argo_usage, $argo_help));
+					)*
+
+				)*
 
 				help
 			}
