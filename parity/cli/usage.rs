@@ -41,19 +41,19 @@ macro_rules! usage {
 						CMD $subc_subc:ident
 						{
 							$(
-								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty, $subc_subc_arg_clap:expr,
+								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty, $subc_subc_arg_usage:expr,
 							)*
 							$(
-								ARG_MULTIPLE $subc_subc_argm:ident : $subc_subc_argm_type:ty, $subc_subc_argm_clap:expr,
+								ARG_MULTIPLE $subc_subc_argm:ident : $subc_subc_argm_type:ty, $subc_subc_argm_usage:expr,
 							)*
 						}
 					)*
 
 					$(
-						ARG $subc_arg:ident : $subc_arg_type:ty, $subc_arg_clap:expr,
+						ARG $subc_arg:ident : $subc_arg_type:ty, $subc_arg_usage:expr,
 					)*
 					$(
-						ARG_MULTIPLE $subc_argm:ident : $subc_argm_type:ty, $subc_argm_clap:expr,
+						ARG_MULTIPLE $subc_argm:ident : $subc_argm_type:ty, $subc_argm_usage:expr,
 					)*
 				}
 			)*
@@ -62,16 +62,16 @@ macro_rules! usage {
 			$(
 			[$group_name:expr]
 				$(
-					FLAG $flag:ident : bool = $flag_default:expr, or $flag_from_config:expr, $flag_usage:expr,
+					FLAG $flag:ident : bool = $flag_default:expr, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
 				)*
 				$(
-					ARG $arg:ident : $arg_type:ty = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr,
+					ARG $arg:ident : $arg_type:ty = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
 				)*
 				$(
-					ARG_MULTIPLE $argm:ident : $argm_type:ty = $argm_default:expr, or $argm_from_config:expr, $argm_usage:expr,
+					ARG_MULTIPLE $argm:ident : $argm_type:ty = $argm_default:expr, or $argm_from_config:expr, $argm_usage:expr, $argm_help:expr,
 				)*
 				$(
-					ARG_OPTION $argo:ident : $argo_type:ty = $argo_default:expr, or $argo_from_config:expr, $argo_usage:expr,
+					ARG_OPTION $argo:ident : $argo_type:ty = $argo_default:expr, or $argo_from_config:expr, $argo_usage:expr, $argo_help:expr,
 				)*
 			)*
 		}
@@ -367,6 +367,23 @@ macro_rules! usage {
 				args
 			}
 
+			// pub fn print_help() -> String {
+			// 	let mut help : String = include_str!("./usage_header.txt");
+
+			// 	// Usage:
+			// 	//   parity [options]
+			// 	//   // foreach subcommand
+			// 	//   	parity {subcommand} [options]
+			// 	// 	// foreach subcommand args (iterate over subcommand args)
+			// 	// 		parity {subcommand} {arg_list} [options]
+			// 	// 	// foreach subcommand subsubcommand
+			// 	// 		parity {subcommand} {subsubcommand} [options]
+			// 	// 		// foreach subcommand subsubcommand arg
+			// 	// 			parity {subcommand} {subsubcommand} {args} [options]
+
+			// 	help
+			// }
+
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
@@ -375,16 +392,16 @@ macro_rules! usage {
 				let usages = vec![
 					$(
 						$(
-							format!("[{}] {}",&stringify!($arg)[4..],$arg_usage),
+							format!("[{}] {} '{}'",&stringify!($arg)[4..],$arg_usage,$arg_help),
 						)*
 						$(
-							format!("[{}] {}",&stringify!($argm)[4..],$argm_usage),
+							format!("[{}] {} '{}'",&stringify!($argm)[4..],$argm_usage,$argm_help),
 						)*
 						$(
-							format!("[{}] {}",&stringify!($argo)[4..],$argo_usage),
+							format!("[{}] {} '{}'",&stringify!($argo)[4..],$argo_usage,$argo_help),
 						)*
 						$(
-							format!("[{}] {}",&stringify!($flag)[5..],$flag_usage),
+							format!("[{}] {} '{}'",&stringify!($flag)[5..],$flag_usage,$flag_help),
 						)*
 					)*
 				];
@@ -396,6 +413,7 @@ macro_rules! usage {
 						.arg(Arg::with_name("version")
 							.short("v")
 							.long("version"))
+						// .help(print_help())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(
 							.subcommand(
@@ -405,38 +423,34 @@ macro_rules! usage {
 										SubCommand::with_name(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"))
 										$(
 											.arg(
-												$subc_subc_arg_clap(
-													Arg::with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
+													Arg::from_usage($subc_subc_arg_usage)
+														.with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
 														.long(str::replace(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
-												)
 											)
 										)*
 										$(
 											.arg(
-												$subc_subc_argm_clap(
-													Arg::with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
+													Arg::from_usage($subc_subc_argm_usage)
+														.with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
 														.long(str::replace(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
 														.multiple(true)
-												)
 											)
 										)*
 									)
 								)*
 								$(
 									.arg(
-										$subc_arg_clap(
-											Arg::with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
+											Arg::from_usage($subc_arg_usage)
+												.with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
 												.long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
-										)
 									)
 								)*
 								$(
 									.arg(
-										$subc_argm_clap(
-											Arg::with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
+											Arg::from_usage($subc_argm_usage)
+												.with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
 												.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..], "_", "-").as_ref())
 												.multiple(true)
-										)
 									)
 								)*
 							)
