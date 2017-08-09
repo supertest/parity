@@ -318,6 +318,68 @@ macro_rules! usage {
 			pub fn print_version() -> String {
 				format!(include_str!("./version.txt"), version())
 			}
+
+			pub fn print_help() -> String {
+				let mut help : String = include_str!("./usage_header.txt").to_owned();
+
+				help.push_str("\n\n");
+
+				help.push_str("parity [options]\n");
+
+				$(
+					{
+						let mut subc_subc_exist = false;
+
+						$(
+							subc_subc_exist = true;
+							let subc_subc_arg_usages : Vec<&str> = vec![
+								$(
+									$subc_subc_arg_usage,
+								)*
+								$(
+									$subc_subc_argm_usage,
+								)*
+							];
+
+							if subc_subc_arg_usages.is_empty() {
+								help.push_str(&format!("parity {} {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-"), &str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-")));
+							} else {
+								help.push_str(&format!("parity {} {} {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-"), &str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"), subc_subc_arg_usages.join(" ")));
+							}
+						)*
+
+						if !subc_subc_exist {
+							let subc_arg_usages : Vec<&str> = vec![
+								$(
+									$subc_arg_usage,
+								)*
+								$(
+									$subc_argm_usage,
+								)*
+							];
+
+							if subc_arg_usages.is_empty() {
+								help.push_str(&format!("parity {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-")));
+							} else {
+								help.push_str(&format!("parity {} {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-"), subc_arg_usages.join(" ")));
+							}
+						}
+					}
+				)*
+
+				// Usage:
+				//   parity [options]
+				//   // foreach subcommand
+				//   	parity {subcommand} [options]
+				// 	// foreach subcommand args (iterate over subcommand args)
+				// 		parity {subcommand} {arg_list} [options]
+				// 	// foreach subcommand subsubcommand
+				// 		parity {subcommand} {subsubcommand} [options]
+				// 		// foreach subcommand subsubcommand arg
+				// 			parity {subcommand} {subsubcommand} {args} [options]
+
+				help
+			}
 		}
 
 		impl RawArgs {
@@ -367,23 +429,6 @@ macro_rules! usage {
 				args
 			}
 
-			// pub fn print_help() -> String {
-			// 	let mut help : String = include_str!("./usage_header.txt");
-
-			// 	// Usage:
-			// 	//   parity [options]
-			// 	//   // foreach subcommand
-			// 	//   	parity {subcommand} [options]
-			// 	// 	// foreach subcommand args (iterate over subcommand args)
-			// 	// 		parity {subcommand} {arg_list} [options]
-			// 	// 	// foreach subcommand subsubcommand
-			// 	// 		parity {subcommand} {subsubcommand} [options]
-			// 	// 		// foreach subcommand subsubcommand arg
-			// 	// 			parity {subcommand} {subsubcommand} {args} [options]
-
-			// 	help
-			// }
-
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
@@ -413,7 +458,7 @@ macro_rules! usage {
 						.arg(Arg::with_name("version")
 							.short("v")
 							.long("version"))
-						// .help(print_help())
+						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(
 							.subcommand(

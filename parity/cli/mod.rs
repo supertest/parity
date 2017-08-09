@@ -26,16 +26,18 @@ usage! {
 		// Arguments must start with arg_
 		// Option<> will be automatically wrapped around the arguments
 
-		CMD cmd_wallet
-		{
-			CMD cmd_wallet_import
-			{
-				ARG arg_wallet_import_path: String,
-				"<path>",
+		CMD cmd_ui {}
 
-				ARG arg_wallet_import_password: String,
-				"--password <FILE>",
-			}
+		CMD cmd_dapp
+		{
+			ARG arg_dapp_path: String,
+			"<path>",
+		}
+
+		CMD cmd_daemon
+		{
+			ARG arg_daemon_pid_file: String,
+			"<pid-file>",
 		}
 
 		CMD cmd_account
@@ -51,16 +53,22 @@ usage! {
 			}
 		}
 
-		CMD cmd_dapp
+		CMD cmd_wallet
 		{
-			ARG arg_dapp_path: String,
-			"<path>",
+			CMD cmd_wallet_import
+			{
+				ARG arg_wallet_import_path: String,
+				"<path>",
+
+				ARG arg_wallet_import_password: String,
+				"--password <FILE>",
+			}
 		}
 
-		CMD cmd_daemon
+		CMD cmd_import
 		{
-			ARG arg_daemon_pid_file: String,
-			"<pid-file>",
+			ARG arg_import_file: String,
+			"[file]",
 		}
 
 		CMD cmd_export
@@ -76,12 +84,6 @@ usage! {
 				ARG arg_export_state_file: String,
 				"[file]",
 			}
-		}
-
-		CMD cmd_import
-		{
-			ARG arg_import_file: String,
-			"[file]",
 		}
 
 		CMD cmd_signer
@@ -117,8 +119,6 @@ usage! {
 			ARG arg_restore_file: String,
 			"[file]",
 		}
-
-		CMD cmd_ui {}
 
 		CMD cmd_tools
 		{
