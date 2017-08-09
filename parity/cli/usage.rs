@@ -424,14 +424,14 @@ macro_rules! usage {
 										$(
 											.arg(
 													Arg::from_usage($subc_subc_arg_usage)
-														.with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
+														// .with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
 														.long(str::replace(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
 											)
 										)*
 										$(
 											.arg(
 													Arg::from_usage($subc_subc_argm_usage)
-														.with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
+														// .with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
 														.long(str::replace(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
 														.multiple(true)
 											)
@@ -441,14 +441,14 @@ macro_rules! usage {
 								$(
 									.arg(
 											Arg::from_usage($subc_arg_usage)
-												.with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
+												// .with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
 												.long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
 									)
 								)*
 								$(
 									.arg(
 											Arg::from_usage($subc_argm_usage)
-												.with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
+												// .with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
 												.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..], "_", "-").as_ref())
 												.multiple(true)
 									)
