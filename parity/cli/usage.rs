@@ -319,6 +319,8 @@ macro_rules! usage {
 				format!(include_str!("./version.txt"), version())
 			}
 
+			// Rust issue #22630
+			#[allow(unused_assignments)]
 			pub fn print_help() -> String {
 				let mut help : String = include_str!("./usage_header.txt").to_owned();
 
@@ -367,26 +369,28 @@ macro_rules! usage {
 					}
 				)*
 
-
+				// Args and flags
 				$(
 					help.push_str("\n");
 					help.push_str($group_name); help.push_str(":\n");
 
-					// foreach
 					$(
 						help.push_str(&format!("\t{}\n\t\t{}\n", $flag_usage, $flag_help));
 					)*
 
 					$(
-						help.push_str(&format!("\t{}\n\t\t{}\n", $arg_usage, $arg_help));
+						help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $arg_usage, $arg_help, $arg_default));
 					)*
 
 					$(
-						help.push_str(&format!("\t{}\n\t\t{}\n", $argm_usage, $argm_help));
+						help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $argm_usage, $argm_help, {let x : Vec<$argm_type> = $argm_default; x}));
+						// Vec::new:<String>
+						// ou sinon { let X: Vec<String> = vec![] }
+						// if $argm_default.is_empty() { "" } else { $argm_default.iter().map(|x| x.to_string()).join(", ") }));
 					)*
 
 					$(
-						help.push_str(&format!("\t{}\n\t\t{}\n", $argo_usage, $argo_help));
+						help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $argo_usage, $argo_help, $argo_default.unwrap_or("none")));
 					)*
 
 				)*

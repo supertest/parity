@@ -155,12 +155,12 @@ usage! {
 
 			ARG arg_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
 			"--mode=[MODE]",
-			"Set the operating mode. MODE can be one of:{n}
-					last - Uses the last-used mode, active if none.{n}
-					active - Parity continuously syncs the chain.{n}
-					passive - Parity syncs initially, then sleeps and wakes regularly to resync.{n}
-					dark - Parity syncs only when the RPC is active.{n}
-					offline - Parity doesn't sync.",
+			"Set the operating mode. MODE can be one of:
+	last - Uses the last-used mode, active if none.
+	active - Parity continuously syncs the chain.
+	passive - Parity syncs initially, then sleeps and wakes regularly to resync.
+	dark - Parity syncs only when the RPC is active.
+	offline - Parity doesn't sync.",
 
 			ARG arg_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
 			"--mode-timeout=[SECS]",
@@ -172,19 +172,19 @@ usage! {
 
 			ARG arg_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
 			"--auto-update=[SET]",
-			"Set a releases set to automatically update and install.{n}
-					all - All updates in the our release track.{n}
-					critical - Only consensus/security updates.{n}
-					none - No updates will be auto-installed.",
+			"Set a releases set to automatically update and install.
+	all - All updates in the our release track.
+	critical - Only consensus/security updates.
+	none - No updates will be auto-installed.",
 
 			ARG arg_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
 			"--release-track=[TRACK]",
-			"Set which release track we should use for updates.{n}
-					stable - Stable releases.{n}
-					beta - Beta releases.{n}
-					nightly - Nightly releases (unstable).{n}
-					testing - Testing releases (do not use).{n}
-					current - Whatever track this executable was released on",
+			"Set which release track we should use for updates.
+	stable - Stable releases.
+	beta - Beta releases.
+	nightly - Nightly releases (unstable).
+	testing - Testing releases (do not use).
+	current - Whatever track this executable was released on",
 
 			ARG arg_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
 			"--chain=[CHAIN]",
@@ -209,7 +209,8 @@ usage! {
 		["Convenience options"]
 			FLAG flag_unsafe_expose: bool = false, or |c: &Config| otry!(c.misc).unsafe_expose,
 			"--unsafe-expose",
-			"All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all{n}This option is UNSAFE and should be used with great care!",
+			"All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all
+	This option is UNSAFE and should be used with great care!",
 
 			ARG arg_config: String = "$BASE/config.toml", or |_| None,
 			"-c, --config=[CONFIG]",
@@ -335,7 +336,7 @@ usage! {
 			"--reserved-peers=[FILE]",
 			"Provide a file containing enodes, one per line. These nodes will always have a reserved slot on top of the normal maximum peers.",
 
-		["API and Console options: RPC"]
+		["API and console options – RPC"]
 			FLAG flag_no_jsonrpc: bool = false, or |c: &Config| otry!(c.rpc).disable.clone(),
 			"--no-jsonrpc",
 			"Disable the JSON-RPC API server.",
@@ -368,7 +369,7 @@ usage! {
 			"--jsonrpc-server-threads=[NUM]",
 			"Enables experimental faster implementation of JSON-RPC server. Requires Dapps server to be disabled using --no-dapps.",
 
-		["API and Console options: WS"]
+		["API and console options – WS"]
 			FLAG flag_no_ws: bool = false, or |c: &Config| otry!(c.websockets).disable.clone(),
 			"--no-ws",
 			"Disable the WebSockets server.",
@@ -393,7 +394,7 @@ usage! {
 			"--ws-hosts=[HOSTS]",
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.",
 
-		["API and Console options: IPC"]
+		["API and console options – IPC"]
 			FLAG flag_no_ipc: bool = false, or |c: &Config| otry!(c.ipc).disable.clone(),
 			"--no-ipc",
 			"Disable JSON-RPC over IPC service.",
@@ -406,7 +407,7 @@ usage! {
 			"--ipc-apis=[APIS]",
 			"Specify custom API set available via JSON-RPC over IPC.",
 
-		["API and Console options: Dapps"]
+		["API and console options – Dapps"]
 			FLAG flag_no_dapps: bool = false, or |c: &Config| otry!(c.dapps).disable.clone(),
 			"--no-dapps",
 			"Disable the Dapps server (e.g. status page).",
@@ -415,7 +416,7 @@ usage! {
 			"--dapps-path=[PATH]",
 			"Specify directory where dapps should be installed.",
 
-		["API and Console options: IPFS"]
+		["API and console options – IPFS"]
 			FLAG flag_ipfs_api: bool = false, or |c: &Config| otry!(c.ipfs).enable.clone(),
 			"--ipfs-api",
 			"Enable IPFS-compatible HTTP API.",
@@ -443,7 +444,7 @@ usage! {
 
 			ARG arg_secretstore_nodes: String = "", or |c: &Config| otry!(c.secretstore).nodes.as_ref().map(|vec| vec.join(",")),
 			"--secretstore-nodes=[NODES]",
-			"Comma-separated list of other secret store cluster nodes in form NODE_PUBLIC_KEY_IN_HEX@NODE_IP_ADDR:NODE_PORT. (required, default: {arg_secretstore_nodes}).",
+			"Comma-separated list of other secret store cluster nodes in form NODE_PUBLIC_KEY_IN_HEX@NODE_IP_ADDR:NODE_PORT.",
 
 			ARG arg_secretstore_interface: String = "local", or |c: &Config| otry!(c.secretstore).interface.clone(),
 			"--secretstore-interface=[IP]",
@@ -467,7 +468,7 @@ usage! {
 
 			ARG_OPTION arg_secretstore_secret: String = None, or |c: &Config| otry!(c.secretstore).self_secret.clone(),
 			"--secretstore-secret=[SECRET]",
-			"Hex-encoded secret key of this node. (required, default: {arg_secretstore_secret:?}).",
+			"Hex-encoded secret key of this node.",
 
 		["Sealing/Mining options"]
 			FLAG flag_force_sealing: bool = false, or |c: &Config| otry!(c.mining).force_sealing.clone(),
@@ -556,7 +557,7 @@ usage! {
 
 			ARG arg_tx_queue_ban_time: u16 = 180u16, or |c: &Config| otry!(c.mining).tx_queue_ban_time.clone(),
 			"--tx-queue-ban-time=[SEC]",
-			"Banning time (in seconds) for offenders of specified execution time limit. Also number of offending actions have to reach the threshold within that time. (default: {arg_tx_queue_ban_time} seconds)",
+			"Banning time (in seconds) for offenders of specified execution time limit. Also number of offending actions have to reach the threshold within that time.",
 
 			ARG arg_stratum_interface: String = "local", or |c: &Config| otry!(c.stratum).interface.clone(),
 			"--stratum-interface=[IP]",
@@ -699,7 +700,7 @@ usage! {
 
 			ARG_OPTION arg_format: String = None, or |_| None,
 			"--format=[FORMAT]",
-			"For import/export in given format. FORMAT must be one of 'hex' and 'binary'. (default: {arg_format:?} = Import: auto, Export: binary)", // @TODO
+			"For import/export in given format. FORMAT must be one of 'hex' and 'binary'.",
 
 			ARG_OPTION arg_min_balance: String = None, or |_| None,
 			"--min-balance=[WEI]",
