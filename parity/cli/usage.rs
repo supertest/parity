@@ -90,6 +90,7 @@ macro_rules! usage {
 		use util::version;
 		use clap::{Arg, App, SubCommand, AppSettings, Error as ClapError};
 		use helpers::replace_home;
+		use std::ffi::OsStr;
 
 		#[derive(Debug)]
 		pub enum ArgsError {
@@ -319,6 +320,7 @@ macro_rules! usage {
 				format!(include_str!("./version.txt"), version())
 			}
 
+			#[allow(unused_mut)] // subc_subc_exist may be reassigned a value by the macro
 			// Rust issue #22630
 			#[allow(unused_assignments)]
 			pub fn print_help() -> String {
@@ -447,7 +449,7 @@ macro_rules! usage {
 			}
 
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
-			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
+			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> { // where S: AsRef<OsStr>
 
 				// Add the variable name as argument identifier
 				// To do so, we have to specify if the argument is required; we default to optional
@@ -525,7 +527,7 @@ macro_rules! usage {
 									.long(str::replace(&stringify!($legacy_arg)[4..], "_", "-").as_ref()).takes_value(true).hidden(true),
 							)*
 						])
-						.get_matches_safe()?;
+						.get_matches_from_safe(command)?;
 
 				let mut raw_args : RawArgs = Default::default();
 				$(

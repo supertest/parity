@@ -1128,7 +1128,7 @@ mod tests {
 			arg_signer_sign_id: None,
 			arg_signer_reject_id: None,
 			arg_dapp_path: None,
-			arg_account_import_path: Some(vec![]),
+			arg_account_import_path: None,
 			arg_wallet_import_path: None,
 
 			// -- Operating Options
