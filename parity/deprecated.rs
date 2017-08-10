@@ -132,7 +132,7 @@ mod tests {
 			args.arg_dapps_cors = Some(Default::default());
 			args.arg_dapps_user = Some(Default::default());
 			args.arg_dapps_pass = Some(Default::default());
-			args.flag_dapps_apis_all = Some(Default::default());
+			args.flag_dapps_apis_all = Default::default();
 			args
 		}), vec![
 			Deprecated::DoesNothing("--jsonrpc"),
