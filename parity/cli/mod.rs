@@ -604,6 +604,10 @@ usage! {
 			"--no-color",
 			"Don't use terminal color codes in output.",
 
+			FLAG flag_version: bool = false, or |_| None,
+			"-v, --version",
+			"Show information about version.",
+
 			FLAG flag_no_config: bool = false, or |_| None,
 			"--no-config",
 			"Don't load a configuration file.",
@@ -1099,6 +1103,7 @@ mod tests {
 			cmd_export_blocks: false,
 			cmd_export_state: false,
 			cmd_signer: false,
+			cmd_signer_list: false,
 			cmd_signer_sign: false,
 			cmd_signer_reject: false,
 			cmd_signer_new_token: false,
@@ -1118,6 +1123,8 @@ mod tests {
 			arg_restore_file: None,
 			arg_tools_hash_file: None,
 
+			arg_signer_sign_password: None,
+			arg_wallet_import_password: None,
 			arg_signer_sign_id: None,
 			arg_signer_reject_id: None,
 			arg_dapp_path: None,

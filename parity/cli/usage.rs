@@ -472,9 +472,6 @@ macro_rules! usage {
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 				    	.global_setting(AppSettings::DeriveDisplayOrder)
 				    	.global_setting(AppSettings::UnifiedHelpMessage)
-						.arg(Arg::with_name("version")
-							.short("v")
-							.long("version"))
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(

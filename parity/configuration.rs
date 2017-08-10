@@ -53,6 +53,7 @@ use network::{IpFilter};
 #[derive(Debug, PartialEq)]
 pub enum Cmd {
 	Run(RunCmd),
+	Version,
 	Account(AccountCmd),
 	ImportPresaleWallet(ImportWallet),
 	Blockchain(BlockchainCmd),
@@ -145,7 +146,9 @@ impl Configuration {
 			writeln!(&mut stderr(), "Warning: Disabling Dapps server because fast RPC server was enabled.").expect("Error writing to stderr.");
 		}
 
-		let cmd = if self.args.cmd_signer {
+		let cmd = if self.args.flag_version {
+			Cmd::Version
+		} else if self.args.cmd_signer {
 			let authfile = ::signer::codes_path(&ws_conf.signer_path);
 
 			if self.args.cmd_signer_new_token {
