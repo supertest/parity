@@ -527,7 +527,8 @@ macro_rules! usage {
 									.long(str::replace(&stringify!($legacy_arg)[4..], "_", "-").as_ref()).takes_value(true).hidden(true),
 							)*
 						])
-						.get_matches_from_safe(command)?;
+						// .get_matches_safe()?;
+						.get_matches_from_safe(command.iter().map(|x| OsStr::new(x.as_ref())))?; //
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
