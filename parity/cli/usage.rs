@@ -84,6 +84,9 @@ macro_rules! usage {
 		use helpers::replace_home;
 		use std::ffi::OsStr;
 
+		#[cfg(test)]
+		use regex::Regex;
+
 		#[derive(Debug)]
 		pub enum ArgsError {
 			Clap(ClapError),
