@@ -61,7 +61,7 @@ usage! {
 				"<path>",
 
 				ARG arg_wallet_import_password: String,
-				"--password <FILE>",
+				"--password=<FILE>",
 			}
 		}
 
@@ -98,7 +98,7 @@ usage! {
 				"[id]",
 
 				ARG arg_signer_sign_password: String,
-				"--password [file]",
+				"--password=[file]",
 			}
 
 			CMD cmd_signer_reject
@@ -743,6 +743,50 @@ usage! {
 			"--dapps-apis-all",
 			"Dapps server is merged with RPC server. Use --jsonrpc-apis.",
 
+			FLAG flag_geth: bool = false, or |_| None,
+			"--geth",
+			"Run in Geth-compatibility mode. Sets the IPC path to be the same as Geth's. Overrides the --ipc-path and --ipcpath options. Alters RPCs to reflect Geth bugs. Includes the personal_ RPC by default.",
+
+			FLAG flag_testnet: bool = false, or |_| None,
+			"--testnet",
+			"Testnet mode. Equivalent to --chain testnet. Overrides the --keys-path option.",
+
+			FLAG flag_import_geth_keys: bool = false, or |_| None,
+			"--import-geth-keys",
+			"Attempt to import keys from Geth client.",
+
+			FLAG flag_ipcdisable: bool = false, or |_| None,
+			"--ipcdisable",
+			"Equivalent to --no-ipc.",
+
+			FLAG flag_ipc_off: bool = false, or |_| None,
+			"--ipc-off",
+			"Equivalent to --no-ipc.",
+
+			FLAG flag_nodiscover: bool = false, or |_| None,
+			"--nodiscover",
+			"Equivalent to --no-discovery.",
+
+			FLAG flag_jsonrpc: bool = false, or |_| None,
+			"-j, --jsonrpc",
+			"Does nothing; JSON-RPC is on by default now.",
+
+			FLAG flag_jsonrpc_off: bool = false, or |_| None,
+			"--jsonrpc-off",
+			"Equivalent to --no-jsonrpc.",
+
+			FLAG flag_webapp: bool = false, or |_| None,
+			"-w, --webapp",
+			"Does nothing; dapps server is on by default now.",
+
+			FLAG flag_dapps_off: bool = false, or |_| None,
+			"--dapps-off",
+			"Equivalent to --no-dapps.",
+
+			FLAG flag_rpc: bool = false, or |_| None,
+			"--rpc",
+			"Does nothing; JSON-RPC is on by default now.",
+
 			ARG_OPTION arg_dapps_port: u16 = None, or |c: &Config| otry!(c.dapps).port.clone(),
 			"--dapps-port=[PORT]",
 			"Dapps server is merged with RPC server. Use --jsonrpc-port.",
@@ -767,38 +811,62 @@ usage! {
 			"--dapps-pass=[PASSWORD]",
 			"Dapps server authentication has been removed.",
 
-	}
-	{
-		// Legacy flags and arguments (hidden from help message)
-		// Can only be set from the CLI
-		// Option<> will be wrapped around the arguments
+			ARG_OPTION arg_datadir: String = None, or |_| None,
+			"--datadir=[PATH]",
+			"Equivalent to --base-path PATH.",
 
-		FLAG flag_geth: bool,
-		FLAG flag_testnet: bool,
-		FLAG flag_import_geth_keys: bool,
-		FLAG flag_ipcdisable: bool,
-		FLAG flag_ipc_off: bool,
-		FLAG flag_nodiscover: bool,
-		FLAG flag_jsonrpc: bool,
-		FLAG flag_jsonrpc_off: bool,
-		FLAG flag_webapp: bool,
-		FLAG flag_dapps_off: bool,
-		FLAG flag_rpc: bool,
+			ARG_OPTION arg_networkid: u64 = None, or |_| None,
+			"--networkid=[INDEX]",
+			"Equivalent to --network-id INDEX.",
 
-		ARG_OPTION arg_datadir: String,
-		ARG_OPTION arg_networkid: u64,
-		ARG_OPTION arg_peers: u16,
-		ARG_OPTION arg_nodekey: String,
-		ARG_OPTION arg_rpcaddr: String,
-		ARG_OPTION arg_rpcport: u16,
-		ARG_OPTION arg_rpcapi: String,
-		ARG_OPTION arg_rpccorsdomain: String,
-		ARG_OPTION arg_ipcapi: String,
-		ARG_OPTION arg_ipcpath: String,
-		ARG_OPTION arg_gasprice: String,
-		ARG_OPTION arg_etherbase: String,
-		ARG_OPTION arg_extradata: String,
-		ARG_OPTION arg_cache: u32,
+			ARG_OPTION arg_peers: u16 = None, or |_| None,
+			"--peers=[NUM]",
+			"Equivalent to --min-peers NUM.",
+
+			ARG_OPTION arg_nodekey: String = None, or |_| None,
+			"--nodekey=[KEY]",
+			"Equivalent to --node-key KEY.",
+
+			ARG_OPTION arg_rpcaddr: String = None, or |_| None,
+			"--rpcaddr=[IP]",
+			"Equivalent to --jsonrpc-interface IP.",
+
+			ARG_OPTION arg_rpcport: u16 = None, or |_| None,
+			"--rpcport=[PORT]",
+			"Equivalent to --jsonrpc-port PORT.",
+
+			ARG_OPTION arg_rpcapi: String = None, or |_| None,
+			"--rpcapi=[APIS]",
+			"Equivalent to --jsonrpc-apis APIS.",
+
+			ARG_OPTION arg_rpccorsdomain: String = None, or |_| None,
+			"--rpccorsdomain=[URL]",
+			"Equivalent to --jsonrpc-cors URL.",
+
+			ARG_OPTION arg_ipcapi: String = None, or |_| None,
+			"--ipcapi=[APIS]",
+			"Equivalent to --ipc-apis APIS.",
+
+			ARG_OPTION arg_ipcpath: String = None, or |_| None,
+			"--ipcpath=[PATH]",
+			"Equivalent to --ipc-path PATH.",
+
+			ARG_OPTION arg_gasprice: String = None, or |_| None,
+			"--gasprice=[WEI]",
+			"Equivalent to --min-gas-price WEI.",
+
+			ARG_OPTION arg_etherbase: String = None, or |_| None,
+			"--etherbase=[ADDRESS]",
+			"Equivalent to --author ADDRESS.",
+
+			ARG_OPTION arg_extradata: String = None, or |_| None,
+			"--extradata=[STRING]",
+			"Equivalent to --extra-data STRING.",
+
+			ARG_OPTION arg_cache: u32 = None, or |_| None,
+			"--cache=[MB]",
+			"Equivalent to --cache-size MB.",
+
 	}
 }
 

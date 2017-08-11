@@ -75,14 +75,6 @@ macro_rules! usage {
 				)*
 			)*
 		}
-		{
-			$(
-				FLAG $legacy_flag:ident : bool,
-			)*
-			$(
-				ARG_OPTION $legacy_arg:ident : $legacy_arg_type:ty,
-			)*
-		}
 	) => {
 		use toml;
 		use std::{fs, io, process};
@@ -166,13 +158,6 @@ macro_rules! usage {
 					pub $argo: Option<$argo_type>,
 				)*
 			)*
-
-			$(
-				pub $legacy_flag: bool,
-			)*
-			$(
-				pub $legacy_arg: Option<$legacy_arg_type>,
-			)*
 		}
 
 		impl Default for Args {
@@ -211,14 +196,6 @@ macro_rules! usage {
 						$(
 							$argo: Default::default(),
 						)*
-					)*
-
-					$(
-						$legacy_flag: Default::default(),
-					)*
-
-					$(
-						$legacy_arg: Default::default(),
 					)*
 				}
 			}
@@ -259,14 +236,6 @@ macro_rules! usage {
 				$(
 					$argo: Option<$argo_type>,
 				)*
-			)*
-
-			$(
-				$legacy_flag: bool,
-			)*
-
-			$(
-				$legacy_arg: Option<$legacy_arg_type>,
 			)*
 		}
 
@@ -439,12 +408,6 @@ macro_rules! usage {
 						args.$argo = self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into()); // before was:unwrap_or_else intead of .or_else
 					)*
 				)*
-				$(
-					args.$legacy_flag = self.$legacy_flag;
-				)*
-				$(
-					args.$legacy_arg = self.$legacy_arg;
-				)*
 				args
 			}
 
@@ -517,16 +480,6 @@ macro_rules! usage {
 							)
 						)*
 						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
-						.args(&[
-							$(
-								Arg::with_name(&stringify!($legacy_flag)[5..])
-									.long(str::replace(&stringify!($legacy_flag)[5..], "_", "-").as_ref()).hidden(true),
-							)*
-							$(
-								Arg::with_name(&stringify!($legacy_arg)[4..])
-									.long(str::replace(&stringify!($legacy_arg)[4..], "_", "-").as_ref()).takes_value(true).hidden(true),
-							)*
-						])
 						// .get_matches_safe()?;
 						.get_matches_from_safe(command.iter().map(|x| OsStr::new(x.as_ref())))?; //
 
@@ -582,17 +535,51 @@ macro_rules! usage {
 					}
 				)*
 
-				// Parameter is the argument name (not the long version)
-				$(
-					raw_args.$legacy_flag = matches.is_present(&stringify!($legacy_flag)[5..]);
-				)*
-				$(
-					raw_args.$legacy_arg = value_t!(matches, &stringify!($legacy_arg)[4..], $legacy_arg_type).ok();
-				)*
-
-
 				Ok(raw_args)
 			}
+		}
+
+		#[cfg(test)]
+		fn usages_valid() {
+			let re = Regex::new(r"^(?:(-[a-zA-Z-]+, )?--[a-z-]+(=\[[a-zA-Z]+\](\.\.\.)?|=<[a-zA-Z]+>(\.\.\.)?)?)|(?:\[[a-zA-Z-]+\])(\.\.\.)?|(?:<[a-zA-Z-]+>)(\.\.\.)?$").unwrap();
+
+			let usages = vec![
+				$(
+					$(
+						$(
+							$subc_subc_arg_usage,
+						)*
+						$(
+							$subc_subc_argm_usage,
+						)*
+					)*
+					$(
+						$subc_arg_usage,
+					)*
+					$(
+						$subc_argm_usage,
+					)*
+				)*
+				$(
+					$(
+						$flag_usage,
+					)*
+					$(
+						$arg_usage,
+					)*
+					$(
+						$argm_usage,
+					)*
+					$(
+						$argo_usage,
+					)*
+				)*
+			];
+
+			for usage in usages.iter() {
+				assert!(re.is_match(usage));
+			}
+
 		}
 	};
 }
