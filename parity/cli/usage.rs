@@ -318,9 +318,9 @@ macro_rules! usage {
 							];
 
 							if subc_subc_arg_usages.is_empty() {
-								help.push_str(&format!("parity {} {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-"), &str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-")));
+								help.push_str(&format!("parity [options] {} {}\n", &str::replace(&stringify!($subc)[4..], "_", "-"), &str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-")));
 							} else {
-								help.push_str(&format!("parity {} {} {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-"), &str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"), subc_subc_arg_usages.join(" ")));
+								help.push_str(&format!("parity [options] {} {} {}\n", &str::replace(&stringify!($subc)[4..], "_", "-"), &str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"), subc_subc_arg_usages.join(" ")));
 							}
 						)*
 
@@ -335,9 +335,9 @@ macro_rules! usage {
 							];
 
 							if subc_arg_usages.is_empty() {
-								help.push_str(&format!("parity {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-")));
+								help.push_str(&format!("parity [options] {}\n", &str::replace(&stringify!($subc)[4..], "_", "-")));
 							} else {
-								help.push_str(&format!("parity {} {} [options]\n", &str::replace(&stringify!($subc)[4..], "_", "-"), subc_arg_usages.join(" ")));
+								help.push_str(&format!("parity [options] {} {}\n", &str::replace(&stringify!($subc)[4..], "_", "-"), subc_arg_usages.join(" ")));
 							}
 						}
 					}
@@ -441,10 +441,8 @@ macro_rules! usage {
 						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
 						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of an arg, e.g. --ui-path signer
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
-						// .global_setting(AppSettings::PropagateGlobalValuesDown)
-
 						.help(Args::print_help().as_ref())
-						.about(include_str!("./usage_header.txt")) // @TODO before_help()
+						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
 								SubCommand::with_name(&str::replace(&stringify!($subc)[4..], "_", "-"))

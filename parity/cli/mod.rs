@@ -1424,7 +1424,7 @@ mod tests {
 
 			// -- Miscellaneous Options
 			arg_ntp_server: "none".into(),
-			flag_version: false, // @TODO ??
+			flag_version: false,
 			arg_logging: Some("own_tx=trace".into()),
 			arg_log_file: Some("/var/log/parity.log".into()),
 			flag_no_color: false,
