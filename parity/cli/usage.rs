@@ -418,7 +418,7 @@ macro_rules! usage {
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> { // where S: AsRef<OsStr>
 
 				// Add the variable name as argument identifier
-				// To do so, we have to specify if the argument is required; we default to optional
+				// To do so, we have to specify if the argument is required; we default to optional (!? #todo #test[]+<>)
 				let usages = vec![
 					$(
 						$(
@@ -440,6 +440,8 @@ macro_rules! usage {
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 				    	.global_setting(AppSettings::DeriveDisplayOrder)
 				    	.global_setting(AppSettings::UnifiedHelpMessage)
+						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
+						.global_setting(AppSettings::ArgsNegateSubcommands)
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(
