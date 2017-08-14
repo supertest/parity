@@ -20,6 +20,7 @@ use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
 use std::collections::BTreeMap;
 use std::cmp::max;
+use std::str::FromStr;
 use cli::{Args, ArgsError};
 use util::{Hashable, H256, U256, Bytes, version_data, Address};
 use util::journaldb::Algorithm;
@@ -41,7 +42,7 @@ use ethcore_logger::Config as LogConfig;
 use dir::{self, Directories, default_hypervisor_path, default_local_path, default_data_path};
 use dapps::Configuration as DappsConfiguration;
 use ipfs::Configuration as IpfsConfiguration;
-use secretstore::Configuration as SecretStoreConfiguration;
+use secretstore::{Configuration as SecretStoreConfiguration, NodeSecretKey};
 use updater::{UpdatePolicy, UpdateFilter, ReleaseTrack};
 use run::RunCmd;
 use blockchain::{BlockchainCmd, ImportBlockchain, ExportBlockchain, KillBlockchain, ExportState, DataFormat};
@@ -557,31 +558,57 @@ impl Configuration {
 		Ok(options)
 	}
 
+	fn ui_port(&self) -> u16 {
+		self.args.arg_ports_shift + self.args.arg_ui_port
+	}
+
+	fn ntp_servers(&self) -> Vec<String> {
+		self.args.arg_ntp_servers.split(",").map(str::to_owned).collect()
+	}
+
 	fn ui_config(&self) -> UiConfiguration {
 		UiConfiguration {
 			enabled: self.ui_enabled(),
-			ntp_server: self.args.arg_ntp_server.clone(),
+			ntp_servers: self.ntp_servers(),
 			interface: self.ui_interface(),
-			port: self.args.arg_ports_shift + self.args.arg_ui_port,
+			port: self.ui_port(),
 			hosts: self.ui_hosts(),
 		}
 	}
 
 	fn dapps_config(&self) -> DappsConfiguration {
+		let dev_ui = if self.args.flag_ui_no_validation { vec![("localhost".to_owned(), 3000)] } else { vec![] };
+		let ui_port = self.ui_port();
+
 		DappsConfiguration {
 			enabled: self.dapps_enabled(),
-			ntp_server: self.args.arg_ntp_server.clone(),
+			ntp_servers: self.ntp_servers(),
 			dapps_path: PathBuf::from(self.directories().dapps),
 			extra_dapps: if self.args.cmd_dapp {
 				self.args.arg_dapp_path.iter().map(|path| PathBuf::from(path)).collect()
 			} else {
 				vec![]
 			},
-			extra_embed_on: if self.args.flag_ui_no_validation {
-				vec![("localhost".to_owned(), 3000)]
-			} else {
-				vec![]
+			extra_embed_on: {
+				let mut extra_embed = dev_ui.clone();
+				match self.ui_hosts() {
+					// In case host validation is disabled allow all frame ancestors
+					None => extra_embed.push(("*".to_owned(), ui_port)),
+					Some(hosts) => extra_embed.extend(hosts.into_iter().filter_map(|host| {
+						let mut it = host.split(":");
+						let host = it.next();
+						let port = it.next().and_then(|v| u16::from_str(v).ok());
+
+						match (host, port) {
+							(Some(host), Some(port)) => Some((host.into(), port)),
+							(Some(host), None) => Some((host.into(), ui_port)),
+							_ => None,
+						}
+					})),
+				}
+				extra_embed
 			},
+			extra_script_src: dev_ui,
 		}
 	}
 
@@ -995,10 +1022,13 @@ impl Configuration {
 		self.interface(&self.args.arg_secretstore_http_interface)
 	}
 
-	fn secretstore_self_secret(&self) -> Result<Option<Secret>, String> {
+	fn secretstore_self_secret(&self) -> Result<Option<NodeSecretKey>, String> {
 		match self.args.arg_secretstore_secret {
-			Some(ref s) => Ok(Some(s.parse()
-				.map_err(|e| format!("Invalid secret store secret: {}. Error: {:?}", s, e))?)),
+			Some(ref s) if s.len() == 64 => Ok(Some(NodeSecretKey::Plain(s.parse()
+				.map_err(|e| format!("Invalid secret store secret: {}. Error: {:?}", s, e))?))),
+			Some(ref s) if s.len() == 40 => Ok(Some(NodeSecretKey::KeyStore(s.parse()
+				.map_err(|e| format!("Invalid secret store secret address: {}. Error: {:?}", s, e))?))),
+			Some(_) => Err(format!("Invalid secret store secret. Must be either existing account address, or hex-encoded private key")),
 			None => Ok(None),
 		}
 	}
@@ -1277,14 +1307,19 @@ mod tests {
 			interface: "127.0.0.1".into(),
 			port: 8546,
 			apis: ApiSet::UnsafeContext,
-			origins: Some(vec!["chrome-extension://*".into()]),
+			origins: Some(vec!["chrome-extension://*".into(), "moz-extension://*".into()]),
 			hosts: Some(vec![]),
 			signer_path: expected.into(),
 			ui_address: Some(("127.0.0.1".to_owned(), 8180)),
 			support_token_api: true
 		}, UiConfiguration {
 			enabled: true,
-			ntp_server: "none".into(),
+			ntp_servers: vec![
+				"0.parity.pool.ntp.org:123".into(),
+				"1.parity.pool.ntp.org:123".into(),
+				"2.parity.pool.ntp.org:123".into(),
+				"3.parity.pool.ntp.org:123".into(),
+			],
 			interface: "127.0.0.1".into(),
 			port: 8180,
 			hosts: Some(vec![]),
@@ -1527,10 +1562,16 @@ mod tests {
 		let conf3 = parse(&["parity", "--ui-path=signer", "--ui-interface", "test"]);
 
 		// then
+		let ntp_servers = vec![
+			"0.parity.pool.ntp.org:123".into(),
+			"1.parity.pool.ntp.org:123".into(),
+			"2.parity.pool.ntp.org:123".into(),
+			"3.parity.pool.ntp.org:123".into(),
+		];
 		assert_eq!(conf0.directories().signer, "signer".to_owned());
 		assert_eq!(conf0.ui_config(), UiConfiguration {
 			enabled: true,
-			ntp_server: "none".into(),
+			ntp_servers: ntp_servers.clone(),
 			interface: "127.0.0.1".into(),
 			port: 8180,
 			hosts: Some(vec![]),
@@ -1539,7 +1580,7 @@ mod tests {
 		assert_eq!(conf1.directories().signer, "signer".to_owned());
 		assert_eq!(conf1.ui_config(), UiConfiguration {
 			enabled: true,
-			ntp_server: "none".into(),
+			ntp_servers: ntp_servers.clone(),
 			interface: "127.0.0.1".into(),
 			port: 8180,
 			hosts: Some(vec![]),
@@ -1549,7 +1590,7 @@ mod tests {
 		assert_eq!(conf2.directories().signer, "signer".to_owned());
 		assert_eq!(conf2.ui_config(), UiConfiguration {
 			enabled: true,
-			ntp_server: "none".into(),
+			ntp_servers: ntp_servers.clone(),
 			interface: "127.0.0.1".into(),
 			port: 3123,
 			hosts: Some(vec![]),
@@ -1558,7 +1599,7 @@ mod tests {
 		assert_eq!(conf3.directories().signer, "signer".to_owned());
 		assert_eq!(conf3.ui_config(), UiConfiguration {
 			enabled: true,
-			ntp_server: "none".into(),
+			ntp_servers: ntp_servers.clone(),
 			interface: "test".into(),
 			port: 8180,
 			hosts: Some(vec![]),

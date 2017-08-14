@@ -395,7 +395,7 @@ usage! {
 			"--ws-apis=[APIS]",
 			"Specify the APIs available through the WebSockets interface. APIS is a comma-delimited list of API name. Possible name are web3, eth, pubsub, net, personal, parity, parity_set, traces, rpc, parity_accounts..",
 
-			ARG arg_ws_origins: String = "chrome-extension://*", or |c: &Config| otry!(c.websockets).origins.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ws_origins: String = "chrome-extension://*,moz-extension://*", or |c: &Config| otry!(c.websockets).origins.as_ref().map(|vec| vec.join(",")),
 			"--ws-origins=[URL]",
 			"Specify Origin header values allowed to connect. Special options: \"all\", \"none\".",
 
@@ -621,9 +621,9 @@ usage! {
 			"--no-config",
 			"Don't load a configuration file.",
 
-			ARG arg_ntp_server: String = "none", or |c: &Config| otry!(c.misc).ntp_server.clone(),
-			"--ntp-server=[HOST]",
-			"NTP server to provide current time (host:port). Used to verify node health.",
+			ARG arg_ntp_servers: String = "0.parity.pool.ntp.org:123,1.parity.pool.ntp.org:123,2.parity.pool.ntp.org:123,3.parity.pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_servers.clone().map(|vec| vec.join(",")),
+			"--ntp-servers=[HOSTS]",
+			"Comma separated list of NTP servers to provide current time (host:port). Used to verify node health. Parity uses pool.ntp.org NTP servers; consider joining the pool: http://www.pool.ntp.org/join.html",
 
 			ARG_OPTION arg_logging: String = None, or |c: &Config| otry!(c.misc).logging.clone(),
 			"-l, --logging=[LOGGING]",
@@ -1088,7 +1088,7 @@ struct VM {
 
 #[derive(Default, Debug, PartialEq, Deserialize)]
 struct Misc {
-	ntp_server: Option<String>,
+	ntp_servers: Option<Vec<String>>,
 	logging: Option<String>,
 	log_file: Option<String>,
 	color: Option<bool>,
@@ -1423,7 +1423,7 @@ mod tests {
 			flag_dapps_apis_all: false,
 
 			// -- Miscellaneous Options
-			arg_ntp_server: "none".into(),
+			arg_ntp_servers: "0.parity.pool.ntp.org:123,1.parity.pool.ntp.org:123,2.parity.pool.ntp.org:123,3.parity.pool.ntp.org:123".into(),
 			flag_version: false,
 			arg_logging: Some("own_tx=trace".into()),
 			arg_log_file: Some("/var/log/parity.log".into()),
@@ -1602,7 +1602,7 @@ mod tests {
 				jit: Some(false),
 			}),
 			misc: Some(Misc {
-				ntp_server: Some("pool.ntp.org:123".into()),
+				ntp_servers: Some(vec!["0.parity.pool.ntp.org:123".into()]),
 				logging: Some("own_tx=trace".into()),
 				log_file: Some("/var/log/parity.log".into()),
 				color: Some(true),
