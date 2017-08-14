@@ -110,12 +110,8 @@ fn run<T: Informant>(args: Args, mut informant: T) {
 #[derive(Debug, Deserialize)]
 struct Args {
 	cmd_stats: bool,
-<<<<<<< HEAD
-	arg_from: Option<String>,
-=======
 	flag_from: Option<String>,
 	flag_to: Option<String>,
->>>>>>> master
 	flag_code: Option<String>,
 	flag_gas: Option<String>,
 	flag_gas_price: Option<String>,
