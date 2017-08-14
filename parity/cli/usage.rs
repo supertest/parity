@@ -442,6 +442,8 @@ macro_rules! usage {
 				    	.global_setting(AppSettings::UnifiedHelpMessage)
 						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
 						.global_setting(AppSettings::ArgsNegateSubcommands)
+						// .global_setting(AppSettings::PropagateGlobalValuesDown)
+
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
 						$(
@@ -453,16 +455,11 @@ macro_rules! usage {
 										$(
 											.arg(
 													Arg::from_usage($subc_subc_arg_usage)
-														// .with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
-														// .long(str::replace(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
 											)
 										)*
 										$(
 											.arg(
 													Arg::from_usage($subc_subc_argm_usage)
-														// .with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
-														// .long(str::replace(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..],"_","-").as_ref()) // @todo no long when using positionals....
-														// .multiple(true) there's already "..."
 											)
 										)*
 									)
@@ -470,23 +467,17 @@ macro_rules! usage {
 								$(
 									.arg(
 											Arg::from_usage($subc_arg_usage)
-												// .with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
-												// .long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
 									)
 								)*
 								$(
 									.arg(
 											Arg::from_usage($subc_argm_usage)
-												// .with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
-												// .long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..], "_", "-").as_ref())
-												// .multiple(true)
 									)
 								)*
 							)
 						)*
 						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
-						// .get_matches_safe()?;
-						.get_matches_from_safe(command.iter().map(|x| OsStr::new(x.as_ref())))?; //
+						.get_matches_from_safe(command.iter().map(|x| OsStr::new(x.as_ref())))?;
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
@@ -544,7 +535,7 @@ macro_rules! usage {
 			}
 		}
 
-		#[cfg(test)]
+		#[test]
 		fn usages_valid() {
 			let re = Regex::new(r"^(?:(-[a-zA-Z-]+, )?--[a-z-]+(=\[[a-zA-Z]+\](\.\.\.)?|=<[a-zA-Z]+>(\.\.\.)?)?)|(?:\[[a-zA-Z-]+\])(\.\.\.)?|(?:<[a-zA-Z-]+>)(\.\.\.)?$").unwrap();
 

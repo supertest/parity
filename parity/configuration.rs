@@ -227,7 +227,7 @@ impl Configuration {
 				path: dirs.keys,
 				spec: spec,
 				wallet_path: self.args.arg_wallet_import_path.unwrap().clone(),
-				password_file: self.args.arg_password.first().cloned(),
+				password_file: self.args.arg_wallet_import_password,
 			};
 			Cmd::ImportPresaleWallet(presale_cmd)
 		} else if self.args.cmd_import {
