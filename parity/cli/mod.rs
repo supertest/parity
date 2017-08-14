@@ -1112,6 +1112,12 @@ mod tests {
 	use toml;
 
 	#[test]
+	fn should_propagate_arguments_to_subcommand() {
+		let args = Args::parse(&["parity", "--chain", "dev", "account", "list"]).unwrap();
+		assert_eq!(args.arg_chain, "dev".to_owned());
+	}
+
+	#[test]
 	fn should_parse_args_and_include_config() {
 		// given
 		let mut config = Config::default();

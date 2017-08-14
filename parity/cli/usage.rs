@@ -439,8 +439,9 @@ macro_rules! usage {
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
-						.global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of an arg, e.g. --ui-path signer
+						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of an arg, e.g. --ui-path signer
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
+						// .global_setting(AppSettings::PropagateGlobalValuesDown)
 
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
@@ -573,7 +574,6 @@ macro_rules! usage {
 			for usage in usages.iter() {
 				assert!(re.is_match(usage));
 			}
-
 		}
 	};
 }

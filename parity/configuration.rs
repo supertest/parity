@@ -1521,10 +1521,10 @@ mod tests {
 		// given
 
 		// when
-		let conf0 = parse(&["parity", "--ui-path", "signer"]);
-		let conf1 = parse(&["parity", "--ui-path", "signer", "--ui-no-validation"]);
-		let conf2 = parse(&["parity", "--ui-path", "signer", "--ui-port", "3123"]);
-		let conf3 = parse(&["parity", "--ui-path", "signer", "--ui-interface", "test"]);
+		let conf0 = parse(&["parity", "--ui-path=signer"]);
+		let conf1 = parse(&["parity", "--ui-path=signer", "--ui-no-validation"]);
+		let conf2 = parse(&["parity", "--ui-path=signer", "--ui-port", "3123"]);
+		let conf3 = parse(&["parity", "--ui-path=signer", "--ui-interface", "test"]);
 
 		// then
 		assert_eq!(conf0.directories().signer, "signer".to_owned());
