@@ -469,15 +469,15 @@ macro_rules! usage {
 									.arg(
 											Arg::from_usage($subc_arg_usage)
 												// .with_name(&stringify!($subc_arg)[stringify!($subc).len()+1..])
-												.long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
+												// .long(str::replace(&stringify!($subc_arg)[stringify!($subc).len()+1..],"_","-").as_ref())
 									)
 								)*
 								$(
 									.arg(
 											Arg::from_usage($subc_argm_usage)
 												// .with_name(&stringify!($subc_argm)[stringify!($subc).len()+1..])
-												.long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..], "_", "-").as_ref())
-												.multiple(true)
+												// .long(str::replace(&stringify!($subc_argm)[stringify!($subc).len()+1..], "_", "-").as_ref())
+												// .multiple(true)
 									)
 								)*
 							)
