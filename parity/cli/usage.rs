@@ -438,11 +438,9 @@ macro_rules! usage {
 
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
-				    	.global_setting(AppSettings::DeriveDisplayOrder)
-				    	.global_setting(AppSettings::UnifiedHelpMessage)
 						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
-						.global_setting(AppSettings::ArgsNegateSubcommands)
-						// .global_setting(AppSettings::PropagateGlobalValuesDown)
+						.global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of an arg, e.g. --ui-path signer
+						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
 
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt")) // @TODO before_help()
