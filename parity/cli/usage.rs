@@ -454,15 +454,15 @@ macro_rules! usage {
 											.arg(
 													Arg::from_usage($subc_subc_arg_usage)
 														// .with_name(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..])
-														.long(str::replace(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
+														// .long(str::replace(&stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
 											)
 										)*
 										$(
 											.arg(
 													Arg::from_usage($subc_subc_argm_usage)
 														// .with_name(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..])
-														.long(str::replace(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..],"_","-").as_ref())
-														.multiple(true)
+														// .long(str::replace(&stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..],"_","-").as_ref()) // @todo no long when using positionals....
+														// .multiple(true) there's already "..."
 											)
 										)*
 									)
