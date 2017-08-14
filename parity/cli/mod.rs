@@ -69,6 +69,9 @@ usage! {
 		{
 			ARG arg_import_file: String,
 			"[file]",
+
+			ARG arg_import_format: String,
+			"--format=[FORMAT]",
 		}
 
 		CMD cmd_export
@@ -77,12 +80,18 @@ usage! {
 			{
 				ARG arg_export_blocks_file: String,
 				"[file]",
+
+				ARG arg_export_blocks_format: String,
+				"--format=[FORMAT]",
 			}
 
 			CMD cmd_export_state
 			{
 				ARG arg_export_state_file: String,
 				"[file]",
+
+				ARG arg_export_state_format: String,
+				"--format=[FORMAT]",
 			}
 		}
 
@@ -1185,8 +1194,11 @@ mod tests {
 			// Arguments
 			arg_daemon_pid_file: None,
 			arg_import_file: None,
+			arg_import_format: None,
 			arg_export_blocks_file: None,
+			arg_export_blocks_format: None,
 			arg_export_state_file: None,
+			arg_export_state_format: None,
 			arg_snapshot_file: None,
 			arg_restore_file: None,
 			arg_tools_hash_file: None,

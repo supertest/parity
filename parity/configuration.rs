@@ -424,7 +424,9 @@ impl Configuration {
 	}
 
 	fn format(&self) -> Result<Option<DataFormat>, String> {
-		match self.args.arg_format {
+		match self.args.arg_import_format.clone()
+				.or(self.args.arg_export_blocks_format.clone())
+				.or(self.args.arg_export_state_format.clone()) {
 			Some(ref f) => Ok(Some(f.parse()?)),
 			None => Ok(None),
 		}
