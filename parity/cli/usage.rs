@@ -34,10 +34,10 @@ macro_rules! otry {
 
 macro_rules! usage_with_ident {
 	($name:expr, $usage:expr, $help:expr) => (
-		format!("[{}] {} '{}'",$name,$usage,$help)
+		format!("{} {} '{}'",$name,$usage,$help)
 	);
 	($name:expr, $usage:expr) => (
-		format!("[{}] {}",$name,$usage)
+		format!("{} {}",$name,$usage)
 	);
 }
 
@@ -431,22 +431,20 @@ macro_rules! usage {
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
-				// Add the variable name as argument identifier
-				// To do so, we have to specify if the argument is required; we default to optional (!? #todo #test[]+<>)
-				// Need to declare it beforehand for lifetime reasons; Clap::Arg::from_usage takes a string ref.
+				// Need to declare the usages beforehand for lifetime reasons; Clap::Arg::from_usage takes a string ref.
 				let usages = vec![
 					$(
 						$(
-							format!("[{}] {} '{}'",stringify!($arg),$arg_usage,$arg_help),
+							usage_with_ident!(stringify!($arg),$arg_usage,$arg_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",stringify!($argm),$argm_usage,$argm_help),
+							usage_with_ident!(stringify!($argm),$argm_usage,$argm_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",stringify!($argo),$argo_usage,$argo_help),
+							usage_with_ident!(stringify!($argo),$argo_usage,$argo_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",stringify!($flag),$flag_usage,$flag_help),
+							usage_with_ident!(stringify!($flag),$flag_usage,$flag_help),
 						)*
 					)*
 				];
