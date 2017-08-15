@@ -489,7 +489,7 @@ macro_rules! usage {
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
-						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of an arg, e.g. --ui-path signer
+						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as space-delimited value of an arg, e.g. --ui-path signer
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt"))
@@ -536,10 +536,10 @@ macro_rules! usage {
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..], $subc_subc_arg_type).ok();
+									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg)[..], $subc_subc_arg_type).ok();
 								)*
 								$(
-									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..], $subc_subc_argm_type).ok();
+									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm)[..], $subc_subc_argm_type).ok();
 								)*
 							}
 							else {
@@ -549,10 +549,10 @@ macro_rules! usage {
 
 						// Subcommand arguments
 						$(
-							raw_args.$subc_arg = value_t!(submatches, &stringify!($subc_arg)[stringify!($subc).len()+1..], $subc_arg_type).ok();
+							raw_args.$subc_arg = value_t!(submatches, &stringify!($subc_arg)[..], $subc_arg_type).ok();
 						)*
 						$(
-							raw_args.$subc_argm = values_t!(submatches, &stringify!($subc_argm)[stringify!($subc).len()+1..], $subc_argm_type).ok();
+							raw_args.$subc_argm = values_t!(submatches, &stringify!($subc_argm)[..], $subc_argm_type).ok();
 						)*
 					}
 					else {
