@@ -31,13 +31,13 @@ usage! {
 		CMD cmd_dapp
 		{
 			ARG arg_dapp_path: String,
-			"<path>",
+			"<PATH>",
 		}
 
 		CMD cmd_daemon
 		{
 			ARG arg_daemon_pid_file: String,
-			"<pid-file>",
+			"<PID-FILE>",
 		}
 
 		CMD cmd_account
@@ -49,7 +49,7 @@ usage! {
 			CMD cmd_account_import
 			{
 				ARG_MULTIPLE arg_account_import_path: String,
-				"<path>...",
+				"<PATH>...",
 			}
 		}
 
@@ -58,7 +58,7 @@ usage! {
 			CMD cmd_wallet_import
 			{
 				ARG arg_wallet_import_path: String,
-				"<path>",
+				"<PATH>",
 
 				ARG arg_wallet_import_password: String,
 				"--password=<FILE>",
@@ -68,7 +68,7 @@ usage! {
 		CMD cmd_import
 		{
 			ARG arg_import_file: String,
-			"[file]",
+			"[FILE]",
 
 			ARG arg_import_format: String,
 			"--format=[FORMAT]",
@@ -79,7 +79,7 @@ usage! {
 			CMD cmd_export_blocks
 			{
 				ARG arg_export_blocks_file: String,
-				"[file]",
+				"[FILE]",
 
 				ARG arg_export_blocks_format: String,
 				"--format=[FORMAT]",
@@ -88,7 +88,7 @@ usage! {
 			CMD cmd_export_state
 			{
 				ARG arg_export_state_file: String,
-				"[file]",
+				"[FILE]",
 
 				ARG arg_export_state_format: String,
 				"--format=[FORMAT]",
@@ -104,29 +104,29 @@ usage! {
 			CMD cmd_signer_sign
 			{
 				ARG arg_signer_sign_id: usize,
-				"[id]",
+				"[ID]",
 
 				ARG arg_signer_sign_password: String,
-				"--password=[file]",
+				"--password=[FILE]",
 			}
 
 			CMD cmd_signer_reject
 			{
 				ARG arg_signer_reject_id: usize,
-				"<id>",
+				"<ID>",
 			}
 		}
 
 		CMD cmd_snapshot
 		{
 			ARG arg_snapshot_file: String,
-			"<file>",
+			"<FILE>",
 		}
 
 		CMD cmd_restore
 		{
 			ARG arg_restore_file: String,
-			"[file]",
+			"[FILE]",
 		}
 
 		CMD cmd_tools
@@ -134,7 +134,7 @@ usage! {
 			CMD cmd_tools_hash
 			{
 				ARG arg_tools_hash_file: String,
-				"<file>",
+				"<FILE>",
 			}
 		}
 
