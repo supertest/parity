@@ -34,12 +34,10 @@ macro_rules! otry {
 
 macro_rules! usage_with_ident {
 	($name:expr, $usage:expr, $help:expr) => (
-		// format!("[{}] {} '{}'",$name,$usage,$help)
-		format!("{}","hi")
+		format!("[{}] {} '{}'",$name,$usage,$help)
 	);
 	($name:expr, $usage:expr) => (
-		// format!("[{}] {}",$name,$usage)
-		format!("{}","hi")
+		format!("[{}] {}",$name,$usage)
 	);
 }
 
@@ -435,7 +433,7 @@ macro_rules! usage {
 
 				// Add the variable name as argument identifier
 				// To do so, we have to specify if the argument is required; we default to optional (!? #todo #test[]+<>)
-				// Need to declare it beforehand for lifetime reasons; Clap takes a string ref.
+				// Need to declare it beforehand for lifetime reasons; Clap::Arg::from_usage takes a string ref.
 				let usages = vec![
 					$(
 						$(
