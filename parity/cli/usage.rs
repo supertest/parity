@@ -511,13 +511,13 @@ macro_rules! usage {
 				let mut raw_args : RawArgs = Default::default();
 				$(
 					$(
-						raw_args.$arg = value_t!(matches, &stringify!($arg)[..], $arg_type).ok(); // @TODO [..]
+						raw_args.$arg = value_t!(matches, stringify!($arg), $arg_type).ok();
 					)*
 					$(
-						raw_args.$argm = values_t!(matches, &stringify!($argm)[..], $argm_type).ok();
+						raw_args.$argm = values_t!(matches, stringify!($argm), $argm_type).ok();
 					)*
 					$(
-						raw_args.$argo = value_t!(matches, &stringify!($argo)[..], $argo_type).ok();
+						raw_args.$argo = value_t!(matches, stringify!($argo), $argo_type).ok();
 					)*
 					$(
 						raw_args.$flag = matches.is_present(&stringify!($flag));
@@ -536,10 +536,10 @@ macro_rules! usage {
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg)[..], $subc_subc_arg_type).ok();
+									raw_args.$subc_subc_arg = value_t!(subsubmatches, stringify!($subc_subc_arg), $subc_subc_arg_type).ok();
 								)*
 								$(
-									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm)[..], $subc_subc_argm_type).ok();
+									raw_args.$subc_subc_argm = values_t!(subsubmatches, stringify!($subc_subc_argm), $subc_subc_argm_type).ok();
 								)*
 							}
 							else {
@@ -549,10 +549,10 @@ macro_rules! usage {
 
 						// Subcommand arguments
 						$(
-							raw_args.$subc_arg = value_t!(submatches, &stringify!($subc_arg)[..], $subc_arg_type).ok();
+							raw_args.$subc_arg = value_t!(submatches, stringify!($subc_arg), $subc_arg_type).ok();
 						)*
 						$(
-							raw_args.$subc_argm = values_t!(submatches, &stringify!($subc_argm)[..], $subc_argm_type).ok();
+							raw_args.$subc_argm = values_t!(submatches, stringify!($subc_argm), $subc_argm_type).ok();
 						)*
 					}
 					else {
