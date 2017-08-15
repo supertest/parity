@@ -526,12 +526,12 @@ macro_rules! usage {
 
 				$(
 					// Subcommand
-					if let Some(submatches) = matches.subcommand_matches(&str::replace(&stringify!($subc)[4..], "_", "-")) {
+					if let Some(submatches) = matches.subcommand_matches(&underscore_to_hyphen!(&stringify!($subc)[4..])) {
 						raw_args.$subc = true;
 
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-")) {
+							if let Some(subsubmatches) = submatches.subcommand_matches(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])) {
 								raw_args.$subc_subc = true;
 
 								// Sub-subcommand arguments
