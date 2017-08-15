@@ -454,15 +454,16 @@ macro_rules! usage {
 
 				use std::collections::HashMap;
 
+				// Hash of subc => [usage] and subc_subc => [usage]
 				let mut subc_usages = HashMap::new();
 				$(
 					{
 						let this_subc_usages = vec![
 							$(
-								$subc_arg_usage,
+								usage_with_ident!(stringify!($subc_arg),$subc_arg_usage),
 							)*
 							$(
-								$subc_argm_usage,
+								usage_with_ident!(stringify!($subc_argm),$subc_argm_usage),
 							)*
 						];
 
@@ -472,10 +473,10 @@ macro_rules! usage {
 							{
 								let this_subc_subc_usages = vec![
 									$(
-										$subc_subc_arg_usage,
+										usage_with_ident!(stringify!($subc_subc_arg),$subc_subc_arg_usage),
 									)*
 									$(
-										$subc_subc_argm_usage,
+										usage_with_ident!(stringify!($subc_subc_argm),$subc_subc_argm_usage),
 									)*
 								];
 
