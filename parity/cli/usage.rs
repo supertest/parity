@@ -101,6 +101,7 @@ macro_rules! usage {
 		use clap::{Arg, App, SubCommand, AppSettings, Error as ClapError};
 		use helpers::replace_home;
 		use std::ffi::OsStr;
+		use std::collections::HashMap;
 
 		#[cfg(test)]
 		use regex::Regex;
@@ -430,7 +431,7 @@ macro_rules! usage {
 			}
 
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
-			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> { // where S: AsRef<OsStr>
+			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				// Add the variable name as argument identifier
 				// To do so, we have to specify if the argument is required; we default to optional (!? #todo #test[]+<>)
@@ -438,21 +439,19 @@ macro_rules! usage {
 				let usages = vec![
 					$(
 						$(
-							format!("[{}] {} '{}'",&stringify!($arg),$arg_usage,$arg_help),
+							format!("[{}] {} '{}'",stringify!($arg),$arg_usage,$arg_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",&stringify!($argm),$argm_usage,$argm_help),
+							format!("[{}] {} '{}'",stringify!($argm),$argm_usage,$argm_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",&stringify!($argo),$argo_usage,$argo_help),
+							format!("[{}] {} '{}'",stringify!($argo),$argo_usage,$argo_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",&stringify!($flag),$flag_usage,$flag_help),
+							format!("[{}] {} '{}'",stringify!($flag),$flag_usage,$flag_help),
 						)*
 					)*
 				];
-
-				use std::collections::HashMap;
 
 				// Hash of subc => [usage] and subc_subc => [usage]
 				let mut subc_usages = HashMap::new();
@@ -520,7 +519,7 @@ macro_rules! usage {
 						raw_args.$argo = value_t!(matches, stringify!($argo), $argo_type).ok();
 					)*
 					$(
-						raw_args.$flag = matches.is_present(&stringify!($flag));
+						raw_args.$flag = matches.is_present(stringify!($flag));
 					)*
 				)*
 
