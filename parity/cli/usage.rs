@@ -318,72 +318,71 @@ macro_rules! usage {
 
 				help.push_str("\n\n");
 
-				// @TODO
-				// // Subcommands
-				// help.push_str("parity [options]\n");
-				// $(
-				// 	{
-				// 		let mut subc_subc_exist = false;
+				// Subcommands
+				help.push_str("parity [options]\n");
+				$(
+					{
+						let mut subc_subc_exist = false;
 
-				// 		$(
-				// 			subc_subc_exist = true;
-				// 			let subc_subc_arg_usages : Vec<&str> = vec![
-				// 				$(
-				// 					$subc_subc_arg_usage,
-				// 				)*
-				// 				$(
-				// 					$subc_subc_argm_usage,
-				// 				)*
-				// 			];
+						$(
+							subc_subc_exist = true;
+							let subc_subc_arg_usages : Vec<&str> = vec![
+								$(
+									$subc_subc_arg_usage,
+								)*
+								$(
+									$subc_subc_argm_usage,
+								)*
+							];
 
-				// 			if subc_subc_arg_usages.is_empty() {
-				// 				help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])));
-				// 			} else {
-				// 				help.push_str(&format!("parity [options] {} {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]), subc_subc_arg_usages.join(" ")));
-				// 			}
-				// 		)*
+							if subc_subc_arg_usages.is_empty() {
+								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])));
+							} else {
+								help.push_str(&format!("parity [options] {} {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]), subc_subc_arg_usages.join(" ")));
+							}
+						)*
 
-				// 		if !subc_subc_exist {
-				// 			let subc_arg_usages : Vec<&str> = vec![
-				// 				$(
-				// 					$subc_arg_usage,
-				// 				)*
-				// 				$(
-				// 					$subc_argm_usage,
-				// 				)*
-				// 			];
+						if !subc_subc_exist {
+							let subc_arg_usages : Vec<&str> = vec![
+								$(
+									$subc_arg_usage,
+								)*
+								$(
+									$subc_argm_usage,
+								)*
+							];
 
-				// 			if subc_arg_usages.is_empty() {
-				// 				help.push_str(&format!("parity [options] {}\n", underscore_to_hyphen!(&stringify!($subc)[4..])));
-				// 			} else {
-				// 				help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), subc_arg_usages.join(" ")));
-				// 			}
-				// 		}
-				// 	}
-				// )*
+							if subc_arg_usages.is_empty() {
+								help.push_str(&format!("parity [options] {}\n", underscore_to_hyphen!(&stringify!($subc)[4..])));
+							} else {
+								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), subc_arg_usages.join(" ")));
+							}
+						}
+					}
+				)*
 
-				// // Args and flags
-				// $(
-				// 	help.push_str("\n");
-				// 	help.push_str($group_name); help.push_str(":\n");
+				// Args and flags
+				$(
+					help.push_str("\n");
+					help.push_str($group_name); help.push_str(":\n");
 
-				// 	$(
-				// 		help.push_str(&format!("\t{}\n\t\t{}\n", $flag_usage, $flag_help));
-				// 	)*
+					$(
+						help.push_str(&format!("\t{}\n\t\t{}\n", $flag_usage, $flag_help));
+					)*
 
-				// 	$(
-				// 		help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $arg_usage, $arg_help, $arg_default));
-				// 	)*
+					$(
+						help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $arg_usage, $arg_help, $arg_default));
+					)*
 
-				// 	$(
-				// 		help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $argm_usage, $argm_help, {let x : Vec<$argm_type> = $argm_default; x}));
-				// 	)*
+					$(
+						help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $argm_usage, $argm_help, {let x : Vec<$argm_type> = $argm_default; x}));
+					)*
 
-				// 	$(
-				// 		help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $argo_usage, $argo_help, $argo_default.unwrap_or("none")));
-				// 	)*
+					$(
+						help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $argo_usage, $argo_help, $argo_default.unwrap_or("none")));
+					)*
 
-				// )*
+				)*
 
 				help
 			}
@@ -435,22 +434,56 @@ macro_rules! usage {
 
 				// Add the variable name as argument identifier
 				// To do so, we have to specify if the argument is required; we default to optional (!? #todo #test[]+<>)
+				// Need to declare it beforehand for lifetime reasons; Clap takes a string ref.
 				let usages = vec![
 					$(
 						$(
-							format!("[{}] {} '{}'",&stringify!($arg)[4..],$arg_usage,$arg_help),
+							format!("[{}] {} '{}'",&stringify!($arg),$arg_usage,$arg_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",&stringify!($argm)[4..],$argm_usage,$argm_help),
+							format!("[{}] {} '{}'",&stringify!($argm),$argm_usage,$argm_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",&stringify!($argo)[4..],$argo_usage,$argo_help),
+							format!("[{}] {} '{}'",&stringify!($argo),$argo_usage,$argo_help),
 						)*
 						$(
-							format!("[{}] {} '{}'",&stringify!($flag)[5..],$flag_usage,$flag_help),
+							format!("[{}] {} '{}'",&stringify!($flag),$flag_usage,$flag_help),
 						)*
 					)*
 				];
+
+				use std::collections::HashMap;
+
+				let mut subc_usages = HashMap::new();
+				$(
+					{
+						let this_subc_usages = vec![
+							$(
+								$subc_arg_usage,
+							)*
+							$(
+								$subc_argm_usage,
+							)*
+						];
+
+						subc_usages.insert(stringify!(subc),this_subc_usages);
+
+						$(
+							{
+								let this_subc_subc_usages = vec![
+									$(
+										$subc_subc_arg_usage,
+									)*
+									$(
+										$subc_subc_argm_usage,
+									)*
+								];
+
+								subc_usages.insert(stringify!(subc_subc),this_subc_subc_usages);
+							}
+						)*
+					}
+				)*
 
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
@@ -461,32 +494,14 @@ macro_rules! usage {
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&str::replace(&stringify!($subc)[4..], "_", "-"))
+								SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc)[4..]))
 								$(
 									.subcommand(
-										SubCommand::with_name(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"))
-										$(
-											.arg(
-													Arg::from_usage($subc_subc_arg_usage)
-											)
-										)*
-										$(
-											.arg(
-													Arg::from_usage($subc_subc_argm_usage)
-											)
-										)*
+										SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]))
+										.args(&subc_usages[stringify!($subc_subc)].iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 									)
 								)*
-								$(
-									.arg(
-											Arg::from_usage($subc_arg_usage)
-									)
-								)*
-								$(
-									.arg(
-											Arg::from_usage($subc_argm_usage)
-									)
-								)*
+								.args(&subc_usages[stringify!($subc)].iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 							)
 						)*
 						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
@@ -495,16 +510,16 @@ macro_rules! usage {
 				let mut raw_args : RawArgs = Default::default();
 				$(
 					$(
-						raw_args.$arg = value_t!(matches, &stringify!($arg)[4..], $arg_type).ok();
+						raw_args.$arg = value_t!(matches, &stringify!($arg)[..], $arg_type).ok(); // @TODO [..]
 					)*
 					$(
-						raw_args.$argm = values_t!(matches, &stringify!($argm)[4..], $argm_type).ok();
+						raw_args.$argm = values_t!(matches, &stringify!($argm)[..], $argm_type).ok();
 					)*
 					$(
-						raw_args.$argo = value_t!(matches, &stringify!($argo)[4..], $argo_type).ok();
+						raw_args.$argo = value_t!(matches, &stringify!($argo)[..], $argo_type).ok();
 					)*
 					$(
-						raw_args.$flag = matches.is_present(&stringify!($flag)[5..]);
+						raw_args.$flag = matches.is_present(&stringify!($flag));
 					)*
 				)*
 
