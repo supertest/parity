@@ -34,10 +34,18 @@ macro_rules! otry {
 
 macro_rules! usage_with_ident {
 	($name:expr, $usage:expr, $help:expr) => (
-		format!("{} {} '{}'",$name,$usage,$help)
+		if $usage.contains("<") {
+			format!("<{}> {} '{}'",$name,$usage,$help)
+		} else {
+			format!("[{}] {} '{}'",$name,$usage,$help)
+		}
 	);
 	($name:expr, $usage:expr) => (
-		format!("{} {}",$name,$usage)
+		if $usage.contains("<") {
+			format!("<{}> {}",$name,$usage)
+		} else {
+			format!("[{}] {}",$name,$usage)
+		}
 	);
 }
 
@@ -462,7 +470,7 @@ macro_rules! usage {
 							)*
 						];
 
-						subc_usages.insert(stringify!(subc),this_subc_usages);
+						subc_usages.insert(stringify!($subc),this_subc_usages);
 
 						$(
 							{
@@ -475,7 +483,7 @@ macro_rules! usage {
 									)*
 								];
 
-								subc_usages.insert(stringify!(subc_subc),this_subc_subc_usages);
+								subc_usages.insert(stringify!($subc_subc),this_subc_subc_usages);
 							}
 						)*
 					}
@@ -494,10 +502,10 @@ macro_rules! usage {
 								$(
 									.subcommand(
 										SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]))
-										.args(&subc_usages[stringify!($subc_subc)].iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
+										.args(&subc_usages.get(stringify!($subc_subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 									)
 								)*
-								.args(&subc_usages[stringify!($subc)].iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
+								.args(&subc_usages.get(stringify!($subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 							)
 						)*
 						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
