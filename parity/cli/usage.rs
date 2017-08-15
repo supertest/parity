@@ -431,94 +431,99 @@ macro_rules! usage {
 			}
 
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
-			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
+			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> { // where S: AsRef<OsStr>
+
+				// Add the variable name as argument identifier
+				// To do so, we have to specify if the argument is required; we default to optional (!? #todo #test[]+<>)
+				let usages = vec![
+					$(
+						$(
+							format!("[{}] {} '{}'",&stringify!($arg)[4..],$arg_usage,$arg_help),
+						)*
+						$(
+							format!("[{}] {} '{}'",&stringify!($argm)[4..],$argm_usage,$argm_help),
+						)*
+						$(
+							format!("[{}] {} '{}'",&stringify!($argo)[4..],$argo_usage,$argo_help),
+						)*
+						$(
+							format!("[{}] {} '{}'",&stringify!($flag)[5..],$flag_usage,$flag_help),
+						)*
+					)*
+				];
+
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
-						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of a space-delimited arg, e.g. --ui-path signer
+						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as value of an arg, e.g. --ui-path signer
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
 						.help(Args::print_help().as_ref())
 						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
-								SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc)[4..])) // @todo ident_to_long!($subc)
+								SubCommand::with_name(&str::replace(&stringify!($subc)[4..], "_", "-"))
 								$(
 									.subcommand(
-										SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])) // @todo ident_to_long!($subc)
+										SubCommand::with_name(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-"))
 										$(
 											.arg(
-													Arg::from_usage(usage_with_ident!(stringify!($subc_subc_arg),$subc_subc_arg_usage))
+													Arg::from_usage($subc_subc_arg_usage)
 											)
 										)*
 										$(
 											.arg(
-													Arg::from_usage(usage_with_ident!(stringify!($subc_subc_argm),$subc_subc_argm_usage))
+													Arg::from_usage($subc_subc_argm_usage)
 											)
 										)*
 									)
 								)*
 								$(
 									.arg(
-											Arg::from_usage(usage_with_ident!(stringify!($subc_arg),$subc_arg_usage))
+											Arg::from_usage($subc_arg_usage)
 									)
 								)*
 								$(
 									.arg(
-											Arg::from_usage(usage_with_ident!(stringify!($subc_argm),$subc_argm_usage))
+											Arg::from_usage($subc_argm_usage)
 									)
 								)*
 							)
 						)*
-						.args(vec![
-							$(
-							$(
-								Arg::from_usage(usage_with_ident!(stringify!($arg),$arg_usage,$arg_help)),
-							)*
-							$(
-								Arg::from_usage(usage_with_ident!(stringify!($argm),$argm_usage,$argm_help)),
-							)*
-							$(
-								Arg::from_usage(usage_with_ident!(stringify!($argo),$argo_usage,$argo_help)),
-							)*
-							$(
-								Arg::from_usage(usage_with_ident!(stringify!($flag),$flag_usage,$flag_help)),
-							)*
-							)*
-						])
+						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 						.get_matches_from_safe(command.iter().map(|x| OsStr::new(x.as_ref())))?;
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
 					$(
-						raw_args.$arg = value_t!(matches, &stringify!($arg), $arg_type).ok(); // @todo use simple ident
+						raw_args.$arg = value_t!(matches, &stringify!($arg)[4..], $arg_type).ok();
 					)*
 					$(
-						raw_args.$argm = values_t!(matches, &stringify!($argm), $argm_type).ok();
+						raw_args.$argm = values_t!(matches, &stringify!($argm)[4..], $argm_type).ok();
 					)*
 					$(
-						raw_args.$argo = value_t!(matches, &stringify!($argo), $argo_type).ok();
+						raw_args.$argo = value_t!(matches, &stringify!($argo)[4..], $argo_type).ok();
 					)*
 					$(
-						raw_args.$flag = matches.is_present(&stringify!($flag));
+						raw_args.$flag = matches.is_present(&stringify!($flag)[5..]);
 					)*
 				)*
 
 				$(
 					// Subcommand
-					if let Some(submatches) = matches.subcommand_matches(&underscore_to_hyphen!(&stringify!($subc)[4..])) {
+					if let Some(submatches) = matches.subcommand_matches(&str::replace(&stringify!($subc)[4..], "_", "-")) {
 						raw_args.$subc = true;
 
 						$(
 							// Sub-subcommand
-							if let Some(subsubmatches) = submatches.subcommand_matches(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])) {
+							if let Some(subsubmatches) = submatches.subcommand_matches(&str::replace(&stringify!($subc_subc)[stringify!($subc).len()+1..], "_", "-")) {
 								raw_args.$subc_subc = true;
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg), $subc_subc_arg_type).ok();
+									raw_args.$subc_subc_arg = value_t!(subsubmatches, &stringify!($subc_subc_arg)[stringify!($subc_subc).len()+1..], $subc_subc_arg_type).ok();
 								)*
 								$(
-									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm), $subc_subc_argm_type).ok();
+									raw_args.$subc_subc_argm = values_t!(subsubmatches, &stringify!($subc_subc_argm)[stringify!($subc_subc).len()+1..], $subc_subc_argm_type).ok();
 								)*
 							}
 							else {
@@ -528,10 +533,10 @@ macro_rules! usage {
 
 						// Subcommand arguments
 						$(
-							raw_args.$subc_arg = value_t!(submatches, &stringify!($subc_arg), $subc_arg_type).ok();
+							raw_args.$subc_arg = value_t!(submatches, &stringify!($subc_arg)[stringify!($subc).len()+1..], $subc_arg_type).ok();
 						)*
 						$(
-							raw_args.$subc_argm = values_t!(submatches, &stringify!($subc_argm), $subc_argm_type).ok();
+							raw_args.$subc_argm = values_t!(submatches, &stringify!($subc_argm)[stringify!($subc).len()+1..], $subc_argm_type).ok();
 						)*
 					}
 					else {
@@ -541,6 +546,7 @@ macro_rules! usage {
 
 				Ok(raw_args)
 			}
+
 		}
 
 		#[test]
@@ -584,5 +590,5 @@ macro_rules! usage {
 				assert!(re.is_match(usage));
 			}
 		}
-	};
+	}
 }
