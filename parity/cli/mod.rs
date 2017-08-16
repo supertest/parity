@@ -22,125 +22,191 @@ use dir;
 usage! {
 	{
 		// CLI subcommands
-		// Subcommands/sub-subcommands must start with cmd_
+		// Subcommands must start with cmd_
+		// Sub-subcommands must start with the name of the subcommand
 		// Arguments must start with arg_
-		// Option<> will be automatically wrapped around the arguments
+		// Option<> will be automatically wrapped around the argument types
 
-		CMD cmd_ui {}
+		CMD cmd_ui {
+			"Manage ui",
+		}
 
 		CMD cmd_dapp
 		{
+			"Manage dapps",
+
 			ARG arg_dapp_path: String,
 			"<PATH>",
+			"Path to the dapps",
 		}
 
 		CMD cmd_daemon
 		{
+			"Use Parity as a daemon",
+
 			ARG arg_daemon_pid_file: String,
 			"<PID-FILE>",
+			"Path to the pid file",
 		}
 
 		CMD cmd_account
 		{
-			CMD cmd_account_new {}
+			"Manage accounts",
 
-			CMD cmd_account_list {}
+			CMD cmd_account_new {
+				"Create a new acount",
+			}
+
+			CMD cmd_account_list {
+				"List existing accounts",
+			}
 
 			CMD cmd_account_import
 			{
+				"Import account",
+
 				ARG_MULTIPLE arg_account_import_path: String,
 				"<PATH>...",
+				"Path to the accounts",
 			}
 		}
 
 		CMD cmd_wallet
 		{
+			"Manage wallet",
+
 			CMD cmd_wallet_import
 			{
+				"Import wallet",
+
 				ARG arg_wallet_import_path: String,
 				"<PATH>",
+				"Path to the wallet",
 
 				ARG arg_wallet_import_password: String,
 				"--password=<FILE>",
+				"Path to the password file",
 			}
 		}
 
 		CMD cmd_import
 		{
+			"Import",
+
 			ARG arg_import_file: String,
 			"[FILE]",
+			"Path to the file to import",
 
 			ARG arg_import_format: String,
 			"--format=[FORMAT]",
+			"Import in a given format. FORMAT must be either 'hex' or 'binary'. (default: auto)",
 		}
 
 		CMD cmd_export
 		{
+			"Export",
+
 			CMD cmd_export_blocks
 			{
+				"Export blocks",
+
 				ARG arg_export_blocks_file: String,
 				"[FILE]",
+				"Path to the exported file",
 
 				ARG arg_export_blocks_format: String,
 				"--format=[FORMAT]",
+				"Export in a given format. FORMAT must be either 'hex' or 'binary'. (default: binary)",
 			}
 
 			CMD cmd_export_state
 			{
+				"Export state",
+
 				ARG arg_export_state_file: String,
 				"[FILE]",
+				"Path to the exported file",
 
 				ARG arg_export_state_format: String,
 				"--format=[FORMAT]",
+				"Export in a given format. FORMAT must be either 'hex' or 'binary'. (default: binary)",
 			}
 		}
 
 		CMD cmd_signer
 		{
-			CMD cmd_signer_new_token {}
+			"Signer",
 
-			CMD cmd_signer_list {}
+			CMD cmd_signer_new_token {
+				"New token",
+			}
+
+			CMD cmd_signer_list {
+				"List",
+			}
 
 			CMD cmd_signer_sign
 			{
+				"Sign",
+
 				ARG arg_signer_sign_id: usize,
 				"[ID]",
+				"ID",
 
 				ARG arg_signer_sign_password: String,
 				"--password=[FILE]",
+				"Path to the password file",
 			}
 
 			CMD cmd_signer_reject
 			{
+				"Reject",
+
 				ARG arg_signer_reject_id: usize,
 				"<ID>",
+				"ID",
 			}
 		}
 
 		CMD cmd_snapshot
 		{
+			"Snapshot",
+
 			ARG arg_snapshot_file: String,
 			"<FILE>",
+			"Path to the snapshot file",
 		}
 
 		CMD cmd_restore
 		{
+			"Restore",
+
 			ARG arg_restore_file: String,
 			"[FILE]",
+			"Path to the file to restore from",
 		}
 
 		CMD cmd_tools
 		{
+			"Tools",
+
 			CMD cmd_tools_hash
 			{
+				"Hash",
+
 				ARG arg_tools_hash_file: String,
 				"<FILE>",
+				"File",
 			}
 		}
 
 		CMD cmd_db
 		{
-			CMD cmd_db_kill {}
+			"Database",
+
+			CMD cmd_db_kill {
+				"Kill database",
+			}
 		}
 	}
 	{
@@ -165,11 +231,11 @@ usage! {
 			ARG arg_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
 			"--mode=[MODE]",
 			"Set the operating mode. MODE can be one of:
-	last - Uses the last-used mode, active if none.
-	active - Parity continuously syncs the chain.
-	passive - Parity syncs initially, then sleeps and wakes regularly to resync.
-	dark - Parity syncs only when the RPC is active.
-	offline - Parity doesn't sync.",
+			last - Uses the last-used mode, active if none.
+			active - Parity continuously syncs the chain.
+			passive - Parity syncs initially, then sleeps and wakes regularly to resync.
+			dark - Parity syncs only when the RPC is active.
+			offline - Parity doesn't sync.",
 
 			ARG arg_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
 			"--mode-timeout=[SECS]",
@@ -182,18 +248,18 @@ usage! {
 			ARG arg_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
 			"--auto-update=[SET]",
 			"Set a releases set to automatically update and install.
-	all - All updates in the our release track.
-	critical - Only consensus/security updates.
-	none - No updates will be auto-installed.",
+			all - All updates in the our release track.
+			critical - Only consensus/security updates.
+			none - No updates will be auto-installed.",
 
 			ARG arg_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
 			"--release-track=[TRACK]",
 			"Set which release track we should use for updates.
-	stable - Stable releases.
-	beta - Beta releases.
-	nightly - Nightly releases (unstable).
-	testing - Testing releases (do not use).
-	current - Whatever track this executable was released on",
+			stable - Stable releases.
+			beta - Beta releases.
+			nightly - Nightly releases (unstable).
+			testing - Testing releases (do not use).
+			current - Whatever track this executable was released on",
 
 			ARG arg_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
 			"--chain=[CHAIN]",
@@ -219,7 +285,7 @@ usage! {
 			FLAG flag_unsafe_expose: bool = false, or |c: &Config| otry!(c.misc).unsafe_expose,
 			"--unsafe-expose",
 			"All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all
-	This option is UNSAFE and should be used with great care!",
+		This option is UNSAFE and should be used with great care!",
 
 			ARG arg_config: String = "$BASE/config.toml", or |_| None,
 			"-c, --config=[CONFIG]",
@@ -242,7 +308,7 @@ usage! {
 			"--keys-iterations=[NUM]",
 			"Specify the number of iterations to use when deriving key from the password (bigger is more secure)",
 
-			ARG_MULTIPLE arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(), // @TODO
+			ARG_MULTIPLE arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(),
 			"--password=[FILE]",
 			"Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.",
 
@@ -730,7 +796,7 @@ usage! {
 
 			ARG arg_at: String = "latest", or |_| None,
 			"--at=[BLOCK]",
-			"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive", // Snapshot Option
+			"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
 
 		["Virtual Machine options"]
 			FLAG flag_jitvm: bool = false, or |c: &Config| otry!(c.vm).jit.clone(),
@@ -746,7 +812,6 @@ usage! {
 			"--whisper-pool-size=[MB]",
 			"Target size of the whisper message pool in megabytes.",
 
-		// -- Legacy options supported in configs
 		["Legacy options"]
 			FLAG flag_dapps_apis_all: bool = false, or |_| None,
 			"--dapps-apis-all",
@@ -1112,7 +1177,7 @@ mod tests {
 	use toml;
 
 	#[test]
-	fn should_propagate_arguments_to_subcommand() {
+	fn should_parse_global_args_with_subcommand() {
 		let args = Args::parse(&["parity", "--chain", "dev", "account", "list"]).unwrap();
 		assert_eq!(args.arg_chain, "dev".to_owned());
 	}

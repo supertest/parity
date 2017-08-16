@@ -61,23 +61,27 @@ macro_rules! usage {
 			$(
 				CMD $subc:ident
 				{
+					$subc_help:expr,
+
 					$(
 						CMD $subc_subc:ident
 						{
+							$subc_subc_help:expr,
+
 							$(
-								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty, $subc_subc_arg_usage:expr,
+								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty, $subc_subc_arg_usage:expr, $subc_subc_arg_help:expr,
 							)*
 							$(
-								ARG_MULTIPLE $subc_subc_argm:ident : $subc_subc_argm_type:ty, $subc_subc_argm_usage:expr,
+								ARG_MULTIPLE $subc_subc_argm:ident : $subc_subc_argm_type:ty, $subc_subc_argm_usage:expr, $subc_subc_argm_help:expr,
 							)*
 						}
 					)*
 
 					$(
-						ARG $subc_arg:ident : $subc_arg_type:ty, $subc_arg_usage:expr,
+						ARG $subc_arg:ident : $subc_arg_type:ty, $subc_arg_usage:expr, $subc_arg_help:expr,
 					)*
 					$(
-						ARG_MULTIPLE $subc_argm:ident : $subc_argm_type:ty, $subc_argm_usage:expr,
+						ARG_MULTIPLE $subc_argm:ident : $subc_argm_type:ty, $subc_argm_usage:expr, $subc_argm_help:expr,
 					)*
 				}
 			)*
@@ -318,8 +322,7 @@ macro_rules! usage {
 			}
 
 			#[allow(unused_mut)] // subc_subc_exist may be reassigned a value by the macro
-			// Rust issue #22630
-			#[allow(unused_assignments)]
+			#[allow(unused_assignments)] // Rust issue #22630
 			pub fn print_help() -> String {
 				let mut help : String = include_str!("./usage_header.txt").to_owned();
 
@@ -368,7 +371,7 @@ macro_rules! usage {
 					}
 				)*
 
-				// Args and flags
+				// Arguments and flags
 				$(
 					help.push_str("\n");
 					help.push_str($group_name); help.push_str(":\n");
@@ -386,7 +389,7 @@ macro_rules! usage {
 					)*
 
 					$(
-						help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $argo_usage, $argo_help, $argo_default.unwrap_or("none")));
+						help.push_str(&format!("\t{}\n\t\t{}{}\n", $argo_usage, $argo_help, $argo_default.map(|x: $argo_type| format!(" (default: {})",x)).unwrap_or("".to_owned())));
 					)*
 
 				)*
@@ -430,7 +433,7 @@ macro_rules! usage {
 						args.$argm = self.$argm.or_else(|| $argm_from_config(&config)).unwrap_or_else(|| $argm_default.into());
 					)*
 					$(
-						args.$argo = self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into()); // before was:unwrap_or_else intead of .or_else
+						args.$argo = self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into());
 					)*
 				)*
 				args
@@ -439,34 +442,33 @@ macro_rules! usage {
 			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
-				// Need to declare the usages beforehand for lifetime reasons; Clap::Arg::from_usage takes a string ref.
 				let usages = vec![
 					$(
 						$(
-							usage_with_ident!(stringify!($arg),$arg_usage,$arg_help),
+							usage_with_ident!(stringify!($arg), $arg_usage, $arg_help),
 						)*
 						$(
-							usage_with_ident!(stringify!($argm),$argm_usage,$argm_help),
+							usage_with_ident!(stringify!($argm), $argm_usage, $argm_help),
 						)*
 						$(
-							usage_with_ident!(stringify!($argo),$argo_usage,$argo_help),
+							usage_with_ident!(stringify!($argo), $argo_usage, $argo_help),
 						)*
 						$(
-							usage_with_ident!(stringify!($flag),$flag_usage,$flag_help),
+							usage_with_ident!(stringify!($flag), $flag_usage, $flag_help),
 						)*
 					)*
 				];
 
-				// Hash of subc => [usage] and subc_subc => [usage]
+				// Hash of subc => Vec<String> and subc_subc => Vec<String>
 				let mut subc_usages = HashMap::new();
 				$(
 					{
 						let this_subc_usages = vec![
 							$(
-								usage_with_ident!(stringify!($subc_arg),$subc_arg_usage),
+								usage_with_ident!(stringify!($subc_arg), $subc_arg_usage, $subc_arg_help),
 							)*
 							$(
-								usage_with_ident!(stringify!($subc_argm),$subc_argm_usage),
+								usage_with_ident!(stringify!($subc_argm), $subc_argm_usage, $subc_argm_help),
 							)*
 						];
 
@@ -476,14 +478,14 @@ macro_rules! usage {
 							{
 								let this_subc_subc_usages = vec![
 									$(
-										usage_with_ident!(stringify!($subc_subc_arg),$subc_subc_arg_usage),
+										usage_with_ident!(stringify!($subc_subc_arg), $subc_subc_arg_usage, $subc_subc_arg_help),
 									)*
 									$(
-										usage_with_ident!(stringify!($subc_subc_argm),$subc_subc_argm_usage),
+										usage_with_ident!(stringify!($subc_subc_argm), $subc_subc_argm_usage, $subc_subc_argm_help),
 									)*
 								];
 
-								subc_usages.insert(stringify!($subc_subc),this_subc_subc_usages);
+								subc_usages.insert(stringify!($subc_subc), this_subc_subc_usages);
 							}
 						)*
 					}
@@ -491,17 +493,16 @@ macro_rules! usage {
 
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
-						.global_setting(AppSettings::ColorNever) // @TODO (for tests)
-						// .global_setting(AppSettings::ArgsNegateSubcommands) // lets us use the name of a subcommand as space-delimited value of an arg, e.g. --ui-path signer
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
 						.help(Args::print_help().as_ref())
-						.about(include_str!("./usage_header.txt"))
 						$(
 							.subcommand(
 								SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc)[4..]))
+								.about($subc_help)
 								$(
 									.subcommand(
 										SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]))
+										.about($subc_subc_help)
 										.args(&subc_usages.get(stringify!($subc_subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 									)
 								)*
