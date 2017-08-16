@@ -35,16 +35,16 @@ macro_rules! otry {
 macro_rules! usage_with_ident {
 	($name:expr, $usage:expr, $help:expr) => (
 		if $usage.contains("<") {
-			format!("<{}> {} '{}'",$name,$usage,$help)
+			format!("<{}> {} '{}'",$name, $usage, $help)
 		} else {
-			format!("[{}] {} '{}'",$name,$usage,$help)
+			format!("[{}] {} '{}'",$name, $usage, $help)
 		}
 	);
 	($name:expr, $usage:expr) => (
 		if $usage.contains("<") {
-			format!("<{}> {}",$name,$usage)
+			format!("<{}> {}",$name, $usage)
 		} else {
-			format!("[{}] {}",$name,$usage)
+			format!("[{}] {}",$name, $usage)
 		}
 	);
 }
@@ -86,7 +86,7 @@ macro_rules! usage {
 			$(
 			[$group_name:expr]
 				$(
-					FLAG $flag:ident : bool = $flag_default:expr, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
+					FLAG $flag:ident : bool = false, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
 				)*
 				$(
 					ARG $arg:ident : $arg_type:ty = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
@@ -122,7 +122,7 @@ macro_rules! usage {
 		impl ArgsError {
 			pub fn exit(self) -> ! {
 				match self {
-					ArgsError::Clap(e) => e.exit(), // TODO PRINT ?
+					ArgsError::Clap(e) => e.exit(),
 					ArgsError::Decode(e) => {
 						println_stderr!("You might have supplied invalid parameters in config file.");
 						println_stderr!("{}", e);
@@ -421,7 +421,7 @@ macro_rules! usage {
 
 				$(
 					$(
-						args.$flag = self.$flag || $flag_from_config(&config).unwrap_or_else(|| $flag_default.into());
+						args.$flag = self.$flag || $flag_from_config(&config).unwrap_or(false);
 					)*
 					$(
 						args.$arg = self.$arg.or_else(|| $arg_from_config(&config)).unwrap_or_else(|| $arg_default.into());
