@@ -136,7 +136,7 @@ impl Args {
 	}
 
 	pub fn from(&self) -> Result<Address, String> {
-		match self.arg_from {
+		match self.flag_from {
 			Some(ref from) => from.parse().map_err(to_string),
 			None => Ok(Address::default()),
 		}
