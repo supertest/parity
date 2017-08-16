@@ -135,10 +135,10 @@ usage! {
 
 		CMD cmd_signer
 		{
-			"Signer",
+			"Manage signer",
 
 			CMD cmd_signer_new_token {
-				"New token",
+				"Generate new token",
 			}
 
 			CMD cmd_signer_list {
@@ -170,16 +170,16 @@ usage! {
 
 		CMD cmd_snapshot
 		{
-			"Snapshot",
+			"Make a snapshot of the database",
 
 			ARG arg_snapshot_file: String,
 			"<FILE>",
-			"Path to the snapshot file",
+			"Path to the file to export to",
 		}
 
 		CMD cmd_restore
 		{
-			"Restore",
+			"Restore database from snapshot",
 
 			ARG arg_restore_file: String,
 			"[FILE]",
@@ -202,10 +202,10 @@ usage! {
 
 		CMD cmd_db
 		{
-			"Database",
+			"Manage the database representing the state of the blockchain on this system",
 
 			CMD cmd_db_kill {
-				"Kill database",
+				"Clean the database",
 			}
 		}
 	}

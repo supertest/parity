@@ -500,6 +500,7 @@ macro_rules! usage {
 								SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc)[4..]))
 								.about($subc_help)
 								$(
+									.setting(AppSettings::SubcommandRequired) // prevent from running `parity account`
 									.subcommand(
 										SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]))
 										.about($subc_subc_help)
