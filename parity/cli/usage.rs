@@ -31,6 +31,14 @@ macro_rules! otry {
 		}
 	)
 }
+macro_rules! if_optional {
+	({Option<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
+		$then
+	);
+	({$type:ty} THEN {$then:expr} ELSE {$otherwise:expr}) => (
+		$otherwise
+	);
+}
 
 macro_rules! usage_with_ident {
 	($name:expr, $usage:expr, $help:expr) => (
@@ -437,13 +445,25 @@ macro_rules! usage {
 					$(
 						args.$subc_subc = self.$subc_subc;
 						$(
-							args.$subc_subc_arg = self.$subc_subc_arg.unwrap_or($subc_subc_arg_default.into());
+							args.$subc_subc_arg = if_optional!(
+								{ $subc_subc_arg_type }
+								THEN { self.$subc_subc_arg.or_else(|| $subc_subc_arg_default.into()) }
+								ELSE { self.$subc_subc_arg.unwrap_or($subc_subc_arg_default.into()) }
+							);
 						)*
 						$(
-							args.$subc_subc_argo = self.$subc_subc_argo.or_else(|| $subc_subc_argo_default.into());
+							args.$subc_subc_argo = if_optional!(
+								{ Option<$subc_subc_argo_type> }
+								THEN { self.$subc_subc_argo.or_else(|| $subc_subc_argo_default.into()) }
+								ELSE { self.$subc_subc_argo.unwrap_or($subc_subc_argo_default.into()) }
+							);
 						)*
 						$(
-							args.$subc_subc_argmo = self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into());
+							args.$subc_subc_argmo = if_optional!(
+								{ Option<Vec<String>> }
+								THEN { self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into()) }
+								ELSE { self.$subc_subc_argmo.unwrap_or($subc_subc_argmo_default.into()) }
+							);
 						)*
 					)*
 
@@ -451,7 +471,11 @@ macro_rules! usage {
 						args.$subc_arg = self.$subc_arg.unwrap_or($subc_arg_default.into());
 					)*
 					$(
-						args.$subc_argo = self.$subc_argo.or_else(|| $subc_argo_default.into());
+						args.$subc_argo = if_optional!(
+							{ Option<$subc_argo_type> }
+							THEN { self.$subc_argo.or_else(|| $subc_argo_default.into()) }
+							ELSE { self.$subc_argo.unwrap_or($subc_argo_default.into()) }
+						);
 					)*
 					$(
 						args.$subc_argmo = self.$subc_argmo.or_else(|| $subc_argmo_default.into());
