@@ -69,19 +69,25 @@ macro_rules! usage {
 							$subc_subc_help:expr,
 
 							$(
-								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty, $subc_subc_arg_usage:expr, $subc_subc_arg_help:expr,
+								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty = $subc_subc_arg_default:expr, $subc_subc_arg_usage:expr, $subc_subc_arg_help:expr,
 							)*
 							$(
-								ARG_MULTIPLE $subc_subc_argm:ident : $subc_subc_argm_type:ty, $subc_subc_argm_usage:expr, $subc_subc_argm_help:expr,
+								ARG_OPTION $subc_subc_argo:ident : $subc_subc_argo_type:ty = $subc_subc_argo_default:expr, $subc_subc_argo_usage:expr, $subc_subc_argo_help:expr,
+							)*
+							$(
+								ARG_MULTIPLE_OPTION $subc_subc_argmo:ident : $subc_subc_argmo_type:ty = $subc_subc_argmo_default:expr, $subc_subc_argmo_usage:expr, $subc_subc_argmo_help:expr,
 							)*
 						}
 					)*
 
 					$(
-						ARG $subc_arg:ident : $subc_arg_type:ty, $subc_arg_usage:expr, $subc_arg_help:expr,
+						ARG $subc_arg:ident : $subc_arg_type:ty = $subc_arg_default:expr, $subc_arg_usage:expr, $subc_arg_help:expr,
 					)*
 					$(
-						ARG_MULTIPLE $subc_argm:ident : $subc_argm_type:ty, $subc_argm_usage:expr, $subc_argm_help:expr,
+						ARG_OPTION $subc_argo:ident : $subc_argo_type:ty = $subc_argo_default:expr, $subc_argo_usage:expr, $subc_argo_help:expr,
+					)*
+					$(
+						ARG_MULTIPLE_OPTION $subc_argmo:ident : $subc_argmo_type:ty = $subc_argmo_default:expr, $subc_argmo_usage:expr, $subc_argmo_help:expr,
 					)*
 				}
 			)*
@@ -161,18 +167,24 @@ macro_rules! usage {
 				$(
 					pub $subc_subc: bool,
 					$(
-						pub $subc_subc_arg: Option<$subc_subc_arg_type>,
+						pub $subc_subc_arg: $subc_subc_arg_type,
 					)*
 					$(
-						pub $subc_subc_argm: Option<Vec<$subc_subc_argm_type>>,
+						pub $subc_subc_argo: Option<$subc_subc_argo_type>,
+					)*
+					$(
+						pub $subc_subc_argmo: Option<Vec<$subc_subc_argmo_type>>,
 					)*
 				)*
 
 				$(
-					pub $subc_arg: Option<$subc_arg_type>,
+					pub $subc_arg: $subc_arg_type,
 				)*
 				$(
-					pub $subc_argm: Option<Vec<$subc_argm_type>>,
+					pub $subc_argo: Option<$subc_argo_type>,
+				)*
+				$(
+					pub $subc_argmo: Option<Vec<$subc_argmo_type>>,
 				)*
 			)*
 
@@ -203,7 +215,10 @@ macro_rules! usage {
 								$subc_subc_arg: Default::default(),
 							)*
 							$(
-								$subc_subc_argm: Default::default(),
+								$subc_subc_argo: Default::default(),
+							)*
+							$(
+								$subc_subc_argmo: Default::default(),
 							)*
 						)*
 
@@ -211,7 +226,10 @@ macro_rules! usage {
 							$subc_arg: Default::default(),
 						)*
 						$(
-							$subc_argm: Default::default(),
+							$subc_argo: Default::default(),
+						)*
+						$(
+							$subc_argmo: Default::default(),
 						)*
 					)*
 
@@ -244,7 +262,10 @@ macro_rules! usage {
 						$subc_subc_arg: Option<$subc_subc_arg_type>,
 					)*
 					$(
-						$subc_subc_argm: Option<Vec<$subc_subc_argm_type>>,
+						$subc_subc_argo: Option<$subc_subc_argo_type>,
+					)*
+					$(
+						$subc_subc_argmo: Option<Vec<$subc_subc_argmo_type>>,
 					)*
 				)*
 
@@ -252,7 +273,10 @@ macro_rules! usage {
 					$subc_arg: Option<$subc_arg_type>,
 				)*
 				$(
-					$subc_argm: Option<Vec<$subc_argm_type>>,
+					$subc_argo: Option<$subc_argo_type>,
+				)*
+				$(
+					$subc_argmo: Option<Vec<$subc_argmo_type>>,
 				)*
 			)*
 			$(
@@ -336,36 +360,42 @@ macro_rules! usage {
 
 						$(
 							subc_subc_exist = true;
-							let subc_subc_arg_usages : Vec<&str> = vec![
+							let subc_subc_argo_usages : Vec<&str> = vec![
 								$(
 									$subc_subc_arg_usage,
 								)*
 								$(
-									$subc_subc_argm_usage,
+									$subc_subc_argo_usage,
+								)*
+								$(
+									$subc_subc_argmo_usage,
 								)*
 							];
 
-							if subc_subc_arg_usages.is_empty() {
+							if subc_subc_argo_usages.is_empty() {
 								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])));
 							} else {
-								help.push_str(&format!("parity [options] {} {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]), subc_subc_arg_usages.join(" ")));
+								help.push_str(&format!("parity [options] {} {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]), subc_subc_argo_usages.join(" ")));
 							}
 						)*
 
 						if !subc_subc_exist {
-							let subc_arg_usages : Vec<&str> = vec![
+							let subc_argo_usages : Vec<&str> = vec![
 								$(
 									$subc_arg_usage,
 								)*
 								$(
-									$subc_argm_usage,
+									$subc_argo_usage,
+								)*
+								$(
+									$subc_argmo_usage,
 								)*
 							];
 
-							if subc_arg_usages.is_empty() {
+							if subc_argo_usages.is_empty() {
 								help.push_str(&format!("parity [options] {}\n", underscore_to_hyphen!(&stringify!($subc)[4..])));
 							} else {
-								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), subc_arg_usages.join(" ")));
+								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), subc_argo_usages.join(" ")));
 							}
 						}
 					}
@@ -407,18 +437,24 @@ macro_rules! usage {
 					$(
 						args.$subc_subc = self.$subc_subc;
 						$(
-							args.$subc_subc_arg = self.$subc_subc_arg;
+							args.$subc_subc_arg = self.$subc_subc_arg.unwrap_or($subc_subc_arg_default.into());
 						)*
 						$(
-							args.$subc_subc_argm = self.$subc_subc_argm;
+							args.$subc_subc_argo = self.$subc_subc_argo.or_else(|| $subc_subc_argo_default.into());
+						)*
+						$(
+							args.$subc_subc_argmo = self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into());;
 						)*
 					)*
 
 					$(
-						args.$subc_arg = self.$subc_arg;
+						args.$subc_arg = self.$subc_arg.unwrap_or($subc_arg_default.into());
 					)*
 					$(
-						args.$subc_argm = self.$subc_argm;
+						args.$subc_argo = self.$subc_argo.or_else(|| $subc_argo_default.into());
+					)*
+					$(
+						args.$subc_argmo = self.$subc_argmo.or_else(|| $subc_argmo_default.into());;
 					)*
 				)*
 
@@ -468,7 +504,10 @@ macro_rules! usage {
 								usage_with_ident!(stringify!($subc_arg), $subc_arg_usage, $subc_arg_help),
 							)*
 							$(
-								usage_with_ident!(stringify!($subc_argm), $subc_argm_usage, $subc_argm_help),
+								usage_with_ident!(stringify!($subc_argo), $subc_argo_usage, $subc_argo_help),
+							)*
+							$(
+								usage_with_ident!(stringify!($subc_argmo), $subc_argmo_usage, $subc_argmo_help),
 							)*
 						];
 
@@ -481,7 +520,10 @@ macro_rules! usage {
 										usage_with_ident!(stringify!($subc_subc_arg), $subc_subc_arg_usage, $subc_subc_arg_help),
 									)*
 									$(
-										usage_with_ident!(stringify!($subc_subc_argm), $subc_subc_argm_usage, $subc_subc_argm_help),
+										usage_with_ident!(stringify!($subc_subc_argo), $subc_subc_argo_usage, $subc_subc_argo_help),
+									)*
+									$(
+										usage_with_ident!(stringify!($subc_subc_argmo), $subc_subc_argmo_usage, $subc_subc_argmo_help),
 									)*
 								];
 
@@ -544,7 +586,10 @@ macro_rules! usage {
 									raw_args.$subc_subc_arg = value_t!(subsubmatches, stringify!($subc_subc_arg), $subc_subc_arg_type).ok();
 								)*
 								$(
-									raw_args.$subc_subc_argm = values_t!(subsubmatches, stringify!($subc_subc_argm), $subc_subc_argm_type).ok();
+									raw_args.$subc_subc_argo = value_t!(subsubmatches, stringify!($subc_subc_argo), $subc_subc_argo_type).ok();
+								)*
+								$(
+									raw_args.$subc_subc_argmo = values_t!(subsubmatches, stringify!($subc_subc_argmo), $subc_subc_argmo_type).ok();
 								)*
 							}
 							else {
@@ -557,7 +602,10 @@ macro_rules! usage {
 							raw_args.$subc_arg = value_t!(submatches, stringify!($subc_arg), $subc_arg_type).ok();
 						)*
 						$(
-							raw_args.$subc_argm = values_t!(submatches, stringify!($subc_argm), $subc_argm_type).ok();
+							raw_args.$subc_argo = value_t!(submatches, stringify!($subc_argo), $subc_argo_type).ok();
+						)*
+						$(
+							raw_args.$subc_argmo = values_t!(submatches, stringify!($subc_argmo), $subc_argmo_type).ok();
 						)*
 					}
 					else {
@@ -578,17 +626,17 @@ macro_rules! usage {
 				$(
 					$(
 						$(
-							$subc_subc_arg_usage,
+							$subc_subc_argo_usage,
 						)*
 						$(
-							$subc_subc_argm_usage,
+							$subc_subc_argmo_usage,
 						)*
 					)*
 					$(
-						$subc_arg_usage,
+						$subc_argo_usage,
 					)*
 					$(
-						$subc_argm_usage,
+						$subc_argmo_usage,
 					)*
 				)*
 				$(

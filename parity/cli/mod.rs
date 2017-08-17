@@ -25,7 +25,6 @@ usage! {
 		// Subcommands must start with cmd_
 		// Sub-subcommands must start with the name of the subcommand
 		// Arguments must start with arg_
-		// Option<> will be automatically wrapped around the argument types
 
 		CMD cmd_ui {
 			"Manage ui",
@@ -35,7 +34,7 @@ usage! {
 		{
 			"Manage dapps",
 
-			ARG arg_dapp_path: String,
+			ARG_OPTION arg_dapp_path: String = None,
 			"<PATH>",
 			"Path to the dapps",
 		}
@@ -44,7 +43,7 @@ usage! {
 		{
 			"Use Parity as a daemon",
 
-			ARG arg_daemon_pid_file: String,
+			ARG_OPTION arg_daemon_pid_file: String = None,
 			"<PID-FILE>",
 			"Path to the pid file",
 		}
@@ -65,7 +64,7 @@ usage! {
 			{
 				"Import account",
 
-				ARG_MULTIPLE arg_account_import_path: String,
+				ARG_MULTIPLE_OPTION arg_account_import_path: String = None,
 				"<PATH>...",
 				"Path to the accounts",
 			}
@@ -79,11 +78,11 @@ usage! {
 			{
 				"Import wallet",
 
-				ARG arg_wallet_import_path: String,
+				ARG_OPTION arg_wallet_import_path: String = None,
 				"<PATH>",
 				"Path to the wallet",
 
-				ARG arg_wallet_import_password: String,
+				ARG_OPTION arg_wallet_import_password: String = None,
 				"--password=<FILE>",
 				"Path to the password file",
 			}
@@ -93,11 +92,11 @@ usage! {
 		{
 			"Import",
 
-			ARG arg_import_file: String,
+			ARG_OPTION arg_import_file: String = None,
 			"[FILE]",
 			"Path to the file to import",
 
-			ARG arg_import_format: String,
+			ARG_OPTION arg_import_format: String = None,
 			"--format=[FORMAT]",
 			"Import in a given format. FORMAT must be either 'hex' or 'binary'. (default: auto)",
 		}
@@ -110,11 +109,11 @@ usage! {
 			{
 				"Export blocks",
 
-				ARG arg_export_blocks_file: String,
+				ARG_OPTION arg_export_blocks_file: String = None,
 				"[FILE]",
 				"Path to the exported file",
 
-				ARG arg_export_blocks_format: String,
+				ARG_OPTION arg_export_blocks_format: String = None,
 				"--format=[FORMAT]",
 				"Export in a given format. FORMAT must be either 'hex' or 'binary'. (default: binary)",
 			}
@@ -123,11 +122,15 @@ usage! {
 			{
 				"Export state",
 
-				ARG arg_export_state_file: String,
+				ARG arg_export_state_at: String = "latest",
+				"--at=[BLOCK]",
+				"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
+
+				ARG_OPTION arg_export_state_file: String = None,
 				"[FILE]",
 				"Path to the exported file",
 
-				ARG arg_export_state_format: String,
+				ARG_OPTION arg_export_state_format: String = None,
 				"--format=[FORMAT]",
 				"Export in a given format. FORMAT must be either 'hex' or 'binary'. (default: binary)",
 			}
@@ -149,11 +152,11 @@ usage! {
 			{
 				"Sign",
 
-				ARG arg_signer_sign_id: usize,
+				ARG_OPTION arg_signer_sign_id: usize = None,
 				"[ID]",
 				"ID",
 
-				ARG arg_signer_sign_password: String,
+				ARG_OPTION arg_signer_sign_password: String = None,
 				"--password=[FILE]",
 				"Path to the password file",
 			}
@@ -162,7 +165,7 @@ usage! {
 			{
 				"Reject",
 
-				ARG arg_signer_reject_id: usize,
+				ARG_OPTION arg_signer_reject_id: usize = None,
 				"<ID>",
 				"ID",
 			}
@@ -172,7 +175,11 @@ usage! {
 		{
 			"Make a snapshot of the database",
 
-			ARG arg_snapshot_file: String,
+			ARG arg_snapshot_at: String = "latest",
+			"--at=[BLOCK]",
+			"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
+
+			ARG_OPTION arg_snapshot_file: String = None,
 			"<FILE>",
 			"Path to the file to export to",
 		}
@@ -181,7 +188,7 @@ usage! {
 		{
 			"Restore database from snapshot",
 
-			ARG arg_restore_file: String,
+			ARG_OPTION arg_restore_file: String = None,
 			"[FILE]",
 			"Path to the file to restore from",
 		}
@@ -194,7 +201,7 @@ usage! {
 			{
 				"Hash",
 
-				ARG arg_tools_hash_file: String,
+				ARG_OPTION arg_tools_hash_file: String = None,
 				"<FILE>",
 				"File",
 			}
@@ -794,10 +801,6 @@ usage! {
 			"--no-periodic-snapshot",
 			"Disable automated snapshots which usually occur once every 10000 blocks.",
 
-			ARG arg_at: String = "latest", or |_| None,
-			"--at=[BLOCK]",
-			"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
-
 		["Virtual Machine options"]
 			FLAG flag_jitvm: bool = false, or |c: &Config| otry!(c.vm).jit.clone(),
 			"--jitvm",
@@ -1175,6 +1178,25 @@ mod tests {
 		Snapshots, VM, Misc, Whisper, SecretStore,
 	};
 	use toml;
+
+	#[test]
+	fn should_use_subcommand_arg_default() {
+		let args = Args::parse(&["parity", "export", "state", "--at", "123"]).unwrap();
+		assert_eq!(args.arg_export_state_at, Some("123"));
+		assert_eq!(args.arg_snapshot_at, Some("latest"));
+
+		let args = Args::parse(&["parity", "snapshot", "--at", "123"]).unwrap();
+		assert_eq!(args.arg_snapshot_at, Some("123"));
+		assert_eq!(args.arg_export_state_at, Some("latest"));
+
+		let args = Args::parse(&["parity", "export", "state"]).unwrap();
+		assert_eq!(args.arg_snapshot_at, Some("latest"));
+		assert_eq!(args.arg_export_state_at, Some("latest"));
+
+		let args = Args::parse(&["parity", "snapshot"]).unwrap();
+		assert_eq!(args.arg_snapshot_at, Some("latest"));
+		assert_eq!(args.arg_export_state_at, Some("latest"));
+	}
 
 	#[test]
 	fn should_parse_global_args_with_subcommand() {

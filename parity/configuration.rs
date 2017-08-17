@@ -155,7 +155,7 @@ impl Configuration {
 			if self.args.cmd_signer_new_token {
 				Cmd::SignerToken(ws_conf, ui_conf, logger_config.clone())
 			} else if self.args.cmd_signer_sign {
-				let pwfile = self.args.arg_password.get(0).map(|pwfile| {
+				let pwfile = self.args.arg_signer_sign_password.map(|pwfile| {
 					PathBuf::from(pwfile)
 				});
 				Cmd::SignerSign {
@@ -192,7 +192,7 @@ impl Configuration {
 					iterations: self.args.arg_keys_iterations,
 					path: dirs.keys,
 					spec: spec,
-					password_file: self.args.arg_password.first().cloned(),
+					password_file: self.args.arg_password.first().cloned(), // @TODO global or subcommand arg?
 				};
 				AccountCmd::New(new_acc)
 			} else if self.args.cmd_account_list {
@@ -286,7 +286,7 @@ impl Configuration {
 					wal: wal,
 					tracing: tracing,
 					fat_db: fat_db,
-					at: to_block_id(&self.args.arg_at)?,
+					at: to_block_id(&self.args.arg_export_state_at)?,
 					storage: !self.args.flag_no_storage,
 					code: !self.args.flag_no_code,
 					min_balance: self.args.arg_min_balance.and_then(|s| to_u256(&s).ok()),
@@ -310,7 +310,7 @@ impl Configuration {
 				file_path: self.args.arg_snapshot_file.clone(),
 				wal: wal,
 				kind: snapshot::Kind::Take,
-				block_at: to_block_id(&self.args.arg_at)?,
+				block_at: to_block_id(&self.args.arg_snapshot_at)?,
 			};
 			Cmd::Snapshot(snapshot_cmd)
 		} else if self.args.cmd_restore {
@@ -496,7 +496,7 @@ impl Configuration {
 		let cfg = AccountsConfig {
 			iterations: self.args.arg_keys_iterations,
 			testnet: self.args.flag_testnet,
-			password_files: self.args.arg_password.clone(),
+			password_files: self.args.arg_password.clone(), // @TODO
 			unlocked_accounts: to_addresses(&self.args.arg_unlock)?,
 			enable_hardware_wallets: !self.args.flag_no_hardware_wallets,
 			enable_fast_unlock: self.args.flag_fast_unlock,
