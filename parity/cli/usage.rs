@@ -443,7 +443,7 @@ macro_rules! usage {
 							args.$subc_subc_argo = self.$subc_subc_argo.or_else(|| $subc_subc_argo_default.into());
 						)*
 						$(
-							args.$subc_subc_argmo = self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into());;
+							args.$subc_subc_argmo = self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into());
 						)*
 					)*
 
@@ -454,7 +454,7 @@ macro_rules! usage {
 						args.$subc_argo = self.$subc_argo.or_else(|| $subc_argo_default.into());
 					)*
 					$(
-						args.$subc_argmo = self.$subc_argmo.or_else(|| $subc_argmo_default.into());;
+						args.$subc_argmo = self.$subc_argmo.or_else(|| $subc_argmo_default.into());
 					)*
 				)*
 

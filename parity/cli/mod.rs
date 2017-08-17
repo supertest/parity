@@ -90,7 +90,7 @@ usage! {
 
 		CMD cmd_import
 		{
-			"Import",
+			"Import blockchain",
 
 			ARG_OPTION arg_import_file: String = None,
 			"[FILE]",
@@ -103,7 +103,7 @@ usage! {
 
 		CMD cmd_export
 		{
-			"Export",
+			"Export blockchain",
 
 			CMD cmd_export_blocks
 			{

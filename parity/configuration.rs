@@ -332,7 +332,7 @@ impl Configuration {
 			Cmd::Snapshot(restore_cmd)
 		} else {
 			let daemon = if self.args.cmd_daemon {
-				Some(self.args.arg_daemon_pid_file.clone().unwrap()) // ?
+				Some(self.args.arg_daemon_pid_file.clone().unwrap())
 			} else {
 				None
 			};
@@ -496,7 +496,7 @@ impl Configuration {
 		let cfg = AccountsConfig {
 			iterations: self.args.arg_keys_iterations,
 			testnet: self.args.flag_testnet,
-			password_files: self.args.arg_password.clone(), // @TODO
+			password_files: self.args.arg_password.clone(),
 			unlocked_accounts: to_addresses(&self.args.arg_unlock)?,
 			enable_hardware_wallets: !self.args.flag_no_hardware_wallets,
 			enable_fast_unlock: self.args.flag_fast_unlock,
