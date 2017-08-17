@@ -1182,20 +1182,20 @@ mod tests {
 	#[test]
 	fn should_use_subcommand_arg_default() {
 		let args = Args::parse(&["parity", "export", "state", "--at", "123"]).unwrap();
-		assert_eq!(args.arg_export_state_at, Some("123"));
-		assert_eq!(args.arg_snapshot_at, Some("latest"));
+		assert_eq!(args.arg_export_state_at, "123");
+		assert_eq!(args.arg_snapshot_at, "latest");
 
-		let args = Args::parse(&["parity", "snapshot", "--at", "123"]).unwrap();
-		assert_eq!(args.arg_snapshot_at, Some("123"));
-		assert_eq!(args.arg_export_state_at, Some("latest"));
+		let args = Args::parse(&["parity", "snapshot", "--at", "123", "file.dump"]).unwrap();
+		assert_eq!(args.arg_snapshot_at, "123");
+		assert_eq!(args.arg_export_state_at, "latest");
 
 		let args = Args::parse(&["parity", "export", "state"]).unwrap();
-		assert_eq!(args.arg_snapshot_at, Some("latest"));
-		assert_eq!(args.arg_export_state_at, Some("latest"));
+		assert_eq!(args.arg_snapshot_at, "latest");
+		assert_eq!(args.arg_export_state_at, "latest");
 
-		let args = Args::parse(&["parity", "snapshot"]).unwrap();
-		assert_eq!(args.arg_snapshot_at, Some("latest"));
-		assert_eq!(args.arg_export_state_at, Some("latest"));
+		let args = Args::parse(&["parity", "snapshot", "file.dump"]).unwrap();
+		assert_eq!(args.arg_snapshot_at, "latest");
+		assert_eq!(args.arg_export_state_at, "latest");
 	}
 
 	#[test]
@@ -1464,7 +1464,8 @@ mod tests {
 			arg_max_balance: None,
 
 			// -- Snapshot Optons
-			arg_at: "latest".into(),
+			arg_export_state_at: "latest".into(),
+			arg_snapshot_at: "latest".into(),
 			flag_no_periodic_snapshot: false,
 
 			// -- Virtual Machine Options
