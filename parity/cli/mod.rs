@@ -64,7 +64,7 @@ usage! {
 			{
 				"Import account",
 
-				ARG_OPTION arg_account_import_path : {{{Vec<String>}}} = None,
+				ARG_OPTION arg_account_import_path : {{{ Vec<String> }}} = None,
 				"<PATH>...",
 				"Path to the accounts",
 			}
@@ -122,7 +122,7 @@ usage! {
 			{
 				"Export state",
 
-				ARG arg_export_state_at: String = "latest",
+				ARG arg_export_state_at: {{{String}}} = "latest",
 				"--at=[BLOCK]",
 				"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
 
