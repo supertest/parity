@@ -31,8 +31,27 @@ macro_rules! otry {
 		}
 	)
 }
-macro_rules! if_optional {
+
+macro_rules! inner_type {
+	({Option<$type:ty>}) => (
+		$type
+	);
+	({Vec<$type:ty>}) => (
+		$type
+	);
+}
+
+macro_rules! if_option {
 	({Option<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
+		$then
+	);
+	({$type:ty} THEN {$then:expr} ELSE {$otherwise:expr}) => (
+		$otherwise
+	);
+}
+
+macro_rules! if_vector {
+	({Vec<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
 		$then
 	);
 	({$type:ty} THEN {$then:expr} ELSE {$otherwise:expr}) => (
@@ -445,21 +464,21 @@ macro_rules! usage {
 					$(
 						args.$subc_subc = self.$subc_subc;
 						$(
-							args.$subc_subc_arg = if_optional!(
+							args.$subc_subc_arg = if_option!(
 								{ $subc_subc_arg_type }
 								THEN { self.$subc_subc_arg.or_else(|| $subc_subc_arg_default.into()) }
 								ELSE { self.$subc_subc_arg.unwrap_or($subc_subc_arg_default.into()) }
 							);
 						)*
 						$(
-							args.$subc_subc_argo = if_optional!(
+							args.$subc_subc_argo = if_option!(
 								{ Option<$subc_subc_argo_type> }
 								THEN { self.$subc_subc_argo.or_else(|| $subc_subc_argo_default.into()) }
 								ELSE { self.$subc_subc_argo.unwrap_or($subc_subc_argo_default.into()) }
 							);
 						)*
 						$(
-							args.$subc_subc_argmo = if_optional!(
+							args.$subc_subc_argmo = if_option!(
 								{ Option<Vec<String>> }
 								THEN { self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into()) }
 								ELSE { self.$subc_subc_argmo.unwrap_or($subc_subc_argmo_default.into()) }
@@ -468,21 +487,21 @@ macro_rules! usage {
 					)*
 
 					$(
-						args.$subc_arg = if_optional!(
+						args.$subc_arg = if_option!(
 							{ $subc_arg_type }
 							THEN { self.$subc_arg.or_else(|| $subc_arg_default.into()) }
 							ELSE { self.$subc_arg.unwrap_or($subc_arg_default.into()) }
 						);
 					)*
 					$(
-						args.$subc_argo = if_optional!(
+						args.$subc_argo = if_option!(
 							{ Option<$subc_argo_type> }
 							THEN { self.$subc_argo.or_else(|| $subc_argo_default.into()) }
 							ELSE { self.$subc_argo.unwrap_or($subc_argo_default.into()) }
 						);
 					)*
 					$(
-						args.$subc_argmo = if_optional!(
+						args.$subc_argmo = if_option!(
 							{ Option<Vec<$subc_argmo_type>> }
 							THEN { self.$subc_argmo.or_else(|| $subc_argmo_default.into()) }
 							ELSE { self.$subc_argmo.unwrap_or($subc_argmo_default.into()) }
@@ -495,21 +514,21 @@ macro_rules! usage {
 						args.$flag = self.$flag || $flag_from_config(&config).unwrap_or(false);
 					)*
 					$(
-						args.$arg = if_optional!(
+						args.$arg = if_option!(
 							{ $arg_type }
 							THEN { self.$arg.or_else(|| $arg_from_config(&config)).or_else(|| $arg_default.into()) }
 							ELSE { self.$arg.or_else(|| $arg_from_config(&config)).unwrap_or_else(|| $arg_default.into()) }
 						);
 					)*
 					$(
-						args.$argm = if_optional!(
+						args.$argm = if_option!(
 							{ Vec<$argm_type> }
 							THEN { self.$argm.or_else(|| $argm_from_config(&config)).or_else(|| $argm_default.into()) }
 							ELSE { self.$argm.or_else(|| $argm_from_config(&config)).unwrap_or_else(|| $argm_default.into()) }
 						);
 					)*
 					$(
-						args.$argo = if_optional!(
+						args.$argo = if_option!(
 							{ Option<$argo_type> }
 							THEN { self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into()) }
 							ELSE { self.$argo.or_else(|| $argo_from_config(&config)).unwrap_or_else(|| $argo_default.into()) }
@@ -602,13 +621,61 @@ macro_rules! usage {
 				let mut raw_args : RawArgs = Default::default();
 				$(
 					$(
-						raw_args.$arg = value_t!(matches, stringify!($arg), $arg_type).ok();
+						raw_args.$arg = if_option!( // TAKE THIS ONE TO REPLICATE
+							{ $arg_type }
+							THEN {
+								if_vector!(
+									{ inner_type!($arg_type) }
+									THEN { values_t!(matches, stringify!($arg), inner_type!(inner_type!($arg_type))).ok() }
+									ELSE { value_t!(matches, stringify!($arg), inner_type!($arg_type)).ok() }
+								)
+							}
+							ELSE {
+								if_vector!(
+									{ $arg_type }
+									THEN { values_t!(matches, stringify!($arg), inner_type!($arg_type)).ok() }
+									ELSE { value_t!(matches, stringify!($arg), $arg_type).ok() }
+								)
+							}
+						);
 					)*
 					$(
-						raw_args.$argm = values_t!(matches, stringify!($argm), $argm_type).ok();
+						raw_args.$argm = if_option!(
+							{ Vec<$argm_type> }
+							THEN {
+								if_vector!(
+									{ $argm_type } // will be inner_type!($argm_type)
+									THEN { values_t!(matches, stringify!($argm), inner_type!($argm_type)).ok() } // will be inner_type!(inner_type!($argm_type))
+									ELSE { value_t!(matches, stringify!($argm), $argm_type).ok() }
+								)
+							}
+							ELSE {
+								if_vector!(
+									{ Vec<$argm_type> }
+									THEN { values_t!(matches, stringify!($argm), $argm_type).ok() }
+									ELSE { value_t!(matches, stringify!($argm), $argm_type).ok() }
+								)
+							}
+						);
 					)*
 					$(
-						raw_args.$argo = value_t!(matches, stringify!($argo), $argo_type).ok();
+						raw_args.$argo = if_option!(
+							{ Option<$argo_type> }
+							THEN {
+								if_vector!(
+									{ $argo_type } // will be inner_type!($type)
+									THEN { values_t!(matches, stringify!($argo), inner_type!($argo_type)).ok() } // will be inner_type!(inner_type!)
+									ELSE { value_t!(matches, stringify!($argo), $argo_type).ok() } // will be inner_type!
+								)
+							}
+							ELSE {
+								if_vector!(
+									{ $argo_type }
+									THEN { values_t!(matches, stringify!($argo), inner_type!($argo_type)).ok() }
+									ELSE { value_t!(matches, stringify!($argo), $argo_type).ok() }
+								)
+							}
+						);
 					)*
 					$(
 						raw_args.$flag = matches.is_present(stringify!($flag));
