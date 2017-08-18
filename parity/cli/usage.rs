@@ -468,7 +468,11 @@ macro_rules! usage {
 					)*
 
 					$(
-						args.$subc_arg = self.$subc_arg.unwrap_or($subc_arg_default.into());
+						args.$subc_arg = if_optional!(
+							{ $subc_arg_type }
+							THEN { self.$subc_arg.or_else(|| $subc_arg_default.into()) }
+							ELSE { self.$subc_arg.unwrap_or($subc_arg_default.into()) }
+						);
 					)*
 					$(
 						args.$subc_argo = if_optional!(
@@ -478,7 +482,11 @@ macro_rules! usage {
 						);
 					)*
 					$(
-						args.$subc_argmo = self.$subc_argmo.or_else(|| $subc_argmo_default.into());
+						args.$subc_argmo = if_optional!(
+							{ Option<Vec<$subc_argmo_type>> }
+							THEN { self.$subc_argmo.or_else(|| $subc_argmo_default.into()) }
+							ELSE { self.$subc_argmo.unwrap_or($subc_argmo_default.into()) }
+						);
 					)*
 				)*
 
@@ -487,13 +495,25 @@ macro_rules! usage {
 						args.$flag = self.$flag || $flag_from_config(&config).unwrap_or(false);
 					)*
 					$(
-						args.$arg = self.$arg.or_else(|| $arg_from_config(&config)).unwrap_or_else(|| $arg_default.into());
+						args.$arg = if_optional!(
+							{ $arg_type }
+							THEN { self.$arg.or_else(|| $arg_from_config(&config)).or_else(|| $arg_default.into()) }
+							ELSE { self.$arg.or_else(|| $arg_from_config(&config)).unwrap_or_else(|| $arg_default.into()) }
+						);
 					)*
 					$(
-						args.$argm = self.$argm.or_else(|| $argm_from_config(&config)).unwrap_or_else(|| $argm_default.into());
+						args.$argm = if_optional!(
+							{ Vec<$argm_type> }
+							THEN { self.$argm.or_else(|| $argm_from_config(&config)).or_else(|| $argm_default.into()) }
+							ELSE { self.$argm.or_else(|| $argm_from_config(&config)).unwrap_or_else(|| $argm_default.into()) }
+						);
 					)*
 					$(
-						args.$argo = self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into());
+						args.$argo = if_optional!(
+							{ Option<$argo_type> }
+							THEN { self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into()) }
+							ELSE { self.$argo.or_else(|| $argo_from_config(&config)).unwrap_or_else(|| $argo_default.into()) }
+						);
 					)*
 				)*
 				args
