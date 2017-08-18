@@ -681,10 +681,10 @@ macro_rules! usage {
 									raw_args.$subc_subc_arg = if_option!( // TAKE THIS ONE TO REPLICATE (mais reprendre argo)
 										{ $($subc_subc_arg_type_tt)* }
 										THEN {
-											if_option_vector!( // @ here
-												{ $($subc_subc_arg_type_tt)* }
+											if_vector!( // @ here
+												{ inner_option_type($($subc_subc_arg_type_tt)*) }
 												THEN { values_t!(subsubmatches, stringify!($subc_subc_arg), inner_vec_type!(inner_option_type!($($subc_subc_arg_type_tt)*))).ok() }
-												ELSE { Default::default() }
+												ELSE { value_t!(subsubmatches, stringify!($subc_subc_arg), inner_option_type!($($subc_subc_arg_type_tt)*)).ok() }
 											)
 										}
 										ELSE {
