@@ -50,6 +50,15 @@ macro_rules! if_option {
 	);
 }
 
+macro_rules! if_option_then_type {
+	({Option<$type:ty>} THEN {$then:ty} ELSE {$otherwise:ty}) => (
+		$then
+	);
+	({$type:ty} THEN {$then:ty} ELSE {$otherwise:ty}) => (
+		$otherwise
+	);
+}
+
 macro_rules! if_vector {
 	({Vec<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
 		$then
@@ -268,7 +277,11 @@ macro_rules! usage {
 				$(
 					$subc_subc: bool,
 					$(
-						$subc_subc_arg: Option<$($subc_subc_arg_type_tt)*>,
+						$subc_subc_arg: if_option_then_type!(
+							{$($subc_subc_arg_type_tt)*}
+							THEN { $($subc_subc_arg_type_tt)* }
+							ELSE { Option<$($subc_subc_arg_type_tt)*> }
+						),
 					)*
 					$(
 						$subc_subc_argo: Option<$($subc_subc_argo_type_tt)*>,

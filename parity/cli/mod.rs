@@ -64,7 +64,7 @@ usage! {
 			{
 				"Import account",
 
-				ARG_OPTION arg_account_import_path : {{{ Vec<String> }}} = None,
+				ARG arg_account_import_path : {{{ Option<Vec<String>> }}} = None,
 				"<PATH>...",
 				"Path to the accounts",
 			}
