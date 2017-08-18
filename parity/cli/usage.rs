@@ -33,10 +33,10 @@ macro_rules! otry {
 }
 
 macro_rules! inner_type {
-	({Option<$type:ty>}) => (
+	(Option<$type:ty>) => (
 		$type
 	);
-	({Vec<$type:ty>}) => (
+	(Vec<$type:ty>) => (
 		$type
 	);
 }
@@ -59,17 +59,17 @@ macro_rules! if_vector {
 	);
 }
 
-macro_rules! if_option2 {
-	({$($type:tt)*} THEN2 {$then:expr} ELSE2 {$otherwise:expr}) => (
-		if_option!({$($type)*} THEN {$then} ELSE {$otherwise})
-	);
-}
+// macro_rules! if_option2 {
+// 	({$($type:tt)*} THEN2 {$then:expr} ELSE2 {$otherwise:expr}) => (
+// 		if_option!({$($type)*} THEN {$then} ELSE {$otherwise})
+// 	);
+// }
 
-macro_rules! if_vector2 {
-	({$($type:tt)*} THEN2 {$then:expr} ELSE2 {$otherwise:expr}) => (
-		if_vector!({$($type)*} THEN {$then} ELSE {$otherwise})
-	);
-}
+// macro_rules! if_vector2 {
+// 	({$($type:tt)*} THEN2 {$then:expr} ELSE2 {$otherwise:expr}) => (
+// 		if_vector!({$($type)*} THEN {$then} ELSE {$otherwise})
+// 	);
+// }
 
 
 macro_rules! usage_with_ident {
@@ -112,7 +112,7 @@ macro_rules! usage {
 								ARG $subc_subc_arg:ident : $subc_subc_arg_type:ty = $subc_subc_arg_default:expr, $subc_subc_arg_usage:expr, $subc_subc_arg_help:expr,
 							)*
 							$(
-								ARG_OPTION $subc_subc_argo:ident : $subc_subc_argo_type:ty = $subc_subc_argo_default:expr, $subc_subc_argo_usage:expr, $subc_subc_argo_help:expr,
+								ARG_OPTION $subc_subc_argo:ident : {{{ $($subc_subc_argo_type:tt)* }}} = $subc_subc_argo_default:expr, $subc_subc_argo_usage:expr, $subc_subc_argo_help:expr,
 							)*
 						}
 					)*
@@ -204,7 +204,7 @@ macro_rules! usage {
 						pub $subc_subc_arg: $subc_subc_arg_type,
 					)*
 					$(
-						pub $subc_subc_argo: Option<$subc_subc_argo_type>,
+						pub $subc_subc_argo: Option<$($subc_subc_argo_type)*>,
 					)*
 				)*
 
@@ -284,7 +284,7 @@ macro_rules! usage {
 						$subc_subc_arg: Option<$subc_subc_arg_type>,
 					)*
 					$(
-						$subc_subc_argo: Option<$subc_subc_argo_type>,
+						$subc_subc_argo: Option<$($subc_subc_argo_type)*>,
 					)*
 				)*
 
@@ -455,7 +455,7 @@ macro_rules! usage {
 						)*
 						$(
 							args.$subc_subc_argo = if_option!(
-								{ Option<$subc_subc_argo_type> }
+								{ Option<$($subc_subc_argo_type)*> }
 								THEN { self.$subc_subc_argo.or_else(|| $subc_subc_argo_default.into()) }
 								ELSE { self.$subc_subc_argo.unwrap_or($subc_subc_argo_default.into()) }
 							);
@@ -676,20 +676,20 @@ macro_rules! usage {
 									);
 								)*
 								$(
-									raw_args.$subc_subc_argo = if_option2!(
-										{ Option<$subc_subc_argo_type> } // will be $subc_subc_argo_type
-										THEN2 {
-											if_vector2!( // @ here
-												{ $subc_subc_argo_type } // will be inner type
-												THEN2 { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($subc_subc_argo_type)).ok() } // will be inner type +1
-												ELSE2 { Default::default(); /* @todo */ /*value_t!(subsubmatches, stringify!($subc_subc_argo), $subc_subc_argo_type).ok()*/ } // will be inner type
+									raw_args.$subc_subc_argo = if_option!(
+										{ Option<$($subc_subc_argo_type)*> } // will be $($subc_subc_argo_type)*
+										THEN {
+											if_vector!( // @ here
+												{ $($subc_subc_argo_type)* } // will be inner type
+												THEN { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($($subc_subc_argo_type)*)).ok() } // will be inner type +1
+												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argo), $($subc_subc_argo_type)*).ok() } // will be inner type
 											)
 										}
-										ELSE2 {
-											if_vector2!(
-												{ $subc_subc_argo_type }
-												THEN { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($subc_subc_argo_type)).ok() }
-												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argo), $subc_subc_argo_type).ok() }
+										ELSE {
+											if_vector!(
+												{ $($subc_subc_argo_type)* }
+												THEN { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($($subc_subc_argo_type)*)).ok() }
+												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argo), $($subc_subc_argo_type)*).ok() }
 											)
 										}
 									);
