@@ -64,7 +64,7 @@ usage! {
 			{
 				"Import account",
 
-				ARG_MULTIPLE_OPTION arg_account_import_path: String = None,
+				ARG_OPTION arg_account_import_path: Vec<String> = None,
 				"<PATH>...",
 				"Path to the accounts",
 			}

@@ -59,6 +59,19 @@ macro_rules! if_vector {
 	);
 }
 
+macro_rules! if_option2 {
+	({$($type:tt)*} THEN2 {$then:expr} ELSE2 {$otherwise:expr}) => (
+		if_option!({$($type)*} THEN {$then} ELSE {$otherwise})
+	);
+}
+
+macro_rules! if_vector2 {
+	({$($type:tt)*} THEN2 {$then:expr} ELSE2 {$otherwise:expr}) => (
+		if_vector!({$($type)*} THEN {$then} ELSE {$otherwise})
+	);
+}
+
+
 macro_rules! usage_with_ident {
 	($name:expr, $usage:expr, $help:expr) => (
 		if $usage.contains("<") {
@@ -101,9 +114,6 @@ macro_rules! usage {
 							$(
 								ARG_OPTION $subc_subc_argo:ident : $subc_subc_argo_type:ty = $subc_subc_argo_default:expr, $subc_subc_argo_usage:expr, $subc_subc_argo_help:expr,
 							)*
-							$(
-								ARG_MULTIPLE_OPTION $subc_subc_argmo:ident : $subc_subc_argmo_type:ty = $subc_subc_argmo_default:expr, $subc_subc_argmo_usage:expr, $subc_subc_argmo_help:expr,
-							)*
 						}
 					)*
 
@@ -112,9 +122,6 @@ macro_rules! usage {
 					)*
 					$(
 						ARG_OPTION $subc_argo:ident : $subc_argo_type:ty = $subc_argo_default:expr, $subc_argo_usage:expr, $subc_argo_help:expr,
-					)*
-					$(
-						ARG_MULTIPLE_OPTION $subc_argmo:ident : $subc_argmo_type:ty = $subc_argmo_default:expr, $subc_argmo_usage:expr, $subc_argmo_help:expr,
 					)*
 				}
 			)*
@@ -199,9 +206,6 @@ macro_rules! usage {
 					$(
 						pub $subc_subc_argo: Option<$subc_subc_argo_type>,
 					)*
-					$(
-						pub $subc_subc_argmo: Option<Vec<$subc_subc_argmo_type>>,
-					)*
 				)*
 
 				$(
@@ -209,9 +213,6 @@ macro_rules! usage {
 				)*
 				$(
 					pub $subc_argo: Option<$subc_argo_type>,
-				)*
-				$(
-					pub $subc_argmo: Option<Vec<$subc_argmo_type>>,
 				)*
 			)*
 
@@ -244,9 +245,6 @@ macro_rules! usage {
 							$(
 								$subc_subc_argo: Default::default(),
 							)*
-							$(
-								$subc_subc_argmo: Default::default(),
-							)*
 						)*
 
 						$(
@@ -254,9 +252,6 @@ macro_rules! usage {
 						)*
 						$(
 							$subc_argo: Default::default(),
-						)*
-						$(
-							$subc_argmo: Default::default(),
 						)*
 					)*
 
@@ -291,9 +286,6 @@ macro_rules! usage {
 					$(
 						$subc_subc_argo: Option<$subc_subc_argo_type>,
 					)*
-					$(
-						$subc_subc_argmo: Option<Vec<$subc_subc_argmo_type>>,
-					)*
 				)*
 
 				$(
@@ -301,9 +293,6 @@ macro_rules! usage {
 				)*
 				$(
 					$subc_argo: Option<$subc_argo_type>,
-				)*
-				$(
-					$subc_argmo: Option<Vec<$subc_argmo_type>>,
 				)*
 			)*
 			$(
@@ -378,7 +367,7 @@ macro_rules! usage {
 				let mut help : String = include_str!("./usage_header.txt").to_owned();
 
 				help.push_str("\n\n");
-
+/*
 				// Subcommands
 				help.push_str("parity [options]\n");
 				$(
@@ -393,9 +382,6 @@ macro_rules! usage {
 								)*
 								$(
 									$subc_subc_argo_usage,
-								)*
-								$(
-									$subc_subc_argmo_usage,
 								)*
 							];
 
@@ -413,9 +399,6 @@ macro_rules! usage {
 								)*
 								$(
 									$subc_argo_usage,
-								)*
-								$(
-									$subc_argmo_usage,
 								)*
 							];
 
@@ -450,7 +433,7 @@ macro_rules! usage {
 					)*
 
 				)*
-
+*/
 				help
 			}
 		}
@@ -477,13 +460,6 @@ macro_rules! usage {
 								ELSE { self.$subc_subc_argo.unwrap_or($subc_subc_argo_default.into()) }
 							);
 						)*
-						$(
-							args.$subc_subc_argmo = if_option!(
-								{ Option<Vec<String>> }
-								THEN { self.$subc_subc_argmo.or_else(|| $subc_subc_argmo_default.into()) }
-								ELSE { self.$subc_subc_argmo.unwrap_or($subc_subc_argmo_default.into()) }
-							);
-						)*
 					)*
 
 					$(
@@ -498,13 +474,6 @@ macro_rules! usage {
 							{ Option<$subc_argo_type> }
 							THEN { self.$subc_argo.or_else(|| $subc_argo_default.into()) }
 							ELSE { self.$subc_argo.unwrap_or($subc_argo_default.into()) }
-						);
-					)*
-					$(
-						args.$subc_argmo = if_option!(
-							{ Option<Vec<$subc_argmo_type>> }
-							THEN { self.$subc_argmo.or_else(|| $subc_argmo_default.into()) }
-							ELSE { self.$subc_argmo.unwrap_or($subc_argmo_default.into()) }
 						);
 					)*
 				)*
@@ -569,9 +538,6 @@ macro_rules! usage {
 							$(
 								usage_with_ident!(stringify!($subc_argo), $subc_argo_usage, $subc_argo_help),
 							)*
-							$(
-								usage_with_ident!(stringify!($subc_argmo), $subc_argmo_usage, $subc_argmo_help),
-							)*
 						];
 
 						subc_usages.insert(stringify!($subc),this_subc_usages);
@@ -584,9 +550,6 @@ macro_rules! usage {
 									)*
 									$(
 										usage_with_ident!(stringify!($subc_subc_argo), $subc_subc_argo_usage, $subc_subc_argo_help),
-									)*
-									$(
-										usage_with_ident!(stringify!($subc_subc_argmo), $subc_subc_argmo_usage, $subc_subc_argmo_help),
 									)*
 								];
 
@@ -694,7 +657,7 @@ macro_rules! usage {
 
 								// Sub-subcommand arguments
 								$(
-									raw_args.$subc_subc_arg = if_option!( // TAKE THIS ONE TO REPLICATE
+									raw_args.$subc_subc_arg = if_option!( // TAKE THIS ONE TO REPLICATE (mais reprendre argo)
 										{ $subc_subc_arg_type }
 										THEN {
 											if_vector!(
@@ -713,17 +676,17 @@ macro_rules! usage {
 									);
 								)*
 								$(
-									raw_args.$subc_subc_argo = if_option!(
+									raw_args.$subc_subc_argo = if_option2!(
 										{ Option<$subc_subc_argo_type> } // will be $subc_subc_argo_type
-										THEN {
-											if_vector!(
+										THEN2 {
+											if_vector2!( // @ here
 												{ $subc_subc_argo_type } // will be inner type
-												THEN { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($subc_subc_argo_type)).ok() } // will be inner type +1
-												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argo), $subc_subc_argo_type).ok() } // will be inner type
+												THEN2 { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($subc_subc_argo_type)).ok() } // will be inner type +1
+												ELSE2 { Default::default(); /* @todo */ /*value_t!(subsubmatches, stringify!($subc_subc_argo), $subc_subc_argo_type).ok()*/ } // will be inner type
 											)
 										}
-										ELSE {
-											if_vector!(
+										ELSE2 {
+											if_vector2!(
 												{ $subc_subc_argo_type }
 												THEN { values_t!(subsubmatches, stringify!($subc_subc_argo), inner_type!($subc_subc_argo_type)).ok() }
 												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argo), $subc_subc_argo_type).ok() }
@@ -731,25 +694,7 @@ macro_rules! usage {
 										}
 									);
 								)*
-								$(
-									raw_args.$subc_subc_argmo = if_option!(
-										{ Option<Vec<$subc_subc_argmo_type>> } // will be $subc_subc_argmo_type
-										THEN {
-											if_vector!(
-												{ Vec<$subc_subc_argmo_type> } // will be inner type
-												THEN { values_t!(subsubmatches, stringify!($subc_subc_argmo), $subc_subc_argmo_type).ok() } // will be inner type +2
-												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argmo), $subc_subc_argmo_type).ok() } // will be inner type
-											)
-										}
-										ELSE {
-											if_vector!(
-												{ $subc_subc_argmo_type }
-												THEN { values_t!(subsubmatches, stringify!($subc_subc_argmo), inner_type!($subc_subc_argmo_type)).ok() }
-												ELSE { value_t!(subsubmatches, stringify!($subc_subc_argmo), $subc_subc_argmo_type).ok() }
-											)
-										}
-									);
-								)*
+
 							}
 							else {
 								raw_args.$subc_subc = false;
@@ -779,9 +724,6 @@ macro_rules! usage {
 						$(
 							raw_args.$subc_argo = value_t!(submatches, stringify!($subc_argo), $subc_argo_type).ok();
 						)*
-						$(
-							raw_args.$subc_argmo = values_t!(submatches, stringify!($subc_argmo), $subc_argmo_type).ok();
-						)*
 					}
 					else {
 						raw_args.$subc = false;
@@ -803,15 +745,9 @@ macro_rules! usage {
 						$(
 							$subc_subc_argo_usage,
 						)*
-						$(
-							$subc_subc_argmo_usage,
-						)*
 					)*
 					$(
 						$subc_argo_usage,
-					)*
-					$(
-						$subc_argmo_usage,
 					)*
 				)*
 				$(
