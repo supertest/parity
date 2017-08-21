@@ -524,6 +524,14 @@ usage! {
 			"--no-secretstore",
 			"Disable Secret Store functionality.",
 
+			FLAG flag_no_secretstore_http: bool = false, or |c: &Config| otry!(c.secretstore).disable_http.clone(),
+			"--no-secretstore-http",
+			"Disable Secret Store HTTP API.",
+
+ 			FLAG flag_no_secretstore_acl_check: bool = false, or |c: &Config| otry!(c.secretstore).disable_acl_check.clone(),
+			"--no-acl-check",
+			"Disable ACL check (useful for test environments).",
+
 			ARG arg_secretstore_nodes: {{{ String }}} = "", or |c: &Config| otry!(c.secretstore).nodes.as_ref().map(|vec| vec.join(",")),
 			"--secretstore-nodes=[NODES]",
 			"Comma-separated list of other secret store cluster nodes in form NODE_PUBLIC_KEY_IN_HEX@NODE_IP_ADDR:NODE_PORT.",
@@ -1070,6 +1078,8 @@ struct Dapps {
 #[derive(Default, Debug, PartialEq, Deserialize)]
 struct SecretStore {
 	disable: Option<bool>,
+	disable_http: Option<bool>,
+	disable_acl_check: Option<bool>,
 	self_secret: Option<String>,
 	nodes: Option<Vec<String>>,
 	interface: Option<String>,
@@ -1388,6 +1398,8 @@ mod tests {
 			flag_no_dapps: false,
 
 			flag_no_secretstore: false,
+			flag_no_secretstore_http: false,
+			flag_no_secretstore_acl_check: false,
 			arg_secretstore_secret: None,
 			arg_secretstore_nodes: "".into(),
 			arg_secretstore_interface: "local".into(),
@@ -1623,6 +1635,8 @@ mod tests {
 			}),
 			secretstore: Some(SecretStore {
 				disable: None,
+				disable_http: None,
+				disable_acl_check: None,
 				self_secret: None,
 				nodes: None,
 				interface: None,
