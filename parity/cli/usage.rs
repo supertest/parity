@@ -59,12 +59,6 @@ macro_rules! inner_option_vec_type {
 	);
 }
 
-macro_rules! as_tt {
-	($type:tt) => (
-		$type
-	)
-}
-
 macro_rules! if_option {
 	({Option<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
 		$then
@@ -702,7 +696,7 @@ macro_rules! usage {
 										ELSE {
 											if_vector!(
 												{ $($subc_subc_arg_type_tt)* }
-												THEN { values_t!(subsubmatches, stringify!($subc_subc_arg), inner_type!($($subc_subc_arg_type_tt)*)).ok() }
+												THEN { values_t!(subsubmatches, stringify!($subc_subc_arg), inner_vec_type!($($subc_subc_arg_type_tt)*)).ok() }
 												ELSE { value_t!(subsubmatches, stringify!($subc_subc_arg), $($subc_subc_arg_type_tt)*).ok() }
 											)
 										}

@@ -78,7 +78,7 @@ usage! {
 			{
 				"Import wallet",
 
-				ARG_OPTION arg_wallet_import_path: {{{String}}} = None,
+				ARG arg_wallet_import_path: {{{ Option<String> }}} = None,
 				"<PATH>",
 				"Path to the wallet",
 
