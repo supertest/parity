@@ -34,7 +34,7 @@ usage! {
 		{
 			"Manage dapps",
 
-			ARG_OPTION arg_dapp_path: String = None,
+			ARG arg_dapp_path: {{{ Option<String> }}} = None,
 			"<PATH>",
 			"Path to the dapps",
 		}
@@ -43,7 +43,7 @@ usage! {
 		{
 			"Use Parity as a daemon",
 
-			ARG_OPTION arg_daemon_pid_file: String = None,
+			ARG arg_daemon_pid_file: {{{ Option<String> }}} = None,
 			"<PID-FILE>",
 			"Path to the pid file",
 		}
@@ -92,11 +92,11 @@ usage! {
 		{
 			"Import blockchain",
 
-			ARG_OPTION arg_import_file: String = None,
+			ARG arg_import_file: {{{ Option<String> }}} = None,
 			"[FILE]",
 			"Path to the file to import",
 
-			ARG_OPTION arg_import_format: String = None,
+			ARG arg_import_format: {{{ Option<String> }}} = None,
 			"--format=[FORMAT]",
 			"Import in a given format. FORMAT must be either 'hex' or 'binary'. (default: auto)",
 		}
@@ -179,7 +179,7 @@ usage! {
 			"--at=[BLOCK]",
 			"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
 
-			ARG_OPTION arg_snapshot_file: String = None,
+			ARG arg_snapshot_file: {{{ Option<String> }}} = None,
 			"<FILE>",
 			"Path to the file to export to",
 		}
@@ -188,7 +188,7 @@ usage! {
 		{
 			"Restore database from snapshot",
 
-			ARG_OPTION arg_restore_file: String = None,
+			ARG arg_restore_file: {{{ Option<String> }}} = None,
 			"[FILE]",
 			"Path to the file to restore from",
 		}

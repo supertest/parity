@@ -140,9 +140,6 @@ macro_rules! usage {
 					$(
 						ARG $subc_arg:ident : {{{ $($subc_arg_type_tt:tt)* }}} = $subc_arg_default:expr, $subc_arg_usage:expr, $subc_arg_help:expr,
 					)*
-					$(
-						ARG_OPTION $subc_argo:ident : $subc_argo_type:ty = $subc_argo_default:expr, $subc_argo_usage:expr, $subc_argo_help:expr,
-					)*
 				}
 			)*
 		}
@@ -228,9 +225,6 @@ macro_rules! usage {
 				$(
 					pub $subc_arg: $($subc_arg_type_tt)*,
 				)*
-				$(
-					pub $subc_argo: Option<$subc_argo_type>,
-				)*
 			)*
 
 			$(
@@ -263,9 +257,6 @@ macro_rules! usage {
 
 						$(
 							$subc_arg: Default::default(),
-						)*
-						$(
-							$subc_argo: Default::default(),
 						)*
 					)*
 
@@ -304,11 +295,13 @@ macro_rules! usage {
 				)*
 
 				$(
-					$subc_arg: Option<$($subc_arg_type_tt)*>,
+					$subc_arg: if_option_then_type!(
+						{$($subc_arg_type_tt)*}
+						THEN { $($subc_arg_type_tt)* }
+						ELSE { Option<$($subc_arg_type_tt)*> }
+					),
 				)*
-				$(
-					$subc_argo: Option<$subc_argo_type>,
-				)*
+
 			)*
 			$(
 				$(
@@ -405,19 +398,16 @@ macro_rules! usage {
 						)*
 
 						if !subc_subc_exist {
-							let subc_argo_usages : Vec<&str> = vec![
+							let subc_arg_usages : Vec<&str> = vec![
 								$(
 									$subc_arg_usage,
 								)*
-								$(
-									$subc_argo_usage,
-								)*
 							];
 
-							if subc_argo_usages.is_empty() {
+							if subc_arg_usages.is_empty() {
 								help.push_str(&format!("parity [options] {}\n", underscore_to_hyphen!(&stringify!($subc)[4..])));
 							} else {
-								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), subc_argo_usages.join(" ")));
+								help.push_str(&format!("parity [options] {} {}\n", underscore_to_hyphen!(&stringify!($subc)[4..]), subc_arg_usages.join(" ")));
 							}
 						}
 					}
@@ -472,13 +462,6 @@ macro_rules! usage {
 							{ $($subc_arg_type_tt)* }
 							THEN { self.$subc_arg.or_else(|| $subc_arg_default.into()) }
 							ELSE { self.$subc_arg.unwrap_or($subc_arg_default.into()) }
-						);
-					)*
-					$(
-						args.$subc_argo = if_option!(
-							{ Option<$subc_argo_type> }
-							THEN { self.$subc_argo.or_else(|| $subc_argo_default.into()) }
-							ELSE { self.$subc_argo.unwrap_or($subc_argo_default.into()) }
 						);
 					)*
 				)*
@@ -539,9 +522,6 @@ macro_rules! usage {
 						let this_subc_usages = vec![
 							$(
 								usage_with_ident!(stringify!($subc_arg), $subc_arg_usage, $subc_arg_help),
-							)*
-							$(
-								usage_with_ident!(stringify!($subc_argo), $subc_argo_usage, $subc_argo_help),
 							)*
 						];
 
@@ -703,9 +683,6 @@ macro_rules! usage {
 											)
 										}
 							);
-						)*
-						$(
-							raw_args.$subc_argo = value_t!(submatches, stringify!($subc_argo), $subc_argo_type).ok();
 						)*
 					}
 					else {
