@@ -341,7 +341,7 @@ macro_rules! usage {
 				format!(include_str!("./version.txt"), version())
 			}
 
-			#[allow(unused_mut)] // subc_subc_exist may be reassigned a value by the macro
+			#[allow(unused_mut)] // subc_subc_exist may be assigned true by the macro
 			#[allow(unused_assignments)] // Rust issue #22630
 			pub fn print_help() -> String {
 				let mut help : String = include_str!("./usage_header.txt").to_owned();
@@ -386,6 +386,7 @@ macro_rules! usage {
 				)*
 
 				// Arguments and flags
+
 				$(
 					help.push_str("\n");
 					help.push_str($group_name); help.push_str(":\n");
@@ -395,7 +396,31 @@ macro_rules! usage {
 					)*
 
 					$(
-						help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $arg_usage, $arg_help, $arg_default));
+						if_option!(
+							{ $($arg_type_tt)* }
+							THEN {
+								if_option_vec!(
+									{ $($arg_type_tt)* }
+									THEN {
+										help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $arg_usage, $arg_help, {let x : Vec<$($arg_type_tt)*> = $arg_default; x}))
+									}
+									ELSE {
+										help.push_str(&format!("\t{}\n\t\t{}{}\n", $arg_usage, $arg_help, $arg_default.map(|x: inner_option_type!($($arg_type_tt)*)| format!(" (default: {})",x)).unwrap_or("".to_owned())))
+									}
+								)
+							}
+							ELSE {
+								if_vec!(
+									{ $($arg_type_tt)* }
+									THEN {
+										help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $arg_usage, $arg_help, {let x : Vec<$($arg_type_tt)*> = $arg_default; x}))
+									}
+									ELSE {
+										help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $arg_usage, $arg_help, $arg_default))
+									}
+								)
+							}
+						);
 					)*
 
 				)*
