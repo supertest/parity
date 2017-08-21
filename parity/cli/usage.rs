@@ -51,20 +51,20 @@ macro_rules! inner_option_vec_type {
 }
 
 macro_rules! if_option {
-	(Option<$type:ty>, THEN {$then:expr} ELSE {$otherwise:expr}) => (
-		$then
+	(Option<$type:ty>, THEN {$($then:tt)*} ELSE {$($otherwise:tt)*}) => (
+		$($then)*
 	);
-	($type:ty, THEN {$then:expr} ELSE {$otherwise:expr}) => (
-		$otherwise
+	($type:ty, THEN {$($then:tt)*} ELSE {$($otherwise:tt)*}) => (
+		$($otherwise)*
 	);
 }
 
 macro_rules! if_vec {
-	(Vec<$type:ty>, THEN {$then:expr} ELSE {$otherwise:expr}) => (
-		$then
+	(Vec<$type:ty>, THEN {$($then:tt)*} ELSE {$($otherwise:tt)*}) => (
+		$($then)*
 	);
-	($type:ty, THEN {$then:expr} ELSE {$otherwise:expr}) => (
-		$otherwise
+	($type:ty, THEN {$($then:tt)*} ELSE {$($otherwise:tt)*}) => (
+		$($otherwise)*
 	);
 }
 
@@ -73,15 +73,6 @@ macro_rules! if_option_vec {
 		$then
 	);
 	(Option<$type:ty>, THEN {$then:expr} ELSE {$otherwise:expr}) => (
-		$otherwise
-	);
-}
-
-macro_rules! if_option_then_type {
-	(Option<$type:ty>, THEN {$then:ty} ELSE {$otherwise:ty}) => (
-		$then
-	);
-	($type:ty, THEN {$then:ty} ELSE {$otherwise:ty}) => (
 		$otherwise
 	);
 }
@@ -259,7 +250,7 @@ macro_rules! usage {
 				$(
 					$subc_subc: bool,
 					$(
-						$subc_subc_arg: if_option_then_type!(
+						$subc_subc_arg: if_option!(
 							$($subc_subc_arg_type_tt)+,
 							THEN { $($subc_subc_arg_type_tt)+ }
 							ELSE { Option<$($subc_subc_arg_type_tt)+> }
@@ -268,7 +259,7 @@ macro_rules! usage {
 				)*
 
 				$(
-					$subc_arg: if_option_then_type!(
+					$subc_arg: if_option!(
 						$($subc_arg_type_tt)+,
 						THEN { $($subc_arg_type_tt)+ }
 						ELSE { Option<$($subc_arg_type_tt)+> }
@@ -282,7 +273,7 @@ macro_rules! usage {
 				)*
 
 				$(
-					$arg: if_option_then_type!(
+					$arg: if_option!(
 						$($arg_type_tt)+,
 						THEN { $($arg_type_tt)+ }
 						ELSE { Option<$($arg_type_tt)+> }
