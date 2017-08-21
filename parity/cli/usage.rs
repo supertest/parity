@@ -32,24 +32,6 @@ macro_rules! otry {
 	)
 }
 
-macro_rules! inner_option_type {
-	(Option<$type:ty>) => (
-		$type
-	)
-}
-
-macro_rules! inner_vec_type {
-	(Vec<$type:ty>) => (
-		$type
-	)
-}
-
-macro_rules! inner_option_vec_type {
-	(Option<Vec<String>>) => (
-		String
-	)
-}
-
 macro_rules! if_option {
 	(Option<$type:ty>, THEN {$($then:tt)*} ELSE {$($otherwise:tt)*}) => (
 		$($then)*
@@ -75,6 +57,24 @@ macro_rules! if_option_vec {
 	(Option<$type:ty>, THEN {$then:expr} ELSE {$otherwise:expr}) => (
 		$otherwise
 	);
+}
+
+macro_rules! inner_option_type {
+	(Option<$type:ty>) => (
+		$type
+	)
+}
+
+macro_rules! inner_vec_type {
+	(Vec<$type:ty>) => (
+		$type
+	)
+}
+
+macro_rules! inner_option_vec_type {
+	(Option<Vec<String>>) => (
+		String
+	)
 }
 
 macro_rules! usage_with_ident {
@@ -114,13 +114,13 @@ macro_rules! usage {
 							$subc_subc_help:expr,
 
 							$(
-								ARG $subc_subc_arg:ident : {{{ $($subc_subc_arg_type_tt:tt)+ }}} = $subc_subc_arg_default:expr, $subc_subc_arg_usage:expr, $subc_subc_arg_help:expr,
+								ARG $subc_subc_arg:ident : ($($subc_subc_arg_type_tt:tt)+) = $subc_subc_arg_default:expr, $subc_subc_arg_usage:expr, $subc_subc_arg_help:expr,
 							)*
 						}
 					)*
 
 					$(
-						ARG $subc_arg:ident : {{{ $($subc_arg_type_tt:tt)+ }}} = $subc_arg_default:expr, $subc_arg_usage:expr, $subc_arg_help:expr,
+						ARG $subc_arg:ident : ($($subc_arg_type_tt:tt)+) = $subc_arg_default:expr, $subc_arg_usage:expr, $subc_arg_help:expr,
 					)*
 				}
 			)*
@@ -132,7 +132,7 @@ macro_rules! usage {
 					FLAG $flag:ident : bool = false, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
 				)*
 				$(
-					ARG $arg:ident : {{{ $($arg_type_tt:tt)+ }}} = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
+					ARG $arg:ident : ($($arg_type_tt:tt)+) = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
 				)*
 			)*
 		}
