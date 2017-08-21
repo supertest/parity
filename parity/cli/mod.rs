@@ -175,7 +175,7 @@ usage! {
 		{
 			"Make a snapshot of the database",
 
-			ARG arg_snapshot_at: String = "latest",
+			ARG arg_snapshot_at: {{{ String }}} = "latest",
 			"--at=[BLOCK]",
 			"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
 
