@@ -386,7 +386,6 @@ macro_rules! usage {
 				)*
 
 				// Arguments and flags
-
 				$(
 					help.push_str("\n");
 					help.push_str($group_name); help.push_str(":\n");
@@ -402,7 +401,7 @@ macro_rules! usage {
 								if_option_vec!(
 									{ $($arg_type_tt)* }
 									THEN {
-										help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $arg_usage, $arg_help, {let x : Vec<$($arg_type_tt)*> = $arg_default; x}))
+										help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $arg_usage, $arg_help, {let x : inner_option_type!($($arg_type_tt)*)> = $arg_default; x}))
 									}
 									ELSE {
 										help.push_str(&format!("\t{}\n\t\t{}{}\n", $arg_usage, $arg_help, $arg_default.map(|x: inner_option_type!($($arg_type_tt)*)| format!(" (default: {})",x)).unwrap_or("".to_owned())))
@@ -413,7 +412,7 @@ macro_rules! usage {
 								if_vec!(
 									{ $($arg_type_tt)* }
 									THEN {
-										help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $arg_usage, $arg_help, {let x : Vec<$($arg_type_tt)*> = $arg_default; x}))
+										help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $arg_usage, $arg_help, {let x : $($arg_type_tt)* = $arg_default; x}))
 									}
 									ELSE {
 										help.push_str(&format!("\t{}\n\t\t{} (default: {})\n", $arg_usage, $arg_help, $arg_default))
