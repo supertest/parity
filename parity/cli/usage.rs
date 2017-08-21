@@ -641,7 +641,7 @@ macro_rules! usage {
 				)*
 			];
 
-			for usage in usages.iter() {
+			for usage in &usages {
 				assert!(re.is_match(usage));
 			}
 		}
