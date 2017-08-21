@@ -219,19 +219,19 @@ usage! {
 	{
 		// Flags and arguments
 		["Operating Options"]
-			FLAG flag_public_node: bool = false, or |c: &Config| otry!(c.parity).public_node.clone(),
+			FLAG flag_public_node: (bool) = false, or |c: &Config| otry!(c.parity).public_node.clone(),
 			"--public-node",
 			"Start Parity as a public web server. Account storage and transaction signing will be delegated to the UI.",
 
-			FLAG flag_no_download: bool = false, or |c: &Config| otry!(c.parity).no_download.clone(),
+			FLAG flag_no_download: (bool) = false, or |c: &Config| otry!(c.parity).no_download.clone(),
 			"--no-download",
 			"Normally new releases will be downloaded ready for updating. This disables it. Not recommended.",
 
-			FLAG flag_no_consensus: bool = false, or |c: &Config| otry!(c.parity).no_consensus.clone(),
+			FLAG flag_no_consensus: (bool) = false, or |c: &Config| otry!(c.parity).no_consensus.clone(),
 			"--no-consensus",
 			"Force the binary to run even if there are known issues regarding consensus. Not recommended.",
 
-			FLAG flag_light: bool = false, or |c: &Config| otry!(c.parity).light,
+			FLAG flag_light: (bool) = false, or |c: &Config| otry!(c.parity).light,
 			"--light",
 			"Experimental: run in light client mode. Light clients synchronize a bare minimum of data and fetch necessary data on-demand from the network. Much lower in storage, potentially higher in bandwidth. Has no effect with subcommands.",
 
@@ -289,7 +289,7 @@ usage! {
 			"Specify the database directory path",
 
 		["Convenience options"]
-			FLAG flag_unsafe_expose: bool = false, or |c: &Config| otry!(c.misc).unsafe_expose,
+			FLAG flag_unsafe_expose: (bool) = false, or |c: &Config| otry!(c.misc).unsafe_expose,
 			"--unsafe-expose",
 			"All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all
 		This option is UNSAFE and should be used with great care!",
@@ -303,11 +303,11 @@ usage! {
 			"Add SHIFT to all port numbers Parity is listening on. Includes network port and all servers (RPC, WebSockets, UI, IPFS, SecretStore).",
 
 		["Account options"]
-			FLAG flag_no_hardware_wallets: bool = false, or |c: &Config| otry!(c.account).disable_hardware.clone(),
+			FLAG flag_no_hardware_wallets: (bool) = false, or |c: &Config| otry!(c.account).disable_hardware.clone(),
 			"--no-hardware-wallets",
 			"Disables hardware wallet support.",
 
-			FLAG flag_fast_unlock: bool = false, or |c: &Config| otry!(c.account).fast_unlock.clone(),
+			FLAG flag_fast_unlock: (bool) = false, or |c: &Config| otry!(c.account).fast_unlock.clone(),
 			"--fast-unlock",
 			"Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care.",
 
@@ -324,16 +324,16 @@ usage! {
 			"Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.",
 
 		["UI options"]
-			FLAG flag_force_ui: bool = false, or |c: &Config| otry!(c.ui).force.clone(),
+			FLAG flag_force_ui: (bool) = false, or |c: &Config| otry!(c.ui).force.clone(),
 			"--force-ui",
 			"Enable Trusted UI WebSocket endpoint, even when --unlock is in use.",
 
-			FLAG flag_no_ui: bool = false, or |c: &Config| otry!(c.ui).disable.clone(),
+			FLAG flag_no_ui: (bool) = false, or |c: &Config| otry!(c.ui).disable.clone(),
 			"--no-ui",
 			"Disable Trusted UI WebSocket endpoint.",
 
 			// NOTE [todr] For security reasons don't put this to config files
-			FLAG flag_ui_no_validation: bool = false, or |_| None,
+			FLAG flag_ui_no_validation: (bool) = false, or |_| None,
 			"--ui-no-validation",
 			"Disable Origin and Host headers validation for Trusted UI. WARNING: INSECURE. Used only for development.",
 
@@ -354,23 +354,23 @@ usage! {
 			"Specify the port of Trusted UI server.",
 
 		["Networking options"]
-			FLAG flag_no_warp: bool = false, or |c: &Config| otry!(c.network).warp.clone().map(|w| !w),
+			FLAG flag_no_warp: (bool) = false, or |c: &Config| otry!(c.network).warp.clone().map(|w| !w),
 			"--no-warp",
 			"Disable syncing from the snapshot over the network.",
 
-			FLAG flag_no_discovery: bool = false, or |c: &Config| otry!(c.network).discovery.map(|d| !d).clone(),
+			FLAG flag_no_discovery: (bool) = false, or |c: &Config| otry!(c.network).discovery.map(|d| !d).clone(),
 			"--no-discovery",
 			"Disable new peer discovery.",
 
-			FLAG flag_reserved_only: bool = false, or |c: &Config| otry!(c.network).reserved_only.clone(),
+			FLAG flag_reserved_only: (bool) = false, or |c: &Config| otry!(c.network).reserved_only.clone(),
 			"--reserved-only",
 			"Connect only to reserved nodes.",
 
-			FLAG flag_no_ancient_blocks: bool = false, or |_| None,
+			FLAG flag_no_ancient_blocks: (bool) = false, or |_| None,
 			"--no-ancient-blocks",
 			"Disable downloading old blocks after snapshot restoration or warp sync.",
 
-			FLAG flag_no_serve_light: bool = false, or |c: &Config| otry!(c.network).no_serve_light.clone(),
+			FLAG flag_no_serve_light: (bool) = false, or |c: &Config| otry!(c.network).no_serve_light.clone(),
 			"--no-serve-light",
 			"Disable serving of light peers.",
 
@@ -419,7 +419,7 @@ usage! {
 			"Provide a file containing enodes, one per line. These nodes will always have a reserved slot on top of the normal maximum peers.",
 
 		["API and console options – RPC"]
-			FLAG flag_no_jsonrpc: bool = false, or |c: &Config| otry!(c.rpc).disable.clone(),
+			FLAG flag_no_jsonrpc: (bool) = false, or |c: &Config| otry!(c.rpc).disable.clone(),
 			"--no-jsonrpc",
 			"Disable the JSON-RPC API server.",
 
@@ -452,7 +452,7 @@ usage! {
 			"Enables experimental faster implementation of JSON-RPC server. Requires Dapps server to be disabled using --no-dapps.",
 
 		["API and console options – WS"]
-			FLAG flag_no_ws: bool = false, or |c: &Config| otry!(c.websockets).disable.clone(),
+			FLAG flag_no_ws: (bool) = false, or |c: &Config| otry!(c.websockets).disable.clone(),
 			"--no-ws",
 			"Disable the WebSockets server.",
 
@@ -477,7 +477,7 @@ usage! {
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.",
 
 		["API and console options – IPC"]
-			FLAG flag_no_ipc: bool = false, or |c: &Config| otry!(c.ipc).disable.clone(),
+			FLAG flag_no_ipc: (bool) = false, or |c: &Config| otry!(c.ipc).disable.clone(),
 			"--no-ipc",
 			"Disable JSON-RPC over IPC service.",
 
@@ -490,7 +490,7 @@ usage! {
 			"Specify custom API set available via JSON-RPC over IPC.",
 
 		["API and console options – Dapps"]
-			FLAG flag_no_dapps: bool = false, or |c: &Config| otry!(c.dapps).disable.clone(),
+			FLAG flag_no_dapps: (bool) = false, or |c: &Config| otry!(c.dapps).disable.clone(),
 			"--no-dapps",
 			"Disable the Dapps server (e.g. status page).",
 
@@ -499,7 +499,7 @@ usage! {
 			"Specify directory where dapps should be installed.",
 
 		["API and console options – IPFS"]
-			FLAG flag_ipfs_api: bool = false, or |c: &Config| otry!(c.ipfs).enable.clone(),
+			FLAG flag_ipfs_api: (bool) = false, or |c: &Config| otry!(c.ipfs).enable.clone(),
 			"--ipfs-api",
 			"Enable IPFS-compatible HTTP API.",
 
@@ -520,15 +520,15 @@ usage! {
 			"Specify CORS header for IPFS API responses.",
 
 		["Secret store options"]
-			FLAG flag_no_secretstore: bool = false, or |c: &Config| otry!(c.secretstore).disable.clone(),
+			FLAG flag_no_secretstore: (bool) = false, or |c: &Config| otry!(c.secretstore).disable.clone(),
 			"--no-secretstore",
 			"Disable Secret Store functionality.",
 
-			FLAG flag_no_secretstore_http: bool = false, or |c: &Config| otry!(c.secretstore).disable_http.clone(),
+			FLAG flag_no_secretstore_http: (bool) = false, or |c: &Config| otry!(c.secretstore).disable_http.clone(),
 			"--no-secretstore-http",
 			"Disable Secret Store HTTP API.",
 
- 			FLAG flag_no_secretstore_acl_check: bool = false, or |c: &Config| otry!(c.secretstore).disable_acl_check.clone(),
+ 			FLAG flag_no_secretstore_acl_check: (bool) = false, or |c: &Config| otry!(c.secretstore).disable_acl_check.clone(),
 			"--no-acl-check",
 			"Disable ACL check (useful for test environments).",
 
@@ -561,27 +561,27 @@ usage! {
 			"Hex-encoded secret key of this node.",
 
 		["Sealing/Mining options"]
-			FLAG flag_force_sealing: bool = false, or |c: &Config| otry!(c.mining).force_sealing.clone(),
+			FLAG flag_force_sealing: (bool) = false, or |c: &Config| otry!(c.mining).force_sealing.clone(),
 			"--force-sealing",
 			"Force the node to author new blocks as if it were always sealing/mining.",
 
-			FLAG flag_reseal_on_uncle: bool = false, or |c: &Config| otry!(c.mining).reseal_on_uncle.clone(),
+			FLAG flag_reseal_on_uncle: (bool) = false, or |c: &Config| otry!(c.mining).reseal_on_uncle.clone(),
 			"--reseal-on-uncle",
 			"Force the node to author new blocks when a new uncle block is imported.",
 
-			FLAG flag_remove_solved: bool = false, or |c: &Config| otry!(c.mining).remove_solved.clone(),
+			FLAG flag_remove_solved: (bool) = false, or |c: &Config| otry!(c.mining).remove_solved.clone(),
 			"--remove-solved",
 			"Move solved blocks from the work package queue instead of cloning them. This gives a slightly faster import speed, but means that extra solutions submitted for the same work package will go unused.",
 
-			FLAG flag_refuse_service_transactions: bool = false, or |c: &Config| otry!(c.mining).refuse_service_transactions.clone(),
+			FLAG flag_refuse_service_transactions: (bool) = false, or |c: &Config| otry!(c.mining).refuse_service_transactions.clone(),
 			"--refuse-service-transactions",
 			"Always refuse service transactions..",
 
-			FLAG flag_no_persistent_txqueue: bool = false, or |c: &Config| otry!(c.parity).no_persistent_txqueue,
+			FLAG flag_no_persistent_txqueue: (bool) = false, or |c: &Config| otry!(c.parity).no_persistent_txqueue,
 			"--no-persistent-txqueue",
 			"Don't save pending local transactions to disk to be restored whenever the node restarts.",
 
-			FLAG flag_stratum: bool = false, or |c: &Config| Some(c.stratum.is_some()),
+			FLAG flag_stratum: (bool) = false, or |c: &Config| Some(c.stratum.is_some()),
 			"--stratum",
 			"Run Stratum server for miner push notification.",
 
@@ -690,15 +690,15 @@ usage! {
 			"Secret for authorizing Stratum server for peers.",
 
 		["Miscellaneous options"]
-			FLAG flag_no_color: bool = false, or |c: &Config| otry!(c.misc).color.map(|c| !c).clone(),
+			FLAG flag_no_color: (bool) = false, or |c: &Config| otry!(c.misc).color.map(|c| !c).clone(),
 			"--no-color",
 			"Don't use terminal color codes in output.",
 
-			FLAG flag_version: bool = false, or |_| None,
+			FLAG flag_version: (bool) = false, or |_| None,
 			"-v, --version",
 			"Show information about version.",
 
-			FLAG flag_no_config: bool = false, or |_| None,
+			FLAG flag_no_config: (bool) = false, or |_| None,
 			"--no-config",
 			"Don't load a configuration file.",
 
@@ -715,11 +715,11 @@ usage! {
 			"Specify a filename into which logging should be appended.",
 
 		["Footprint options"]
-			FLAG flag_fast_and_loose: bool = false, or |c: &Config| otry!(c.footprint).fast_and_loose.clone(),
+			FLAG flag_fast_and_loose: (bool) = false, or |c: &Config| otry!(c.footprint).fast_and_loose.clone(),
 			"--fast-and-loose",
 			"Disables DB WAL, which gives a significant speed up but means an unclean exit is unrecoverable.",
 
-			FLAG flag_scale_verifiers: bool = false, or |c: &Config| otry!(c.footprint).scale_verifiers.clone(),
+			FLAG flag_scale_verifiers: (bool) = false, or |c: &Config| otry!(c.footprint).scale_verifiers.clone(),
 			"--scale-verifiers",
 			"Automatically scale amount of verifier threads based on workload. Not guaranteed to be faster.",
 
@@ -772,15 +772,15 @@ usage! {
 			"Amount of verifier threads to use or to begin with, if verifier auto-scaling is enabled.",
 
 		["Import/export options"]
-			FLAG flag_no_seal_check: bool = false, or |_| None,
+			FLAG flag_no_seal_check: (bool) = false, or |_| None,
 			"--no-seal-check",
 			"Skip block seal check.",
 
-			FLAG flag_no_storage: bool = false, or |_| None,
+			FLAG flag_no_storage: (bool) = false, or |_| None,
 			"--no-storage",
 			"Don't export account storage.",
 
-			FLAG flag_no_code: bool = false, or |_| None,
+			FLAG flag_no_code: (bool) = false, or |_| None,
 			"--no-code",
 			"Don't export account code.",
 
@@ -805,17 +805,17 @@ usage! {
 			"Don't export accounts with balance greater than specified.",
 
 		["Snapshot options"]
-			FLAG flag_no_periodic_snapshot: bool = false, or |c: &Config| otry!(c.snapshots).disable_periodic.clone(),
+			FLAG flag_no_periodic_snapshot: (bool) = false, or |c: &Config| otry!(c.snapshots).disable_periodic.clone(),
 			"--no-periodic-snapshot",
 			"Disable automated snapshots which usually occur once every 10000 blocks.",
 
 		["Virtual Machine options"]
-			FLAG flag_jitvm: bool = false, or |c: &Config| otry!(c.vm).jit.clone(),
+			FLAG flag_jitvm: (bool) = false, or |c: &Config| otry!(c.vm).jit.clone(),
 			"--jitvm",
 			"Enable the JIT VM.",
 
 		["Whisper options"]
-			FLAG flag_whisper: bool = false, or |c: &Config| otry!(c.whisper).enabled,
+			FLAG flag_whisper: (bool) = false, or |c: &Config| otry!(c.whisper).enabled,
 			"--whisper",
 			"Enable the Whisper network.",
 
@@ -824,51 +824,51 @@ usage! {
 			"Target size of the whisper message pool in megabytes.",
 
 		["Legacy options"]
-			FLAG flag_dapps_apis_all: bool = false, or |_| None,
+			FLAG flag_dapps_apis_all: (bool) = false, or |_| None,
 			"--dapps-apis-all",
 			"Dapps server is merged with RPC server. Use --jsonrpc-apis.",
 
-			FLAG flag_geth: bool = false, or |_| None,
+			FLAG flag_geth: (bool) = false, or |_| None,
 			"--geth",
 			"Run in Geth-compatibility mode. Sets the IPC path to be the same as Geth's. Overrides the --ipc-path and --ipcpath options. Alters RPCs to reflect Geth bugs. Includes the personal_ RPC by default.",
 
-			FLAG flag_testnet: bool = false, or |_| None,
+			FLAG flag_testnet: (bool) = false, or |_| None,
 			"--testnet",
 			"Testnet mode. Equivalent to --chain testnet. Overrides the --keys-path option.",
 
-			FLAG flag_import_geth_keys: bool = false, or |_| None,
+			FLAG flag_import_geth_keys: (bool) = false, or |_| None,
 			"--import-geth-keys",
 			"Attempt to import keys from Geth client.",
 
-			FLAG flag_ipcdisable: bool = false, or |_| None,
+			FLAG flag_ipcdisable: (bool) = false, or |_| None,
 			"--ipcdisable",
 			"Equivalent to --no-ipc.",
 
-			FLAG flag_ipc_off: bool = false, or |_| None,
+			FLAG flag_ipc_off: (bool) = false, or |_| None,
 			"--ipc-off",
 			"Equivalent to --no-ipc.",
 
-			FLAG flag_nodiscover: bool = false, or |_| None,
+			FLAG flag_nodiscover: (bool) = false, or |_| None,
 			"--nodiscover",
 			"Equivalent to --no-discovery.",
 
-			FLAG flag_jsonrpc: bool = false, or |_| None,
+			FLAG flag_jsonrpc: (bool) = false, or |_| None,
 			"-j, --jsonrpc",
 			"Does nothing; JSON-RPC is on by default now.",
 
-			FLAG flag_jsonrpc_off: bool = false, or |_| None,
+			FLAG flag_jsonrpc_off: (bool) = false, or |_| None,
 			"--jsonrpc-off",
 			"Equivalent to --no-jsonrpc.",
 
-			FLAG flag_webapp: bool = false, or |_| None,
+			FLAG flag_webapp: (bool) = false, or |_| None,
 			"-w, --webapp",
 			"Does nothing; dapps server is on by default now.",
 
-			FLAG flag_dapps_off: bool = false, or |_| None,
+			FLAG flag_dapps_off: (bool) = false, or |_| None,
 			"--dapps-off",
 			"Equivalent to --no-dapps.",
 
-			FLAG flag_rpc: bool = false, or |_| None,
+			FLAG flag_rpc: (bool) = false, or |_| None,
 			"--rpc",
 			"Does nothing; JSON-RPC is on by default now.",
 

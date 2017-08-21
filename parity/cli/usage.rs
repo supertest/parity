@@ -129,7 +129,7 @@ macro_rules! usage {
 			$(
 			[$group_name:expr]
 				$(
-					FLAG $flag:ident : bool = false, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
+					FLAG $flag:ident : (bool) = false, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
 				)*
 				$(
 					ARG $arg:ident : ($($arg_type_tt:tt)+) = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
