@@ -53,6 +53,12 @@ macro_rules! inner_vec_type {
 	);
 }
 
+macro_rules! inner_option_vec_type {
+	(Option<Vec<String>>) => (
+		String
+	);
+}
+
 macro_rules! as_tt {
 	($type:tt) => (
 		$type
@@ -87,7 +93,7 @@ macro_rules! if_vector {
 }
 
 macro_rules! if_option_vector {
-	({Option<Vec<$type:ty> >} THEN {$then:expr} ELSE {$otherwise:expr}) => (
+	({Option<Vec<String>>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
 		$then
 	);
 	({Option<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
@@ -687,9 +693,9 @@ macro_rules! usage {
 									raw_args.$subc_subc_arg = if_option!( // TAKE THIS ONE TO REPLICATE (mais reprendre argo)
 										{ $($subc_subc_arg_type_tt)* }
 										THEN {
-											if_vector!( // @ here
-												{ as_tt!(inner_option_type($($subc_subc_arg_type_tt)*)) }
-												THEN { values_t!(subsubmatches, stringify!($subc_subc_arg), inner_vec_type!(inner_option_type!($($subc_subc_arg_type_tt)*))).ok() }
+											if_option_vector!( // @ here
+												{ $($subc_subc_arg_type_tt)* }
+												THEN { values_t!(subsubmatches, stringify!($subc_subc_arg), inner_option_vec_type!($($subc_subc_arg_type_tt)*)).ok() }
 												ELSE { value_t!(subsubmatches, stringify!($subc_subc_arg), inner_option_type!($($subc_subc_arg_type_tt)*)).ok() }
 											)
 										}
