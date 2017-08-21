@@ -319,7 +319,7 @@ usage! {
 			"--unlock=[ACCOUNTS]",
 			"Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.",
 
-			ARG_MULTIPLE arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(),
+			ARG arg_password: {{{ Vec<String> }}} = Vec::new(), or |c: &Config| otry!(c.account).password.clone(),
 			"--password=[FILE]",
 			"Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.",
 
