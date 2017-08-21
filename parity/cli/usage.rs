@@ -150,7 +150,7 @@ macro_rules! usage {
 					FLAG $flag:ident : bool = false, or $flag_from_config:expr, $flag_usage:expr, $flag_help:expr,
 				)*
 				$(
-					ARG $arg:ident : $arg_type:ty = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
+					ARG $arg:ident : {{{ $($arg_type_tt:tt)* }}} = $arg_default:expr, or $arg_from_config:expr, $arg_usage:expr, $arg_help:expr,
 				)*
 				$(
 					ARG_MULTIPLE $argm:ident : $argm_type:ty = $argm_default:expr, or $argm_from_config:expr, $argm_usage:expr, $argm_help:expr,
@@ -232,7 +232,7 @@ macro_rules! usage {
 					pub $flag: bool,
 				)*
 				$(
-					pub $arg: $arg_type,
+					pub $arg: $($arg_type_tt)*,
 				)*
 				$(
 					pub $argm: Vec<$argm_type>,
@@ -308,7 +308,7 @@ macro_rules! usage {
 					$flag: bool,
 				)*
 				$(
-					$arg: Option<$arg_type>,
+					$arg: Option<$($arg_type_tt)*>,
 				)*
 				$(
 					$argm: Option<Vec<$argm_type>>,
@@ -472,7 +472,7 @@ macro_rules! usage {
 					)*
 					$(
 						args.$arg = if_option!(
-							{ $arg_type }
+							{ $($arg_type_tt)* }
 							THEN { self.$arg.or_else(|| $arg_from_config(&config)).or_else(|| $arg_default.into()) }
 							ELSE { self.$arg.or_else(|| $arg_from_config(&config)).unwrap_or_else(|| $arg_default.into()) }
 						);
@@ -567,19 +567,19 @@ macro_rules! usage {
 				$(
 					$(
 						raw_args.$arg = if_option!( // TAKE THIS ONE TO REPLICATE
-							{ $arg_type }
+							{ $($arg_type_tt)* }
 							THEN {
 								if_vector!(
-									{ inner_type!($arg_type) }
-									THEN { values_t!(matches, stringify!($arg), inner_type!(inner_type!($arg_type))).ok() }
-									ELSE { value_t!(matches, stringify!($arg), inner_type!($arg_type)).ok() }
+									{ inner_type!($($arg_type_tt)*) }
+									THEN { values_t!(matches, stringify!($arg), inner_type!(inner_type!($($arg_type_tt)*))).ok() }
+									ELSE { value_t!(matches, stringify!($arg), inner_type!($($arg_type_tt)*)).ok() }
 								)
 							}
 							ELSE {
 								if_vector!(
-									{ $arg_type }
-									THEN { values_t!(matches, stringify!($arg), inner_type!($arg_type)).ok() }
-									ELSE { value_t!(matches, stringify!($arg), $arg_type).ok() }
+									{ $($arg_type_tt)* }
+									THEN { values_t!(matches, stringify!($arg), inner_type!($($arg_type_tt)*)).ok() }
+									ELSE { value_t!(matches, stringify!($arg), $($arg_type_tt)*).ok() }
 								)
 							}
 						);

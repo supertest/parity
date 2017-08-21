@@ -235,7 +235,7 @@ usage! {
 			"--light",
 			"Experimental: run in light client mode. Light clients synchronize a bare minimum of data and fetch necessary data on-demand from the network. Much lower in storage, potentially higher in bandwidth. Has no effect with subcommands.",
 
-			ARG arg_mode: String = "last", or |c: &Config| otry!(c.parity).mode.clone(),
+			ARG arg_mode: {{{ String }}} = "last", or |c: &Config| otry!(c.parity).mode.clone(),
 			"--mode=[MODE]",
 			"Set the operating mode. MODE can be one of:
 			last - Uses the last-used mode, active if none.
@@ -244,22 +244,22 @@ usage! {
 			dark - Parity syncs only when the RPC is active.
 			offline - Parity doesn't sync.",
 
-			ARG arg_mode_timeout: u64 = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
+			ARG arg_mode_timeout: {{{ u64 }}} = 300u64, or |c: &Config| otry!(c.parity).mode_timeout.clone(),
 			"--mode-timeout=[SECS]",
 			"Specify the number of seconds before inactivity timeout occurs when mode is dark or passive",
 
-			ARG arg_mode_alarm: u64 = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
+			ARG arg_mode_alarm: {{{ u64 }}} = 3600u64, or |c: &Config| otry!(c.parity).mode_alarm.clone(),
 			"--mode-alarm=[SECS]",
 			"Specify the number of seconds before auto sleep reawake timeout occurs when mode is passive",
 
-			ARG arg_auto_update: String = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
+			ARG arg_auto_update: {{{ String }}} = "critical", or |c: &Config| otry!(c.parity).auto_update.clone(),
 			"--auto-update=[SET]",
 			"Set a releases set to automatically update and install.
 			all - All updates in the our release track.
 			critical - Only consensus/security updates.
 			none - No updates will be auto-installed.",
 
-			ARG arg_release_track: String = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
+			ARG arg_release_track: {{{ String }}} = "current", or |c: &Config| otry!(c.parity).release_track.clone(),
 			"--release-track=[TRACK]",
 			"Set which release track we should use for updates.
 			stable - Stable releases.
@@ -268,15 +268,15 @@ usage! {
 			testing - Testing releases (do not use).
 			current - Whatever track this executable was released on",
 
-			ARG arg_chain: String = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
+			ARG arg_chain: {{{ String }}} = "foundation", or |c: &Config| otry!(c.parity).chain.clone(),
 			"--chain=[CHAIN]",
 			"Specify the blockchain type. CHAIN may be either a JSON chain specification file or olympic, frontier, homestead, mainnet, morden, ropsten, classic, expanse, testnet, kovan or dev.",
 
-			ARG arg_keys_path: String = "$BASE/keys", or |c: &Config| otry!(c.parity).keys_path.clone(),
+			ARG arg_keys_path: {{{ String }}} = "$BASE/keys", or |c: &Config| otry!(c.parity).keys_path.clone(),
 			"--keys-path=[PATH]",
 			"Specify the path for JSON key files to be found",
 
-			ARG arg_identity: String = "", or |c: &Config| otry!(c.parity).identity.clone(),
+			ARG arg_identity: {{{ String }}} = "", or |c: &Config| otry!(c.parity).identity.clone(),
 			"--identity=[NAME]",
 			"Specify your node's name.",
 
@@ -294,11 +294,11 @@ usage! {
 			"All servers will listen on external interfaces and will be remotely accessible. It's equivalent with setting the following: --{{ws,jsonrpc,ui,ipfs,secret_store,stratum}}-interface=all --*-hosts=all
 		This option is UNSAFE and should be used with great care!",
 
-			ARG arg_config: String = "$BASE/config.toml", or |_| None,
+			ARG arg_config: {{{ String }}} = "$BASE/config.toml", or |_| None,
 			"-c, --config=[CONFIG]",
 			"Specify a filename containing a configuration file.",
 
-			ARG arg_ports_shift: u16 = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
+			ARG arg_ports_shift: {{{ u16 }}} = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
 			"--ports-shift=[SHIFT]",
 			"Add SHIFT to all port numbers Parity is listening on. Includes network port and all servers (RPC, WebSockets, UI, IPFS, SecretStore).",
 
@@ -311,7 +311,7 @@ usage! {
 			"--fast-unlock",
 			"Use drasticly faster unlocking mode. This setting causes raw secrets to be stored unprotected in memory, so use with care.",
 
-			ARG arg_keys_iterations: u32 = 10240u32, or |c: &Config| otry!(c.account).keys_iterations.clone(),
+			ARG arg_keys_iterations: {{{ u32 }}} = 10240u32, or |c: &Config| otry!(c.account).keys_iterations.clone(),
 			"--keys-iterations=[NUM]",
 			"Specify the number of iterations to use when deriving key from the password (bigger is more secure)",
 
@@ -337,19 +337,19 @@ usage! {
 			"--ui-no-validation",
 			"Disable Origin and Host headers validation for Trusted UI. WARNING: INSECURE. Used only for development.",
 
-			ARG arg_ui_interface: String = "local", or |c: &Config| otry!(c.ui).interface.clone(),
+			ARG arg_ui_interface: {{{ String }}} = "local", or |c: &Config| otry!(c.ui).interface.clone(),
 			"--ui-interface=[IP]",
 			"Specify the hostname portion of the Trusted UI server, IP should be an interface's IP address, or local.",
 
-			ARG arg_ui_hosts: String = "none", or |c: &Config| otry!(c.ui).hosts.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ui_hosts: {{{ String }}} = "none", or |c: &Config| otry!(c.ui).hosts.as_ref().map(|vec| vec.join(",")),
 			"--ui-hosts=[HOSTS]",
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.",
 
-			ARG arg_ui_path: String = "$BASE/signer", or |c: &Config| otry!(c.ui).path.clone(),
+			ARG arg_ui_path: {{{ String }}} = "$BASE/signer", or |c: &Config| otry!(c.ui).path.clone(),
 			"--ui-path=[PATH]",
 			"Specify directory where Trusted UIs tokens should be stored.",
 
-			ARG arg_ui_port: u16 = 8180u16, or |c: &Config| otry!(c.ui).port.clone(),
+			ARG arg_ui_port: {{{ u16 }}} = 8180u16, or |c: &Config| otry!(c.ui).port.clone(),
 			"--ui-port=[PORT]",
 			"Specify the port of Trusted UI server.",
 
@@ -374,31 +374,31 @@ usage! {
 			"--no-serve-light",
 			"Disable serving of light peers.",
 
-			ARG arg_port: u16 = 30303u16, or |c: &Config| otry!(c.network).port.clone(),
+			ARG arg_port: {{{ u16 }}} = 30303u16, or |c: &Config| otry!(c.network).port.clone(),
 			"--port=[PORT]",
 			"Override the port on which the node should listen.",
 
-			ARG arg_min_peers: u16 = 25u16, or |c: &Config| otry!(c.network).min_peers.clone(),
+			ARG arg_min_peers: {{{ u16 }}} = 25u16, or |c: &Config| otry!(c.network).min_peers.clone(),
 			"--min-peers=[NUM]",
 			"Try to maintain at least NUM peers.",
 
-			ARG arg_max_peers: u16 = 50u16, or |c: &Config| otry!(c.network).max_peers.clone(),
+			ARG arg_max_peers: {{{ u16 }}} = 50u16, or |c: &Config| otry!(c.network).max_peers.clone(),
 			"--max-peers=[NUM]",
 			"Allow up to NUM peers.",
 
-			ARG arg_snapshot_peers: u16 = 0u16, or |c: &Config| otry!(c.network).snapshot_peers.clone(),
+			ARG arg_snapshot_peers: {{{ u16 }}} = 0u16, or |c: &Config| otry!(c.network).snapshot_peers.clone(),
 			"--snapshot-peers=[NUM]",
 			"Allow additional NUM peers for a snapshot sync.",
 
-			ARG arg_nat: String = "any", or |c: &Config| otry!(c.network).nat.clone(),
+			ARG arg_nat: {{{ String }}} = "any", or |c: &Config| otry!(c.network).nat.clone(),
 			"--nat=[METHOD]",
 			"Specify method to use for determining public address. Must be one of: any, none, upnp, extip:<IP>.",
 
-			ARG arg_allow_ips: String = "all", or |c: &Config| otry!(c.network).allow_ips.clone(),
+			ARG arg_allow_ips: {{{ String }}} = "all", or |c: &Config| otry!(c.network).allow_ips.clone(),
 			"--allow-ips=[FILTER]",
 			"Filter outbound connections. Must be one of: private - connect to private network IP addresses only; public - connect to public network IP addresses only; all - connect to any IP address.",
 
-			ARG arg_max_pending_peers: u16 = 64u16, or |c: &Config| otry!(c.network).max_pending_peers.clone(),
+			ARG arg_max_pending_peers: {{{ u16 }}} = 64u16, or |c: &Config| otry!(c.network).max_pending_peers.clone(),
 			"--max-pending-peers=[NUM]",
 			"Allow up to NUM pending connections.",
 
@@ -423,23 +423,23 @@ usage! {
 			"--no-jsonrpc",
 			"Disable the JSON-RPC API server.",
 
-			ARG arg_jsonrpc_port: u16 = 8545u16, or |c: &Config| otry!(c.rpc).port.clone(),
+			ARG arg_jsonrpc_port: {{{ u16 }}} = 8545u16, or |c: &Config| otry!(c.rpc).port.clone(),
 			"--jsonrpc-port=[PORT]",
 			"Specify the port portion of the JSONRPC API server.",
 
-			ARG arg_jsonrpc_interface: String  = "local", or |c: &Config| otry!(c.rpc).interface.clone(),
+			ARG arg_jsonrpc_interface: {{{ String }}}  = "local", or |c: &Config| otry!(c.rpc).interface.clone(),
 			"--jsonrpc-interface=[IP]",
 			"Specify the hostname portion of the JSONRPC API server, IP should be an interface's IP address, or all (all interfaces) or local.",
 
-			ARG arg_jsonrpc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.rpc).apis.as_ref().map(|vec| vec.join(",")),
+			ARG arg_jsonrpc_apis: {{{ String }}} = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.rpc).apis.as_ref().map(|vec| vec.join(",")),
 			"--jsonrpc-apis=[APIS]",
 			"Specify the APIs available through the JSONRPC interface. APIS is a comma-delimited list of API name. Possible name are all, safe, web3, eth, net, personal, parity, parity_set, traces, rpc, parity_accounts. You can also disable a specific API by putting '-' in the front: all,-personal.",
 
-			ARG arg_jsonrpc_hosts: String = "none", or |c: &Config| otry!(c.rpc).hosts.as_ref().map(|vec| vec.join(",")),
+			ARG arg_jsonrpc_hosts: {{{ String }}} = "none", or |c: &Config| otry!(c.rpc).hosts.as_ref().map(|vec| vec.join(",")),
 			"--jsonrpc-hosts=[HOSTS]",
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.",
 
-			ARG arg_jsonrpc_threads: usize = 0usize, or |c: &Config| otry!(c.rpc).processing_threads,
+			ARG arg_jsonrpc_threads: {{{ usize }}} = 0usize, or |c: &Config| otry!(c.rpc).processing_threads,
 			"--jsonrpc-threads=[THREADS]",
 			"Turn on additional processing threads in all RPC servers. Setting this to non-zero value allows parallel cpu-heavy queries execution.",
 
@@ -456,23 +456,23 @@ usage! {
 			"--no-ws",
 			"Disable the WebSockets server.",
 
-			ARG arg_ws_port: u16 = 8546u16, or |c: &Config| otry!(c.websockets).port.clone(),
+			ARG arg_ws_port: {{{ u16 }}} = 8546u16, or |c: &Config| otry!(c.websockets).port.clone(),
 			"--ws-port=[PORT]",
 			"Specify the port portion of the WebSockets server.",
 
-			ARG arg_ws_interface: String  = "local", or |c: &Config| otry!(c.websockets).interface.clone(),
+			ARG arg_ws_interface: {{{ String }}}  = "local", or |c: &Config| otry!(c.websockets).interface.clone(),
 			"--ws-interface=[IP]",
 			"Specify the hostname portion of the WebSockets server, IP should be an interface's IP address, or all (all interfaces) or local.",
 
-			ARG arg_ws_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.websockets).apis.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ws_apis: {{{ String }}} = "web3,eth,pubsub,net,parity,parity_pubsub,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.websockets).apis.as_ref().map(|vec| vec.join(",")),
 			"--ws-apis=[APIS]",
 			"Specify the APIs available through the WebSockets interface. APIS is a comma-delimited list of API name. Possible name are web3, eth, pubsub, net, personal, parity, parity_set, traces, rpc, parity_accounts..",
 
-			ARG arg_ws_origins: String = "chrome-extension://*,moz-extension://*", or |c: &Config| otry!(c.websockets).origins.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ws_origins: {{{ String }}} = "chrome-extension://*,moz-extension://*", or |c: &Config| otry!(c.websockets).origins.as_ref().map(|vec| vec.join(",")),
 			"--ws-origins=[URL]",
 			"Specify Origin header values allowed to connect. Special options: \"all\", \"none\".",
 
-			ARG arg_ws_hosts: String = "none", or |c: &Config| otry!(c.websockets).hosts.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ws_hosts: {{{ String }}} = "none", or |c: &Config| otry!(c.websockets).hosts.as_ref().map(|vec| vec.join(",")),
 			"--ws-hosts=[HOSTS]",
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\",.",
 
@@ -481,11 +481,11 @@ usage! {
 			"--no-ipc",
 			"Disable JSON-RPC over IPC service.",
 
-			ARG arg_ipc_path: String = if cfg!(windows) { r"\\.\pipe\jsonrpc.ipc" } else { "$BASE/jsonrpc.ipc" }, or |c: &Config| otry!(c.ipc).path.clone(),
+			ARG arg_ipc_path: {{{ String }}} = if cfg!(windows) { r"\\.\pipe\jsonrpc.ipc" } else { "$BASE/jsonrpc.ipc" }, or |c: &Config| otry!(c.ipc).path.clone(),
 			"--ipc-path=[PATH]",
 			"Specify custom path for JSON-RPC over IPC service.",
 
-			ARG arg_ipc_apis: String = "web3,eth,pubsub,net,parity,parity_pubsub,parity_accounts,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.ipc).apis.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ipc_apis: {{{ String }}} = "web3,eth,pubsub,net,parity,parity_pubsub,parity_accounts,traces,rpc,secretstore,shh,shh_pubsub", or |c: &Config| otry!(c.ipc).apis.as_ref().map(|vec| vec.join(",")),
 			"--ipc-apis=[APIS]",
 			"Specify custom API set available via JSON-RPC over IPC.",
 
@@ -494,7 +494,7 @@ usage! {
 			"--no-dapps",
 			"Disable the Dapps server (e.g. status page).",
 
-			ARG arg_dapps_path: String = "$BASE/dapps", or |c: &Config| otry!(c.dapps).path.clone(),
+			ARG arg_dapps_path: {{{ String }}} = "$BASE/dapps", or |c: &Config| otry!(c.dapps).path.clone(),
 			"--dapps-path=[PATH]",
 			"Specify directory where dapps should be installed.",
 
@@ -503,15 +503,15 @@ usage! {
 			"--ipfs-api",
 			"Enable IPFS-compatible HTTP API.",
 
-			ARG arg_ipfs_api_port: u16 = 5001u16, or |c: &Config| otry!(c.ipfs).port.clone(),
+			ARG arg_ipfs_api_port: {{{ u16 }}} = 5001u16, or |c: &Config| otry!(c.ipfs).port.clone(),
 			"--ipfs-api-port=[PORT]",
 			"Configure on which port the IPFS HTTP API should listen.",
 
-			ARG arg_ipfs_api_interface: String = "local", or |c: &Config| otry!(c.ipfs).interface.clone(),
+			ARG arg_ipfs_api_interface: {{{ String }}} = "local", or |c: &Config| otry!(c.ipfs).interface.clone(),
 			"--ipfs-api-interface=[IP]",
 			"Specify the hostname portion of the IPFS API server, IP should be an interface's IP address or local.",
 
-			ARG arg_ipfs_api_hosts: String = "none", or |c: &Config| otry!(c.ipfs).hosts.as_ref().map(|vec| vec.join(",")),
+			ARG arg_ipfs_api_hosts: {{{ String }}} = "none", or |c: &Config| otry!(c.ipfs).hosts.as_ref().map(|vec| vec.join(",")),
 			"--ipfs-api-hosts=[HOSTS]",
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\".",
 
@@ -524,27 +524,27 @@ usage! {
 			"--no-secretstore",
 			"Disable Secret Store functionality.",
 
-			ARG arg_secretstore_nodes: String = "", or |c: &Config| otry!(c.secretstore).nodes.as_ref().map(|vec| vec.join(",")),
+			ARG arg_secretstore_nodes: {{{ String }}} = "", or |c: &Config| otry!(c.secretstore).nodes.as_ref().map(|vec| vec.join(",")),
 			"--secretstore-nodes=[NODES]",
 			"Comma-separated list of other secret store cluster nodes in form NODE_PUBLIC_KEY_IN_HEX@NODE_IP_ADDR:NODE_PORT.",
 
-			ARG arg_secretstore_interface: String = "local", or |c: &Config| otry!(c.secretstore).interface.clone(),
+			ARG arg_secretstore_interface: {{{ String }}} = "local", or |c: &Config| otry!(c.secretstore).interface.clone(),
 			"--secretstore-interface=[IP]",
 			"Specify the hostname portion for listening to Secret Store Key Server internal requests, IP should be an interface's IP address, or local.",
 
-			ARG arg_secretstore_port: u16 = 8083u16, or |c: &Config| otry!(c.secretstore).port.clone(),
+			ARG arg_secretstore_port: {{{ u16 }}} = 8083u16, or |c: &Config| otry!(c.secretstore).port.clone(),
 			"--secretstore-port=[PORT]",
 			"Specify the port portion for listening to Secret Store Key Server internal requests.",
 
-			ARG arg_secretstore_http_interface: String = "local", or |c: &Config| otry!(c.secretstore).http_interface.clone(),
+			ARG arg_secretstore_http_interface: {{{ String }}} = "local", or |c: &Config| otry!(c.secretstore).http_interface.clone(),
 			"--secretstore-http-interface=[IP]",
 			"Specify the hostname portion for listening to Secret Store Key Server HTTP requests, IP should be an interface's IP address, or local.",
 
-			ARG arg_secretstore_http_port: u16 = 8082u16, or |c: &Config| otry!(c.secretstore).http_port.clone(),
+			ARG arg_secretstore_http_port: {{{ u16 }}} = 8082u16, or |c: &Config| otry!(c.secretstore).http_port.clone(),
 			"--secretstore-http-port=[PORT]",
 			"Specify the port portion for listening to Secret Store Key Server HTTP requests.",
 
-			ARG arg_secretstore_path: String = "$BASE/secretstore", or |c: &Config| otry!(c.secretstore).path.clone(),
+			ARG arg_secretstore_path: {{{ String }}} = "$BASE/secretstore", or |c: &Config| otry!(c.secretstore).path.clone(),
 			"--secretstore-path=[PATH]",
 			"Specify directory where Secret Store should save its data..",
 
@@ -577,75 +577,75 @@ usage! {
 			"--stratum",
 			"Run Stratum server for miner push notification.",
 
-			ARG arg_reseal_on_txs: String = "own", or |c: &Config| otry!(c.mining).reseal_on_txs.clone(),
+			ARG arg_reseal_on_txs: {{{ String }}} = "own", or |c: &Config| otry!(c.mining).reseal_on_txs.clone(),
 			"--reseal-on-txs=[SET]",
 			"Specify which transactions should force the node to reseal a block. SET is one of: none - never reseal on new transactions; own - reseal only on a new local transaction; ext - reseal only on a new external transaction; all - reseal on all new transactions.",
 
-			ARG arg_reseal_min_period: u64 = 2000u64, or |c: &Config| otry!(c.mining).reseal_min_period.clone(),
+			ARG arg_reseal_min_period: {{{ u64 }}} = 2000u64, or |c: &Config| otry!(c.mining).reseal_min_period.clone(),
 			"--reseal-min-period=[MS]",
 			"Specify the minimum time between reseals from incoming transactions. MS is time measured in milliseconds.",
 
-			ARG arg_reseal_max_period: u64 = 120000u64, or |c: &Config| otry!(c.mining).reseal_max_period.clone(),
+			ARG arg_reseal_max_period: {{{ u64 }}} = 120000u64, or |c: &Config| otry!(c.mining).reseal_max_period.clone(),
 			"--reseal-max-period=[MS]",
 			"Specify the maximum time since last block to enable force-sealing. MS is time measured in milliseconds.",
 
-			ARG arg_work_queue_size: usize = 20usize, or |c: &Config| otry!(c.mining).work_queue_size.clone(),
+			ARG arg_work_queue_size: {{{ usize }}} = 20usize, or |c: &Config| otry!(c.mining).work_queue_size.clone(),
 			"--work-queue-size=[ITEMS]",
 			"Specify the number of historical work packages which are kept cached lest a solution is found for them later. High values take more memory but result in fewer unusable solutions.",
 
-			ARG arg_relay_set: String = "cheap", or |c: &Config| otry!(c.mining).relay_set.clone(),
+			ARG arg_relay_set: {{{ String }}} = "cheap", or |c: &Config| otry!(c.mining).relay_set.clone(),
 			"--relay-set=[SET]",
 			"Set of transactions to relay. SET may be: cheap - Relay any transaction in the queue (this may include invalid transactions); strict - Relay only executed transactions (this guarantees we don't relay invalid transactions, but means we relay nothing if not mining); lenient - Same as strict when mining, and cheap when not.",
 
-			ARG arg_usd_per_tx: String = "0.0025", or |c: &Config| otry!(c.mining).usd_per_tx.clone(),
+			ARG arg_usd_per_tx: {{{ String }}} = "0.0025", or |c: &Config| otry!(c.mining).usd_per_tx.clone(),
 			"--usd-per-tx=[USD]",
 			"Amount of USD to be paid for a basic transaction. The minimum gas price is set accordingly.",
 
-			ARG arg_usd_per_eth: String = "auto", or |c: &Config| otry!(c.mining).usd_per_eth.clone(),
+			ARG arg_usd_per_eth: {{{ String }}} = "auto", or |c: &Config| otry!(c.mining).usd_per_eth.clone(),
 			"--usd-per-eth=[SOURCE]",
 			"USD value of a single ETH. SOURCE may be either an amount in USD, a web service or 'auto' to use each web service in turn and fallback on the last known good value.",
 
-			ARG arg_price_update_period: String = "hourly", or |c: &Config| otry!(c.mining).price_update_period.clone(),
+			ARG arg_price_update_period: {{{ String }}} = "hourly", or |c: &Config| otry!(c.mining).price_update_period.clone(),
 			"--price-update-period=[T]",
 			"T will be allowed to pass between each gas price update. T may be daily, hourly, a number of seconds, or a time string of the form \"2 days\", \"30 minutes\" etc..",
 
-			ARG arg_gas_floor_target: String = "4700000", or |c: &Config| otry!(c.mining).gas_floor_target.clone(),
+			ARG arg_gas_floor_target: {{{ String }}} = "4700000", or |c: &Config| otry!(c.mining).gas_floor_target.clone(),
 			"--gas-floor-target=[GAS]",
 			"Amount of gas per block to target when sealing a new block.",
 
-			ARG arg_gas_cap: String = "6283184", or |c: &Config| otry!(c.mining).gas_cap.clone(),
+			ARG arg_gas_cap: {{{ String }}} = "6283184", or |c: &Config| otry!(c.mining).gas_cap.clone(),
 			"--gas-cap=[GAS]",
 			"A cap on how large we will raise the gas limit per block due to transaction volume.",
 
-			ARG arg_tx_queue_mem_limit: u32 = 2u32, or |c: &Config| otry!(c.mining).tx_queue_mem_limit.clone(),
+			ARG arg_tx_queue_mem_limit: {{{ u32 }}} = 2u32, or |c: &Config| otry!(c.mining).tx_queue_mem_limit.clone(),
 			"--tx-queue-mem-limit=[MB]",
 			"Maximum amount of memory that can be used by the transaction queue. Setting this parameter to 0 disables limiting.",
 
-			ARG arg_tx_queue_size: usize = 8192usize, or |c: &Config| otry!(c.mining).tx_queue_size.clone(),
+			ARG arg_tx_queue_size: {{{ usize }}} = 8192usize, or |c: &Config| otry!(c.mining).tx_queue_size.clone(),
 			"--tx-queue-size=[LIMIT]",
 			"Maximum amount of transactions in the queue (waiting to be included in next block).",
 
-			ARG arg_tx_queue_gas: String = "off", or |c: &Config| otry!(c.mining).tx_queue_gas.clone(),
+			ARG arg_tx_queue_gas: {{{ String }}} = "off", or |c: &Config| otry!(c.mining).tx_queue_gas.clone(),
 			"--tx-queue-gas=[LIMIT]",
 			"Maximum amount of total gas for external transactions in the queue. LIMIT can be either an amount of gas or 'auto' or 'off'. 'auto' sets the limit to be 20x the current block gas limit..",
 
-			ARG arg_tx_queue_strategy: String = "gas_price", or |c: &Config| otry!(c.mining).tx_queue_strategy.clone(),
+			ARG arg_tx_queue_strategy: {{{ String }}} = "gas_price", or |c: &Config| otry!(c.mining).tx_queue_strategy.clone(),
 			"--tx-queue-strategy=[S]",
 			"Prioritization strategy used to order transactions in the queue. S may be: gas - Prioritize txs with low gas limit; gas_price - Prioritize txs with high gas price; gas_factor - Prioritize txs using gas price and gas limit ratio.",
 
-			ARG arg_tx_queue_ban_count: u16 = 1u16, or |c: &Config| otry!(c.mining).tx_queue_ban_count.clone(),
+			ARG arg_tx_queue_ban_count: {{{ u16 }}} = 1u16, or |c: &Config| otry!(c.mining).tx_queue_ban_count.clone(),
 			"--tx-queue-ban-count=[C]",
 			"Number of times maximal time for execution (--tx-time-limit) can be exceeded before banning sender/recipient/code.",
 
-			ARG arg_tx_queue_ban_time: u16 = 180u16, or |c: &Config| otry!(c.mining).tx_queue_ban_time.clone(),
+			ARG arg_tx_queue_ban_time: {{{ u16 }}} = 180u16, or |c: &Config| otry!(c.mining).tx_queue_ban_time.clone(),
 			"--tx-queue-ban-time=[SEC]",
 			"Banning time (in seconds) for offenders of specified execution time limit. Also number of offending actions have to reach the threshold within that time.",
 
-			ARG arg_stratum_interface: String = "local", or |c: &Config| otry!(c.stratum).interface.clone(),
+			ARG arg_stratum_interface: {{{ String }}} = "local", or |c: &Config| otry!(c.stratum).interface.clone(),
 			"--stratum-interface=[IP]",
 			"Interface address for Stratum server.",
 
-			ARG arg_stratum_port: u16 = 8008u16, or |c: &Config| otry!(c.stratum).port.clone(),
+			ARG arg_stratum_port: {{{ u16 }}} = 8008u16, or |c: &Config| otry!(c.stratum).port.clone(),
 			"--stratum-port=[PORT]",
 			"Port for Stratum server to listen on.",
 
@@ -694,7 +694,7 @@ usage! {
 			"--no-config",
 			"Don't load a configuration file.",
 
-			ARG arg_ntp_servers: String = "0.parity.pool.ntp.org:123,1.parity.pool.ntp.org:123,2.parity.pool.ntp.org:123,3.parity.pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_servers.clone().map(|vec| vec.join(",")),
+			ARG arg_ntp_servers: {{{ String }}} = "0.parity.pool.ntp.org:123,1.parity.pool.ntp.org:123,2.parity.pool.ntp.org:123,3.parity.pool.ntp.org:123", or |c: &Config| otry!(c.misc).ntp_servers.clone().map(|vec| vec.join(",")),
 			"--ntp-servers=[HOSTS]",
 			"Comma separated list of NTP servers to provide current time (host:port). Used to verify node health. Parity uses pool.ntp.org NTP servers; consider joining the pool: http://www.pool.ntp.org/join.html",
 
@@ -715,43 +715,43 @@ usage! {
 			"--scale-verifiers",
 			"Automatically scale amount of verifier threads based on workload. Not guaranteed to be faster.",
 
-			ARG arg_tracing: String = "auto", or |c: &Config| otry!(c.footprint).tracing.clone(),
+			ARG arg_tracing: {{{ String }}} = "auto", or |c: &Config| otry!(c.footprint).tracing.clone(),
 			"--tracing=[BOOL]",
 			"Indicates if full transaction tracing should be enabled. Works only if client had been fully synced with tracing enabled. BOOL may be one of auto, on, off. auto uses last used value of this option (off if it does not exist).", // footprint option
 
-			ARG arg_pruning: String = "auto", or |c: &Config| otry!(c.footprint).pruning.clone(),
+			ARG arg_pruning: {{{ String }}} = "auto", or |c: &Config| otry!(c.footprint).pruning.clone(),
 			"--pruning=[METHOD]",
 			"Configure pruning of the state/storage trie. METHOD may be one of auto, archive, fast: archive - keep all state trie data. No pruning. fast - maintain journal overlay. Fast but 50MB used. auto - use the method most recently synced or default to fast if none synced.",
 
-			ARG arg_pruning_history: u64 = 64u64, or |c: &Config| otry!(c.footprint).pruning_history.clone(),
+			ARG arg_pruning_history: {{{ u64 }}} = 64u64, or |c: &Config| otry!(c.footprint).pruning_history.clone(),
 			"--pruning-history=[NUM]",
 			"Set a minimum number of recent states to keep when pruning is active..",
 
-			ARG arg_pruning_memory: usize = 32usize, or |c: &Config| otry!(c.footprint).pruning_memory.clone(),
+			ARG arg_pruning_memory: {{{ usize }}} = 32usize, or |c: &Config| otry!(c.footprint).pruning_memory.clone(),
 			"--pruning-memory=[MB]",
 			"The ideal amount of memory in megabytes to use to store recent states. As many states as possible will be kept within this limit, and at least --pruning-history states will always be kept.",
 
-			ARG arg_cache_size_db: u32 = 32u32, or |c: &Config| otry!(c.footprint).cache_size_db.clone(),
+			ARG arg_cache_size_db: {{{ u32 }}} = 32u32, or |c: &Config| otry!(c.footprint).cache_size_db.clone(),
 			"--cache-size-db=[MB]",
 			"Override database cache size.",
 
-			ARG arg_cache_size_blocks: u32 = 8u32, or |c: &Config| otry!(c.footprint).cache_size_blocks.clone(),
+			ARG arg_cache_size_blocks: {{{ u32 }}} = 8u32, or |c: &Config| otry!(c.footprint).cache_size_blocks.clone(),
 			"--cache-size-blocks=[MB]",
 			"Specify the prefered size of the blockchain cache in megabytes.",
 
-			ARG arg_cache_size_queue: u32 = 40u32, or |c: &Config| otry!(c.footprint).cache_size_queue.clone(),
+			ARG arg_cache_size_queue: {{{ u32 }}} = 40u32, or |c: &Config| otry!(c.footprint).cache_size_queue.clone(),
 			"--cache-size-queue=[MB]",
 			"Specify the maximum size of memory to use for block queue.",
 
-			ARG arg_cache_size_state: u32 = 25u32, or |c: &Config| otry!(c.footprint).cache_size_state.clone(),
+			ARG arg_cache_size_state: {{{ u32 }}} = 25u32, or |c: &Config| otry!(c.footprint).cache_size_state.clone(),
 			"--cache-size-state=[MB]",
 			"Specify the maximum size of memory to use for the state cache.",
 
-			ARG arg_db_compaction: String = "auto", or |c: &Config| otry!(c.footprint).db_compaction.clone(),
+			ARG arg_db_compaction: {{{ String }}} = "auto", or |c: &Config| otry!(c.footprint).db_compaction.clone(),
 			"--db-compaction=[TYPE]",
 			"Database compaction type. TYPE may be one of: ssd - suitable for SSDs and fast HDDs; hdd - suitable for slow HDDs; auto - determine automatically.",
 
-			ARG arg_fat_db: String = "auto", or |c: &Config| otry!(c.footprint).fat_db.clone(),
+			ARG arg_fat_db: {{{ String }}} = "auto", or |c: &Config| otry!(c.footprint).fat_db.clone(),
 			"--fat-db=[BOOL]",
 			"Build appropriate information to allow enumeration of all accounts and storage keys. Doubles the size of the state database. BOOL may be one of on, off or auto.",
 
@@ -776,11 +776,11 @@ usage! {
 			"--no-code",
 			"Don't export account code.",
 
-			ARG arg_from: String = "1", or |_| None,
+			ARG arg_from: {{{ String }}} = "1", or |_| None,
 			"--from=[BLOCK]",
 			"Export from block BLOCK, which may be an index or hash.",
 
-			ARG arg_to: String = "latest", or |_| None,
+			ARG arg_to: {{{ String }}} = "latest", or |_| None,
 			"--to=[BLOCK]",
 			"Export to (including) block BLOCK, which may be an index, hash or latest.",
 
@@ -811,7 +811,7 @@ usage! {
 			"--whisper",
 			"Enable the Whisper network.",
 
- 			ARG arg_whisper_pool_size: usize = 10usize, or |c: &Config| otry!(c.whisper).pool_size.clone(),
+ 			ARG arg_whisper_pool_size: {{{ usize }}} = 10usize, or |c: &Config| otry!(c.whisper).pool_size.clone(),
 			"--whisper-pool-size=[MB]",
 			"Target size of the whisper message pool in megabytes.",
 
