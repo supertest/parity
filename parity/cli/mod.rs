@@ -82,7 +82,7 @@ usage! {
 				"<PATH>",
 				"Path to the wallet",
 
-				ARG_OPTION arg_wallet_import_password: {{{String}}} = None,
+				ARG arg_wallet_import_password: {{{ Option<String> }}} = None,
 				"--password=<FILE>",
 				"Path to the password file",
 			}
@@ -109,11 +109,11 @@ usage! {
 			{
 				"Export blocks",
 
-				ARG_OPTION arg_export_blocks_file: {{{String}}} = None,
+				ARG arg_export_blocks_file: {{{ Option<String> }}} = None,
 				"[FILE]",
 				"Path to the exported file",
 
-				ARG_OPTION arg_export_blocks_format: {{{String}}} = None,
+				ARG arg_export_blocks_format: {{{ Option<String> }}} = None,
 				"--format=[FORMAT]",
 				"Export in a given format. FORMAT must be either 'hex' or 'binary'. (default: binary)",
 			}
@@ -126,11 +126,11 @@ usage! {
 				"--at=[BLOCK]",
 				"Take a snapshot at the given block, which may be an index, hash, or latest. Note that taking snapshots at non-recent blocks will only work with --pruning archive",
 
-				ARG_OPTION arg_export_state_file: {{{String}}} = None,
+				ARG arg_export_state_file: {{{Option<String>}}} = None,
 				"[FILE]",
 				"Path to the exported file",
 
-				ARG_OPTION arg_export_state_format: {{{String}}} = None,
+				ARG arg_export_state_format: {{{Option<String>}}} = None,
 				"--format=[FORMAT]",
 				"Export in a given format. FORMAT must be either 'hex' or 'binary'. (default: binary)",
 			}
@@ -152,11 +152,11 @@ usage! {
 			{
 				"Sign",
 
-				ARG_OPTION arg_signer_sign_id: {{{usize}}} = None,
+				ARG arg_signer_sign_id: {{{Option<usize>}}} = None,
 				"[ID]",
 				"ID",
 
-				ARG_OPTION arg_signer_sign_password: {{{String}}} = None,
+				ARG arg_signer_sign_password: {{{Option<String>}}} = None,
 				"--password=[FILE]",
 				"Path to the password file",
 			}
@@ -165,7 +165,7 @@ usage! {
 			{
 				"Reject",
 
-				ARG_OPTION arg_signer_reject_id: {{{usize}}} = None,
+				ARG arg_signer_reject_id: {{{Option<usize>}}} = None,
 				"<ID>",
 				"ID",
 			}
@@ -201,7 +201,7 @@ usage! {
 			{
 				"Hash",
 
-				ARG_OPTION arg_tools_hash_file: {{{String}}} = None,
+				ARG arg_tools_hash_file: {{{Option<String>}}} = None,
 				"<FILE>",
 				"File",
 			}
