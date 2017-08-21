@@ -32,31 +32,22 @@ macro_rules! otry {
 	)
 }
 
-macro_rules! inner_type {
-	(Option<$type:ty>) => (
-		$type
-	);
-	(Vec<$type:ty>) => (
-		$type
-	);
-}
-
 macro_rules! inner_option_type {
 	(Option<$type:ty>) => (
 		$type
-	);
+	)
 }
 
 macro_rules! inner_vec_type {
 	(Vec<$type:ty>) => (
 		$type
-	);
+	)
 }
 
 macro_rules! inner_option_vec_type {
 	(Option<Vec<String>>) => (
 		String
-	);
+	)
 }
 
 macro_rules! if_option {
@@ -64,15 +55,6 @@ macro_rules! if_option {
 		$then
 	);
 	({$type:ty} THEN {$then:expr} ELSE {$otherwise:expr}) => (
-		$otherwise
-	);
-}
-
-macro_rules! if_option_then_type {
-	({Option<$type:ty>} THEN {$then:ty} ELSE {$otherwise:ty}) => (
-		$then
-	);
-	({$type:ty} THEN {$then:ty} ELSE {$otherwise:ty}) => (
 		$otherwise
 	);
 }
@@ -91,6 +73,15 @@ macro_rules! if_option_vec {
 		$then
 	);
 	({Option<$type:ty>} THEN {$then:expr} ELSE {$otherwise:expr}) => (
+		$otherwise
+	);
+}
+
+macro_rules! if_option_then_type {
+	({Option<$type:ty>} THEN {$then:ty} ELSE {$otherwise:ty}) => (
+		$then
+	);
+	({$type:ty} THEN {$then:ty} ELSE {$otherwise:ty}) => (
 		$otherwise
 	);
 }
@@ -356,7 +347,7 @@ macro_rules! usage {
 				let mut help : String = include_str!("./usage_header.txt").to_owned();
 
 				help.push_str("\n\n");
-/*
+
 				// Subcommands
 				help.push_str("parity [options]\n");
 				$(
@@ -408,7 +399,7 @@ macro_rules! usage {
 					)*
 
 				)*
-*/
+
 				help
 			}
 		}
