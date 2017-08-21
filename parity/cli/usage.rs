@@ -155,9 +155,6 @@ macro_rules! usage {
 				$(
 					ARG_MULTIPLE $argm:ident : $argm_type:ty = $argm_default:expr, or $argm_from_config:expr, $argm_usage:expr, $argm_help:expr,
 				)*
-				$(
-					ARG_OPTION $argo:ident : $argo_type:ty = $argo_default:expr, or $argo_from_config:expr, $argo_usage:expr, $argo_help:expr,
-				)*
 			)*
 		}
 	) => {
@@ -237,9 +234,6 @@ macro_rules! usage {
 				$(
 					pub $argm: Vec<$argm_type>,
 				)*
-				$(
-					pub $argo: Option<$argo_type>,
-				)*
 			)*
 		}
 
@@ -269,9 +263,6 @@ macro_rules! usage {
 						)*
 						$(
 							$argm: Default::default(),
-						)*
-						$(
-							$argo: Default::default(),
 						)*
 					)*
 				}
@@ -307,14 +298,17 @@ macro_rules! usage {
 				$(
 					$flag: bool,
 				)*
+
 				$(
-					$arg: Option<$($arg_type_tt)*>,
+					$arg: if_option_then_type!(
+						{$($arg_type_tt)*}
+						THEN { $($arg_type_tt)* }
+						ELSE { Option<$($arg_type_tt)*> }
+					),
 				)*
+
 				$(
 					$argm: Option<Vec<$argm_type>>,
-				)*
-				$(
-					$argo: Option<$argo_type>,
 				)*
 			)*
 		}
@@ -430,10 +424,6 @@ macro_rules! usage {
 						help.push_str(&format!("\t{}\n\t\t{} (default: {:?})\n", $argm_usage, $argm_help, {let x : Vec<$argm_type> = $argm_default; x}));
 					)*
 
-					$(
-						help.push_str(&format!("\t{}\n\t\t{}{}\n", $argo_usage, $argo_help, $argo_default.map(|x: $argo_type| format!(" (default: {})",x)).unwrap_or("".to_owned())));
-					)*
-
 				)*
 */
 				help
@@ -484,13 +474,6 @@ macro_rules! usage {
 							ELSE { self.$argm.or_else(|| $argm_from_config(&config)).unwrap_or_else(|| $argm_default.into()) }
 						);
 					)*
-					$(
-						args.$argo = if_option!(
-							{ Option<$argo_type> }
-							THEN { self.$argo.or_else(|| $argo_from_config(&config)).or_else(|| $argo_default.into()) }
-							ELSE { self.$argo.or_else(|| $argo_from_config(&config)).unwrap_or_else(|| $argo_default.into()) }
-						);
-					)*
 				)*
 				args
 			}
@@ -505,9 +488,6 @@ macro_rules! usage {
 						)*
 						$(
 							usage_with_ident!(stringify!($argm), $argm_usage, $argm_help),
-						)*
-						$(
-							usage_with_ident!(stringify!($argo), $argo_usage, $argo_help),
 						)*
 						$(
 							usage_with_ident!(stringify!($flag), $flag_usage, $flag_help),
@@ -599,25 +579,6 @@ macro_rules! usage {
 									{ Vec<$argm_type> }
 									THEN { values_t!(matches, stringify!($argm), $argm_type).ok() }
 									ELSE { value_t!(matches, stringify!($argm), $argm_type).ok() }
-								)
-							}
-						);
-					)*
-					$(
-						raw_args.$argo = if_option!(
-							{ Option<$argo_type> }
-							THEN {
-								if_vector!(
-									{ $argo_type } // will be inner_type!($type)
-									THEN { values_t!(matches, stringify!($argo), inner_type!($argo_type)).ok() } // will be inner_type!(inner_type!)
-									ELSE { value_t!(matches, stringify!($argo), $argo_type).ok() } // will be inner_type!
-								)
-							}
-							ELSE {
-								if_vector!(
-									{ $argo_type }
-									THEN { values_t!(matches, stringify!($argo), inner_type!($argo_type)).ok() }
-									ELSE { value_t!(matches, stringify!($argo), $argo_type).ok() }
 								)
 							}
 						);
@@ -719,9 +680,6 @@ macro_rules! usage {
 					)*
 					$(
 						$argm_usage,
-					)*
-					$(
-						$argo_usage,
 					)*
 				)*
 			];

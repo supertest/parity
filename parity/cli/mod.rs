@@ -280,11 +280,11 @@ usage! {
 			"--identity=[NAME]",
 			"Specify your node's name.",
 
-			ARG_OPTION arg_base_path: String = None, or |c: &Config| otry!(c.parity).base_path.clone(),
+			ARG arg_base_path: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.parity).base_path.clone(),
 			"-d, --base-path=[PATH]",
 			"Specify the base data storage path.",
 
-			ARG_OPTION arg_db_path: String = None, or |c: &Config| otry!(c.parity).db_path.clone(),
+			ARG arg_db_path: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.parity).db_path.clone(),
 			"--db-path=[PATH]",
 			"Specify the database directory path",
 
@@ -315,13 +315,13 @@ usage! {
 			"--keys-iterations=[NUM]",
 			"Specify the number of iterations to use when deriving key from the password (bigger is more secure)",
 
+			ARG arg_unlock: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| vec.join(",")),
+			"--unlock=[ACCOUNTS]",
+			"Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.",
+
 			ARG_MULTIPLE arg_password: String = Vec::new(), or |c: &Config| otry!(c.account).password.clone(),
 			"--password=[FILE]",
 			"Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.",
-
-			ARG_OPTION arg_unlock: String = None, or |c: &Config| otry!(c.account).unlock.as_ref().map(|vec| vec.join(",")),
-			"--unlock=[ACCOUNTS]",
-			"Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.",
 
 		["UI options"]
 			FLAG flag_force_ui: bool = false, or |c: &Config| otry!(c.ui).force.clone(),
@@ -402,19 +402,19 @@ usage! {
 			"--max-pending-peers=[NUM]",
 			"Allow up to NUM pending connections.",
 
-			ARG_OPTION arg_network_id: u64 = None, or |c: &Config| otry!(c.network).id.clone(),
+			ARG arg_network_id: {{{ Option<u64> }}} = None, or |c: &Config| otry!(c.network).id.clone(),
 			"--network-id=[INDEX]",
 			"Override the network identifier from the chain we are on.",
 
-			ARG_OPTION arg_bootnodes: String = None, or |c: &Config| otry!(c.network).bootnodes.as_ref().map(|vec| vec.join(",")),
+			ARG arg_bootnodes: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.network).bootnodes.as_ref().map(|vec| vec.join(",")),
 			"--bootnodes=[NODES]",
 			"Override the bootnodes from our chain. NODES should be comma-delimited enodes.",
 
-			ARG_OPTION arg_node_key: String = None, or |c: &Config| otry!(c.network).node_key.clone(),
+			ARG arg_node_key: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.network).node_key.clone(),
 			"--node-key=[KEY]",
 			"Specify node secret key, either as 64-character hex string or input to SHA3 operation.",
 
-			ARG_OPTION arg_reserved_peers: String = None, or |c: &Config| otry!(c.network).reserved_peers.clone(),
+			ARG arg_reserved_peers: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.network).reserved_peers.clone(),
 			"--reserved-peers=[FILE]",
 			"Provide a file containing enodes, one per line. These nodes will always have a reserved slot on top of the normal maximum peers.",
 
@@ -443,11 +443,11 @@ usage! {
 			"--jsonrpc-threads=[THREADS]",
 			"Turn on additional processing threads in all RPC servers. Setting this to non-zero value allows parallel cpu-heavy queries execution.",
 
-			ARG_OPTION arg_jsonrpc_cors: String = None, or |c: &Config| otry!(c.rpc).cors.clone(),
+			ARG arg_jsonrpc_cors: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.rpc).cors.clone(),
 			"--jsonrpc-cors=[URL]",
 			"Specify CORS header for JSON-RPC API responses.",
 
-			ARG_OPTION arg_jsonrpc_server_threads: usize = None, or |c: &Config| otry!(c.rpc).server_threads,
+			ARG arg_jsonrpc_server_threads: {{{ Option<usize> }}} = None, or |c: &Config| otry!(c.rpc).server_threads,
 			"--jsonrpc-server-threads=[NUM]",
 			"Enables experimental faster implementation of JSON-RPC server. Requires Dapps server to be disabled using --no-dapps.",
 
@@ -515,7 +515,7 @@ usage! {
 			"--ipfs-api-hosts=[HOSTS]",
 			"List of allowed Host header values. This option will validate the Host header sent by the browser, it is additional security against some attack vectors. Special options: \"all\", \"none\".",
 
-			ARG_OPTION arg_ipfs_api_cors: String = None, or |c: &Config| otry!(c.ipfs).cors.clone(),
+			ARG arg_ipfs_api_cors: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.ipfs).cors.clone(),
 			"--ipfs-api-cors=[URL]",
 			"Specify CORS header for IPFS API responses.",
 
@@ -548,7 +548,7 @@ usage! {
 			"--secretstore-path=[PATH]",
 			"Specify directory where Secret Store should save its data..",
 
-			ARG_OPTION arg_secretstore_secret: String = None, or |c: &Config| otry!(c.secretstore).self_secret.clone(),
+			ARG arg_secretstore_secret: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.secretstore).self_secret.clone(),
 			"--secretstore-secret=[SECRET]",
 			"Hex-encoded secret key of this node.",
 
@@ -649,35 +649,35 @@ usage! {
 			"--stratum-port=[PORT]",
 			"Port for Stratum server to listen on.",
 
-			ARG_OPTION arg_min_gas_price: u64 = None, or |c: &Config| otry!(c.mining).min_gas_price.clone(),
+			ARG arg_min_gas_price: {{{ Option<u64> }}} = None, or |c: &Config| otry!(c.mining).min_gas_price.clone(),
 			"--min-gas-price=[STRING]",
 			"Minimum amount of Wei per GAS to be paid for a transaction to be accepted for mining. Overrides --basic-tx-usd.",
 
-			ARG_OPTION arg_author: String = None, or |c: &Config| otry!(c.mining).author.clone(),
+			ARG arg_author: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.mining).author.clone(),
 			"--author=[ADDRESS]",
 			"Specify the block author (aka \"coinbase\") address for sending block rewards from sealed blocks. NOTE: MINING WILL NOT WORK WITHOUT THIS OPTION.", // Sealing/Mining Option
 
-			ARG_OPTION arg_engine_signer: String = None, or |c: &Config| otry!(c.mining).engine_signer.clone(),
+			ARG arg_engine_signer: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.mining).engine_signer.clone(),
 			"--engine-signer=[ADDRESS]",
 			"Specify the address which should be used to sign consensus messages and issue blocks. Relevant only to non-PoW chains.",
 
-			ARG_OPTION arg_tx_gas_limit: String = None, or |c: &Config| otry!(c.mining).tx_gas_limit.clone(),
+			ARG arg_tx_gas_limit: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.mining).tx_gas_limit.clone(),
 			"--tx-gas-limit=[GAS]",
 			"Apply a limit of GAS as the maximum amount of gas a single transaction may have for it to be mined.",
 
-			ARG_OPTION arg_tx_time_limit: u64 = None, or |c: &Config| otry!(c.mining).tx_time_limit.clone(),
+			ARG arg_tx_time_limit: {{{ Option<u64> }}} = None, or |c: &Config| otry!(c.mining).tx_time_limit.clone(),
 			"--tx-time-limit=[MS]",
 			"Maximal time for processing single transaction. If enabled senders/recipients/code of transactions offending the limit will be banned from being included in transaction queue for 180 seconds.",
 
-			ARG_OPTION arg_extra_data: String = None, or |c: &Config| otry!(c.mining).extra_data.clone(),
+			ARG arg_extra_data: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.mining).extra_data.clone(),
 			"--extra-data=[STRING]",
 			"Specify a custom extra-data for authored blocks, no more than 32 characters.",
 
-			ARG_OPTION arg_notify_work: String = None, or |c: &Config| otry!(c.mining).notify_work.as_ref().map(|vec| vec.join(",")),
+			ARG arg_notify_work: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.mining).notify_work.as_ref().map(|vec| vec.join(",")),
 			"--notify-work=[URLS]",
 			"URLs to which work package notifications are pushed. URLS should be a comma-delimited list of HTTP URLs.",
 
-			ARG_OPTION arg_stratum_secret: String = None, or |c: &Config| otry!(c.stratum).secret.clone(),
+			ARG arg_stratum_secret: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.stratum).secret.clone(),
 			"--stratum-secret=[STRING]",
 			"Secret for authorizing Stratum server for peers.",
 
@@ -698,11 +698,11 @@ usage! {
 			"--ntp-servers=[HOSTS]",
 			"Comma separated list of NTP servers to provide current time (host:port). Used to verify node health. Parity uses pool.ntp.org NTP servers; consider joining the pool: http://www.pool.ntp.org/join.html",
 
-			ARG_OPTION arg_logging: String = None, or |c: &Config| otry!(c.misc).logging.clone(),
+			ARG arg_logging: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.misc).logging.clone(),
 			"-l, --logging=[LOGGING]",
 			"Specify the logging level. Must conform to the same format as RUST_LOG.",
 
-			ARG_OPTION arg_log_file: String = None, or |c: &Config| otry!(c.misc).log_file.clone(),
+			ARG arg_log_file: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.misc).log_file.clone(),
 			"--log-file=[FILENAME]",
 			"Specify a filename into which logging should be appended.",
 
@@ -755,11 +755,11 @@ usage! {
 			"--fat-db=[BOOL]",
 			"Build appropriate information to allow enumeration of all accounts and storage keys. Doubles the size of the state database. BOOL may be one of on, off or auto.",
 
-			ARG_OPTION arg_cache_size: u32 = None, or |c: &Config| otry!(c.footprint).cache_size.clone(),
+			ARG arg_cache_size: {{{ Option<u32> }}} = None, or |c: &Config| otry!(c.footprint).cache_size.clone(),
 			"--cache-size=[MB]",
 			"Set total amount of discretionary memory to use for the entire system, overrides other cache and queue options.",
 
-			ARG_OPTION arg_num_verifiers: usize = None, or |c: &Config| otry!(c.footprint).num_verifiers.clone(),
+			ARG arg_num_verifiers: {{{ Option<usize> }}} = None, or |c: &Config| otry!(c.footprint).num_verifiers.clone(),
 			"--num-verifiers=[INT]",
 			"Amount of verifier threads to use or to begin with, if verifier auto-scaling is enabled.",
 
@@ -784,15 +784,15 @@ usage! {
 			"--to=[BLOCK]",
 			"Export to (including) block BLOCK, which may be an index, hash or latest.",
 
-			ARG_OPTION arg_format: String = None, or |_| None,
+			ARG arg_format: {{{ Option<String> }}} = None, or |_| None,
 			"--format=[FORMAT]",
 			"For import/export in given format. FORMAT must be one of 'hex' and 'binary'.",
 
-			ARG_OPTION arg_min_balance: String = None, or |_| None,
+			ARG arg_min_balance: {{{ Option<String> }}} = None, or |_| None,
 			"--min-balance=[WEI]",
 			"Don't export accounts with balance less than specified.",
 
-			ARG_OPTION arg_max_balance: String = None, or |_| None,
+			ARG arg_max_balance: {{{ Option<String> }}} = None, or |_| None,
 			"--max-balance=[WEI]",
 			"Don't export accounts with balance greater than specified.",
 
@@ -864,83 +864,83 @@ usage! {
 			"--rpc",
 			"Does nothing; JSON-RPC is on by default now.",
 
-			ARG_OPTION arg_dapps_port: u16 = None, or |c: &Config| otry!(c.dapps).port.clone(),
+			ARG arg_dapps_port: {{{ Option<u16> }}} = None, or |c: &Config| otry!(c.dapps).port.clone(),
 			"--dapps-port=[PORT]",
 			"Dapps server is merged with RPC server. Use --jsonrpc-port.",
 
-			ARG_OPTION arg_dapps_interface: String = None, or |c: &Config| otry!(c.dapps).interface.clone(),
+			ARG arg_dapps_interface: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.dapps).interface.clone(),
 			"--dapps-interface=[IP]",
 			"Dapps server is merged with RPC server. Use --jsonrpc-interface.",
 
-			ARG_OPTION arg_dapps_hosts: String = None, or |c: &Config| otry!(c.dapps).hosts.as_ref().map(|vec| vec.join(",")),
+			ARG arg_dapps_hosts: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.dapps).hosts.as_ref().map(|vec| vec.join(",")),
 			"--dapps-hosts=[HOSTS]",
 			"Dapps server is merged with RPC server. Use --jsonrpc-hosts.",
 
-			ARG_OPTION arg_dapps_cors: String = None, or |c: &Config| otry!(c.dapps).cors.clone(),
+			ARG arg_dapps_cors: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.dapps).cors.clone(),
 			"--dapps-cors=[URL]",
 			"Dapps server is merged with RPC server. Use --jsonrpc-cors.",
 
-			ARG_OPTION arg_dapps_user: String = None, or |c: &Config| otry!(c.dapps).user.clone(),
+			ARG arg_dapps_user: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.dapps).user.clone(),
 			"--dapps-user=[USERNAME]",
 			"Dapps server authentication has been removed.",
 
-			ARG_OPTION arg_dapps_pass: String = None, or |c: &Config| otry!(c.dapps).pass.clone(),
+			ARG arg_dapps_pass: {{{ Option<String> }}} = None, or |c: &Config| otry!(c.dapps).pass.clone(),
 			"--dapps-pass=[PASSWORD]",
 			"Dapps server authentication has been removed.",
 
-			ARG_OPTION arg_datadir: String = None, or |_| None,
+			ARG arg_datadir: {{{ Option<String> }}} = None, or |_| None,
 			"--datadir=[PATH]",
 			"Equivalent to --base-path PATH.",
 
-			ARG_OPTION arg_networkid: u64 = None, or |_| None,
+			ARG arg_networkid: {{{ Option<u64> }}} = None, or |_| None,
 			"--networkid=[INDEX]",
 			"Equivalent to --network-id INDEX.",
 
-			ARG_OPTION arg_peers: u16 = None, or |_| None,
+			ARG arg_peers: {{{ Option<u16> }}} = None, or |_| None,
 			"--peers=[NUM]",
 			"Equivalent to --min-peers NUM.",
 
-			ARG_OPTION arg_nodekey: String = None, or |_| None,
+			ARG arg_nodekey: {{{ Option<String> }}} = None, or |_| None,
 			"--nodekey=[KEY]",
 			"Equivalent to --node-key KEY.",
 
-			ARG_OPTION arg_rpcaddr: String = None, or |_| None,
+			ARG arg_rpcaddr: {{{ Option<String> }}} = None, or |_| None,
 			"--rpcaddr=[IP]",
 			"Equivalent to --jsonrpc-interface IP.",
 
-			ARG_OPTION arg_rpcport: u16 = None, or |_| None,
+			ARG arg_rpcport: {{{ Option<u16> }}} = None, or |_| None,
 			"--rpcport=[PORT]",
 			"Equivalent to --jsonrpc-port PORT.",
 
-			ARG_OPTION arg_rpcapi: String = None, or |_| None,
+			ARG arg_rpcapi: {{{ Option<String> }}} = None, or |_| None,
 			"--rpcapi=[APIS]",
 			"Equivalent to --jsonrpc-apis APIS.",
 
-			ARG_OPTION arg_rpccorsdomain: String = None, or |_| None,
+			ARG arg_rpccorsdomain: {{{ Option<String> }}} = None, or |_| None,
 			"--rpccorsdomain=[URL]",
 			"Equivalent to --jsonrpc-cors URL.",
 
-			ARG_OPTION arg_ipcapi: String = None, or |_| None,
+			ARG arg_ipcapi: {{{ Option<String> }}} = None, or |_| None,
 			"--ipcapi=[APIS]",
 			"Equivalent to --ipc-apis APIS.",
 
-			ARG_OPTION arg_ipcpath: String = None, or |_| None,
+			ARG arg_ipcpath: {{{ Option<String> }}} = None, or |_| None,
 			"--ipcpath=[PATH]",
 			"Equivalent to --ipc-path PATH.",
 
-			ARG_OPTION arg_gasprice: String = None, or |_| None,
+			ARG arg_gasprice: {{{ Option<String> }}} = None, or |_| None,
 			"--gasprice=[WEI]",
 			"Equivalent to --min-gas-price WEI.",
 
-			ARG_OPTION arg_etherbase: String = None, or |_| None,
+			ARG arg_etherbase: {{{ Option<String> }}} = None, or |_| None,
 			"--etherbase=[ADDRESS]",
 			"Equivalent to --author ADDRESS.",
 
-			ARG_OPTION arg_extradata: String = None, or |_| None,
+			ARG arg_extradata: {{{ Option<String> }}} = None, or |_| None,
 			"--extradata=[STRING]",
 			"Equivalent to --extra-data STRING.",
 
-			ARG_OPTION arg_cache: u32 = None, or |_| None,
+			ARG arg_cache: {{{ Option<u32> }}} = None, or |_| None,
 			"--cache=[MB]",
 			"Equivalent to --cache-size MB.",
 
