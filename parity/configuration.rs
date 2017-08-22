@@ -192,7 +192,7 @@ impl Configuration {
 					iterations: self.args.arg_keys_iterations,
 					path: dirs.keys,
 					spec: spec,
-					password_file: self.args.arg_password.first().cloned(), // @TODO global or subcommand arg?
+					password_file: self.args.arg_account_new_password.expect("CLI argument is required; qed").clone(),
 				};
 				AccountCmd::New(new_acc)
 			} else if self.args.cmd_account_list {
@@ -203,8 +203,7 @@ impl Configuration {
 				AccountCmd::List(list_acc)
 			} else if self.args.cmd_account_import {
 				let import_acc = ImportAccounts {
-					// can unwrap safely as argument is required
-					from: self.args.arg_account_import_path.unwrap().clone(),
+					from: self.args.arg_account_import_path.expect("CLI argument is required; qed").clone(),
 					to: dirs.keys,
 					spec: spec,
 				};
@@ -332,7 +331,7 @@ impl Configuration {
 			Cmd::Snapshot(restore_cmd)
 		} else {
 			let daemon = if self.args.cmd_daemon {
-				Some(self.args.arg_daemon_pid_file.clone().unwrap())
+				Some(self.args.arg_daemon_pid_file.clone().expect("CLI argument is required; qed"))
 			} else {
 				None
 			};

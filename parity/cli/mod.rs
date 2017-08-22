@@ -54,6 +54,10 @@ usage! {
 
 			CMD cmd_account_new {
 				"Create a new acount",
+
+				ARG arg_account_new_password: (Option<String>) = None,
+				"--password=<FILE>",
+				"Path to the password file",
 			}
 
 			CMD cmd_account_list {
