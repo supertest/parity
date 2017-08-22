@@ -496,7 +496,8 @@ macro_rules! usage {
 
 				let matches = App::new("Parity")
 				    	.global_setting(AppSettings::VersionlessSubcommands)
-						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
+						.global_setting(AppSettings::AllowLeadingHyphen) // allow for example --allow-ips -10.0.0.0/8
+						.global_setting(AppSettings::DisableHelpSubcommand)
 						.help(Args::print_help().as_ref())
 						.args(&usages.iter().map(|u| Arg::from_usage(u).use_delimiter(false)).collect::<Vec<Arg>>())
 						$(
