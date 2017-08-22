@@ -1214,21 +1214,21 @@ mod tests {
 
 	#[test]
 	fn should_parse_multiple_values() {
-		let args = Args::parse(&["parity", "account", "import", "--path", "~/1", "~/2"]).unwrap();
-		assert_eq!(arg_account_import_path, Some(vec!["~/1".to_owned(), "~/2".to_owned]));
+		let args = Args::parse(&["parity", "account", "import", "~/1", "~/2"]).unwrap();
+		assert_eq!(args.arg_account_import_path, Some(vec!["~/1".to_owned(), "~/2".to_owned()]));
 
-		// Multiple values should not mean multiple arguments
-		let args = Args::parse(&["parity", "account", "import", "--path", "~/1", "--path", "~/2"]);
-		assert_eq!(args, Err(_));
+		let args = Args::parse(&["parity", "account", "import", "~/1,ext"]).unwrap();
+		assert_eq!(args.arg_account_import_path, Some(vec!["~/1,ext".to_owned()]));
 
-		let args = Args::parse(&["parity", "--password", "~/.safe/1", "--password", "~/.safe/2"]).unwrap();
-		assert_eq!(arg_account_password, Some(vec!["~/.safe/1".to_owned(), "~/.safe/2".to_owned]));
-	}
-
-	#[test]
-	fn should_not_split_commas() {
 		let args = Args::parse(&["parity", "--secretstore-nodes", "abc@127.0.0.1:3333,cde@10.10.10.10:4444"]).unwrap();
-		assert_eq!(arg_secretstore_nodes, "abc@127.0.0.1:3333,cde@10.10.10.10:4444");
+		assert_eq!(args.arg_secretstore_nodes, "abc@127.0.0.1:3333,cde@10.10.10.10:4444");
+
+		// Arguments with a single value shouldn't accept multiple values
+		let args = Args::parse(&["parity", "--auto-update", "critical", "all"]);
+		assert!(args.is_err());
+
+		let args = Args::parse(&["parity", "--password", "~/.safe/1", "~/.safe/2"]).unwrap();
+		assert_eq!(args.arg_password, vec!["~/.safe/1".to_owned(), "~/.safe/2".to_owned()]);
 	}
 
 	#[test]
@@ -1329,6 +1329,7 @@ mod tests {
 			arg_restore_file: None,
 			arg_tools_hash_file: None,
 
+			arg_account_new_password: None,
 			arg_signer_sign_password: None,
 			arg_wallet_import_password: None,
 			arg_signer_sign_id: None,

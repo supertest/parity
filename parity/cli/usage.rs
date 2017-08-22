@@ -424,7 +424,7 @@ macro_rules! usage {
 						$(
 							args.$subc_subc_arg = if_option!(
 								$($subc_subc_arg_type_tt)+,
-								THEN { self.$subc_subc_arg.or_else(|| $subc_subc_arg_default.into()) }
+								THEN { self.$subc_subc_arg.or($subc_subc_arg_default) }
 								ELSE { self.$subc_subc_arg.unwrap_or($subc_subc_arg_default.into()) }
 							);
 						)*
@@ -433,7 +433,7 @@ macro_rules! usage {
 					$(
 						args.$subc_arg = if_option!(
 							$($subc_arg_type_tt)+,
-							THEN { self.$subc_arg.or_else(|| $subc_arg_default.into()) }
+							THEN { self.$subc_arg.or($subc_arg_default) }
 							ELSE { self.$subc_arg.unwrap_or($subc_arg_default.into()) }
 						);
 					)*
@@ -498,18 +498,18 @@ macro_rules! usage {
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
 						.help(Args::print_help().as_ref())
-						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
+						.args(&usages.iter().map(|u| Arg::from_usage(u).use_delimiter(false)).collect::<Vec<Arg>>())
 						$(
 							.subcommand(
 								SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc)[4..]))
 								.about($subc_help)
-								.args(&subc_usages.get(stringify!($subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
+								.args(&subc_usages.get(stringify!($subc)).unwrap().iter().map(|u| Arg::from_usage(u).use_delimiter(false)).collect::<Vec<Arg>>())
 								$(
 									.setting(AppSettings::SubcommandRequired) // prevent from running `parity account`
 									.subcommand(
 										SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..]))
 										.about($subc_subc_help)
-										.args(&subc_usages.get(stringify!($subc_subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
+										.args(&subc_usages.get(stringify!($subc_subc)).unwrap().iter().map(|u| Arg::from_usage(u).use_delimiter(false)).collect::<Vec<Arg>>())
 									)
 								)*
 							)
