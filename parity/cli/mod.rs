@@ -203,7 +203,7 @@ usage! {
 
 			CMD cmd_tools_hash
 			{
-				"Hash",
+				"Hash a file",
 
 				ARG arg_tools_hash_file: (Option<String>) = None,
 				"<FILE>",
@@ -300,7 +300,7 @@ usage! {
 
 			ARG arg_config: (String) = "$BASE/config.toml", or |_| None,
 			"-c, --config=[CONFIG]",
-			"Specify a filename containing a configuration file.",
+			"Specify a configuration. CONFIG may be either a configuration file or a preset: dev, insecure, dev-insecure, mining, or non-standard-ports.",
 
 			ARG arg_ports_shift: (u16) = 0u16, or |c: &Config| otry!(c.misc).ports_shift,
 			"--ports-shift=[SHIFT]",
@@ -455,7 +455,7 @@ usage! {
 			"--jsonrpc-server-threads=[NUM]",
 			"Enables experimental faster implementation of JSON-RPC server. Requires Dapps server to be disabled using --no-dapps.",
 
-		["API and console options – WS"]
+		["API and console options – WebSockets"]
 			FLAG flag_no_ws: (bool) = false, or |c: &Config| otry!(c.websockets).disable.clone(),
 			"--no-ws",
 			"Disable the WebSockets server.",
