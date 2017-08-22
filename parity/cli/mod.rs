@@ -22,7 +22,7 @@ use dir;
 usage! {
 	{
 		// CLI subcommands
-		// Subcommands must start with cmd_
+		// Subcommands must start with cmd_ and have '_' in place of '-'
 		// Sub-subcommands must start with the name of the subcommand
 		// Arguments must start with arg_
 
@@ -56,7 +56,7 @@ usage! {
 				"Create a new acount",
 
 				ARG arg_account_new_password: (Option<String>) = None,
-				"--password=<FILE>",
+				"--password=[FILE]",
 				"Path to the password file",
 			}
 
@@ -87,7 +87,7 @@ usage! {
 				"Path to the wallet",
 
 				ARG arg_wallet_import_password: (Option<String>) = None,
-				"--password=<FILE>",
+				"--password=[FILE]",
 				"Path to the password file",
 			}
 		}
@@ -98,7 +98,7 @@ usage! {
 
 			ARG arg_import_file: (Option<String>) = None,
 			"[FILE]",
-			"Path to the file to import",
+			"Path to the file to import from",
 
 			ARG arg_import_format: (Option<String>) = None,
 			"--format=[FORMAT]",
@@ -324,7 +324,7 @@ usage! {
 			"Unlock ACCOUNTS for the duration of the execution. ACCOUNTS is a comma-delimited list of addresses. Implies --no-ui.",
 
 			ARG arg_password: (Vec<String>) = Vec::new(), or |c: &Config| otry!(c.account).password.clone(),
-			"--password=[FILE]",
+			"--password=[FILE]...",
 			"Provide a file containing a password for unlocking an account. Leading and trailing whitespace is trimmed.",
 
 		["UI options"]
@@ -1210,6 +1210,25 @@ mod tests {
 		let args = Args::parse(&["parity", "snapshot", "file.dump"]).unwrap();
 		assert_eq!(args.arg_snapshot_at, "latest");
 		assert_eq!(args.arg_export_state_at, "latest");
+	}
+
+	#[test]
+	fn should_parse_multiple_values() {
+		let args = Args::parse(&["parity", "account", "import", "--path", "~/1", "~/2"]).unwrap();
+		assert_eq!(arg_account_import_path, Some(vec!["~/1".to_owned(), "~/2".to_owned]));
+
+		// Multiple values should not mean multiple arguments
+		let args = Args::parse(&["parity", "account", "import", "--path", "~/1", "--path", "~/2"]);
+		assert_eq!(args, Err(_));
+
+		let args = Args::parse(&["parity", "--password", "~/.safe/1", "--password", "~/.safe/2"]).unwrap();
+		assert_eq!(arg_account_password, Some(vec!["~/.safe/1".to_owned(), "~/.safe/2".to_owned]));
+	}
+
+	#[test]
+	fn should_not_split_commas() {
+		let args = Args::parse(&["parity", "--secretstore-nodes", "abc@127.0.0.1:3333,cde@10.10.10.10:4444"]).unwrap();
+		assert_eq!(arg_secretstore_nodes, "abc@127.0.0.1:3333,cde@10.10.10.10:4444");
 	}
 
 	#[test]

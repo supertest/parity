@@ -85,13 +85,6 @@ macro_rules! usage_with_ident {
 			format!("[{}] {} '{}'",$name, $usage, $help)
 		}
 	);
-	($name:expr, $usage:expr) => (
-		if $usage.contains("<") {
-			format!("<{}> {}",$name, $usage)
-		} else {
-			format!("[{}] {}",$name, $usage)
-		}
-	);
 }
 
 macro_rules! underscore_to_hyphen {
@@ -360,6 +353,7 @@ macro_rules! usage {
 							}
 						)*
 
+						// Print the subcommand on its own only if it has no subsubcommands
 						if !subc_subc_exist {
 							let subc_arg_usages : Vec<&str> = vec![
 								$(
@@ -460,7 +454,7 @@ macro_rules! usage {
 				args
 			}
 
-			#[allow(unused_variables)] // when there are no subcommand args, the submatches aren't used
+			#[allow(unused_variables)] // the submatches of arg-less subcommands aren't used
 			pub fn parse<S: AsRef<str>>(command: &[S]) -> Result<Self, ClapError> {
 
 				let usages = vec![
@@ -474,7 +468,7 @@ macro_rules! usage {
 					)*
 				];
 
-				// Hash of subc => Vec<String> and subc_subc => Vec<String>
+				// Hash of subc|subc_subc => Vec<String>
 				let mut subc_usages = HashMap::new();
 				$(
 					{
@@ -504,10 +498,12 @@ macro_rules! usage {
 				    	.global_setting(AppSettings::VersionlessSubcommands)
 						.global_setting(AppSettings::AllowLeadingHyphen) // allows for example --allow-ips -10.0.0.0/8
 						.help(Args::print_help().as_ref())
+						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 						$(
 							.subcommand(
 								SubCommand::with_name(&underscore_to_hyphen!(&stringify!($subc)[4..]))
 								.about($subc_help)
+								.args(&subc_usages.get(stringify!($subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 								$(
 									.setting(AppSettings::SubcommandRequired) // prevent from running `parity account`
 									.subcommand(
@@ -516,14 +512,15 @@ macro_rules! usage {
 										.args(&subc_usages.get(stringify!($subc_subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 									)
 								)*
-								.args(&subc_usages.get(stringify!($subc)).unwrap().iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 							)
 						)*
-						.args(&usages.iter().map(|u| Arg::from_usage(u)).collect::<Vec<Arg>>())
 						.get_matches_from_safe(command.iter().map(|x| OsStr::new(x.as_ref())))?;
 
 				let mut raw_args : RawArgs = Default::default();
 				$(
+					$(
+						raw_args.$flag = matches.is_present(stringify!($flag));
+					)*
 					$(
 						raw_args.$arg = if_option!(
 							$($arg_type_tt)+,
@@ -543,18 +540,36 @@ macro_rules! usage {
 							}
 						);
 					)*
-					$(
-						raw_args.$flag = matches.is_present(stringify!($flag));
-					)*
 				)*
 
+				// Subcommands
 				$(
-					// Subcommand
 					if let Some(submatches) = matches.subcommand_matches(&underscore_to_hyphen!(&stringify!($subc)[4..])) {
 						raw_args.$subc = true;
 
+						// Subcommand arguments
 						$(
-							// Sub-subcommand
+							raw_args.$subc_arg = if_option!(
+										$($subc_arg_type_tt)+,
+										THEN {
+											if_option_vec!(
+												$($subc_arg_type_tt)+,
+												THEN { values_t!(submatches, stringify!($subc_arg), inner_option_vec_type!($($subc_arg_type_tt)+)).ok() }
+												ELSE { value_t!(submatches, stringify!($subc_arg), inner_option_type!($($subc_arg_type_tt)+)).ok() }
+											)
+										}
+										ELSE {
+											if_vec!(
+												$($subc_arg_type_tt)+,
+												THEN { values_t!(submatches, stringify!($subc_arg), inner_vec_type!($($subc_arg_type_tt)+)).ok() }
+												ELSE { value_t!(submatches, stringify!($subc_arg), $($subc_arg_type_tt)+).ok() }
+											)
+										}
+							);
+						)*
+
+						// Sub-subcommands
+						$(
 							if let Some(subsubmatches) = submatches.subcommand_matches(&underscore_to_hyphen!(&stringify!($subc_subc)[stringify!($subc).len()+1..])) {
 								raw_args.$subc_subc = true;
 
@@ -578,32 +593,10 @@ macro_rules! usage {
 										}
 									);
 								)*
-
 							}
 							else {
 								raw_args.$subc_subc = false;
 							}
-						)*
-
-						// Subcommand arguments
-						$(
-							raw_args.$subc_arg = if_option!(
-										$($subc_arg_type_tt)+,
-										THEN {
-											if_option_vec!(
-												$($subc_arg_type_tt)+,
-												THEN { values_t!(submatches, stringify!($subc_arg), inner_option_vec_type!($($subc_arg_type_tt)+)).ok() }
-												ELSE { value_t!(submatches, stringify!($subc_arg), inner_option_type!($($subc_arg_type_tt)+)).ok() }
-											)
-										}
-										ELSE {
-											if_vec!(
-												$($subc_arg_type_tt)+,
-												THEN { values_t!(submatches, stringify!($subc_arg), inner_vec_type!($($subc_arg_type_tt)+)).ok() }
-												ELSE { value_t!(submatches, stringify!($subc_arg), $($subc_arg_type_tt)+).ok() }
-											)
-										}
-							);
 						)*
 					}
 					else {

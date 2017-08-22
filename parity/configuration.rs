@@ -192,7 +192,7 @@ impl Configuration {
 					iterations: self.args.arg_keys_iterations,
 					path: dirs.keys,
 					spec: spec,
-					password_file: self.args.arg_account_new_password.expect("CLI argument is required; qed").clone(),
+					password_file: self.args.arg_account_new_password.clone(),
 				};
 				AccountCmd::New(new_acc)
 			} else if self.args.cmd_account_list {
